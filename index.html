@@ -2593,10 +2593,18 @@
                 window.rawLaporanData = fullData || [];
                 filterLaporanData();
                 
-                // Ambil Data Detail Rincian Produksi sebagai peluru siap pakai di belakang layar
+                // Ambil Data Detail Produksi dan Saldo Mutasi di latar belakang saat membuka Data Laporan
                 panggilBackend('getDataProduksi', {}).then(res => {
                     window.rawViewData = res || [];
                 }).catch(e => console.warn("Latar Belakang Fetch Detail Produksi Tertahan."));
+
+                // Pre-load data saldo mutasi agar siap pakai sebelum user klik + Input Baru
+                panggilBackend('getSaldoMutasiData', {}).then(res => {
+                    if (res && res.success) {
+                        window.allMutasiData = res.data || [];
+                        _stokLookupCache.source = null; // Reset cache agar fresh
+                    }
+                }).catch(e => console.warn("Gagal pre-load saldo mutasi:", e));
 
                 if(btnRefresh) { 
                     btnRefresh.innerHTML = '<svg style="width:14px; height:14px; margin-right:4px; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Refresh'; 
@@ -4150,7 +4158,7 @@
             toggleManualOp();
             updateOperatorList();
 
-            if (typeof refreshSaldoBackground === 'function') refreshSaldoBackground();
+            recalculateAllStok();
 
             const rowsContainer = document.getElementById('dynamic-rows-container');
             if(rowsContainer) {
@@ -4215,18 +4223,11 @@
             }
         }
 
-        // --- OPTIMASI 1X AMBIL STOK DI BACKGROUND SAAT ONCLICK INPUT BARU ---
+        // Buka form input baru secara instan memanfaatkan data saldo yang sudah di-preload
         function startInputBaru(element) {
             clearForm();
             switchView('input-baru', element);
-            // Ambil data saldo 1x saja di background tanpa memblokir form
-            panggilBackend('getSaldoMutasiData', {}).then(res => {
-                if (res && res.success) {
-                    window.allMutasiData = res.data || [];
-                    _stokLookupCache.source = null; // Memaksa cache diperbarui dengan data baru
-                    recalculateAllStok();
-                }
-            }).catch(e => console.error("Gagal getSaldoMutasiData:", e));
+            recalculateAllStok();
         }
 
         // --- LOGIKA FORM INPUT BBK (PENGECEKAN BAHAN BAKU) ---
@@ -6132,20 +6133,7 @@
                 const nama = (row[1] || '').toUpperCase();
                 const warna = (row[3] || '-').toUpperCase();
                 
-                let rawBarangString = `${kode} - ${nama} - ${warna}`;
-                let availStock = getAvailableStock(rawBarangString);
-                let badgeHtml = '';
-                const currPek = (document.getElementById('select-pek')?.value || '').trim().toLowerCase();
-                
-                if (currPek !== "tutup besi" && currPek !== "jahit bulatan" && currPek !== "") {
-                    if (availStock > 0) {
-                        badgeHtml = `<span style="float:right; background:#ebfcf6; color:#05cd99; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:800; border: 1px solid #05cd99;">Sisa Saldo: ${availStock.toLocaleString('id-ID')}</span>`;
-                    } else {
-                        badgeHtml = `<span style="float:right; background:#fce8e8; color:#ee5d50; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:800; border: 1px solid #ee5d50;">Sisa Saldo: ${availStock.toLocaleString('id-ID')}</span>`;
-                    }
-                }
-
-                div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%;"><span><b>${kode} - ${nama} - ${warna}</b></span> ${badgeHtml}</div>`;
+                div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%;"><span><b>${kode} - ${nama} - ${warna}</b></span></div>`;
                 
                 div.onmouseover = () => div.style.backgroundColor = '#f4f7fe';
                 div.onmouseout = () => div.style.backgroundColor = '#fff';
@@ -6400,20 +6388,7 @@
                 const nama = (row[1] || '').toUpperCase();
                 const warna = (row[3] || '-').toUpperCase();
                 
-                let rawBarangString = `${kode} - ${nama} - ${warna}`;
-                let availStock = getAvailableStock(rawBarangString);
-                let badgeHtml = '';
-                const currPek = (document.getElementById('select-pek')?.value || '').trim().toLowerCase();
-                
-                if (currPek !== "tutup besi" && currPek !== "jahit bulatan" && currPek !== "") {
-                    if (availStock > 0) {
-                        badgeHtml = `<span style="float:right; background:#ebfcf6; color:#05cd99; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:800; border: 1px solid #05cd99;">Sisa Saldo: ${availStock.toLocaleString('id-ID')}</span>`;
-                    } else {
-                        badgeHtml = `<span style="float:right; background:#fce8e8; color:#ee5d50; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:800; border: 1px solid #ee5d50;">Sisa Saldo: ${availStock.toLocaleString('id-ID')}</span>`;
-                    }
-                }
-
-                div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%;"><span><b>${kode} - ${nama} - ${warna}</b></span> ${badgeHtml}</div>`;
+                div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%;"><span><b>${kode} - ${nama} - ${warna}</b></span></div>`;
                 
                 div.onmouseover = () => div.style.backgroundColor = '#f4f7fe';
                 div.onmouseout = () => div.style.backgroundColor = '#fff';
