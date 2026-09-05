@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         /* CSS Reset & Global Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Public Sans', sans-serif; }
         body { background-color: #f4f7fe; color: #2b3674; display: flex; height: 100vh; overflow: hidden; position: relative; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -1883,7 +1883,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbz87W0Ii-vNAuAR0HtUTNCOCY1itRNbLRdBNY3GToeCoiYI5Pn8ETCOd16aESfTTSDSmg/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwSOo7B8FzTmbJEzTiNhV-3TApb2ww998x6o_JQIAwP39Xcog3KdnZW6Srvh5jmBWoXnA/exec"; 
         
         // 2. Mesin Panggil Backend Tahan Banting (Anti-CORS & Anti-Crash)
         async function panggilBackend(actionName, payloadData) {
@@ -4022,15 +4022,14 @@
                 updateOperatorList(); 
                 
                 const operatorString = report[7] || '';
-                const karuName = report[4] || '';
-                
-                const opListForKaru = allOperators.filter(o => o.karu === karuName).map(o => o.nama);
+                const opListAll = allOperators.map(o => o.nama);
                 const opArray = operatorString.split(',').map(s => s.trim()).filter(s => s);
                 
                 let isManual = false;
                 if (opArray.length > 0) {
                     for (let op of opArray) {
-                        if (!opListForKaru.includes(op)) {
+                        // Cek ke seluruh database operator aktif, bukan hanya di bawah Karu terkait
+                        if (!opListAll.includes(op)) {
                             isManual = true; 
                             break;
                         }
@@ -4502,20 +4501,29 @@
         }
 
         function updateOperatorList() {
-            const selectKaru = document.getElementById('select-karu');
             const container = document.getElementById('operator-container');
-            if(!selectKaru || !container) return;
-            const karu = selectKaru.value;
+            if(!container) return;
             container.innerHTML = '';
             
-            const filtered = allOperators.filter(item => 
-                (karu === "" || item.karu === karu)
-            );
+            // Tampilkan semua operator aktif tanpa dibatasi Karu (memungkinkan pinjam operator)
+            const seen = new Set();
+            const uniqueOperators = [];
+            allOperators.forEach(item => {
+                const name = String(item.nama || '').trim();
+                if(name && !seen.has(name)) {
+                    seen.add(name);
+                    uniqueOperators.push(item);
+                }
+            });
             
-            filtered.forEach(item => {
+            // Urutkan nama operator secara alfabetis A-Z
+            uniqueOperators.sort((a, b) => a.nama.localeCompare(b.nama));
+            
+            uniqueOperators.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'operator-tile';
                 div.textContent = item.nama;
+                div.title = `Karu Asal: ${item.karu || '-'}`; // Info tooltip karu asal
                 div.onclick = function() { this.classList.toggle('selected'); };
                 container.appendChild(div);
             });
@@ -4696,7 +4704,7 @@
                     Object.keys(tableDataByPekerjaan).forEach(pek => {
                         tablesHtml += `
                         <div style="min-width: 350px; background:#fff;">
-                            <table class="table-thin" style="width:100%; border-collapse:collapse; border: 1px solid #7ea3c8; font-family: Arial, sans-serif;">
+                            <table class="table-thin" style="width:100%; border-collapse:collapse; border: 1px solid #7ea3c8; font-family: Public Sans, sans-serif;">
                                 <thead>
                                     <tr style="background:#9ebde3;">
                                         <th style="padding:6px 8px; border:1px solid #7ea3c8; color:#000; font-size:11px; text-transform:none; font-weight:bold; text-align:center;">Kategori</th>
@@ -7201,7 +7209,7 @@
                   svgHtml += `<polygon points="${xQty + barWidth},${yQty} ${xQty + barWidth + depth},${yQty - depth} ${xQty + barWidth + depth},${100 - depth} ${xQty + barWidth},100" fill="#2d0db3" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.5}" font-size="2.6" font-weight="500" font-family="'Arial', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
+                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.5}" font-size="2.6" font-weight="500" font-family="'Public Sans', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
                   }
               }
 
@@ -7212,7 +7220,7 @@
                   svgHtml += `<polygon points="${xRp + barWidth},${yRp} ${xRp + barWidth + depth},${yRp - depth} ${xRp + barWidth + depth},${100 - depth} ${xRp + barWidth},100" fill="#038c67" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.5}" font-size="2.6" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
+                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.5}" font-size="2.6" font-weight="500" font-family="'Public Sans', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
                   }
               }
           });
@@ -7301,7 +7309,7 @@
 
               if (val > 0) {
                   svgHtml += `<rect x="${x - (barW / 2)}" y="${y}" width="${barW}" height="${h}" fill="url(#gradYearBar)" rx="1.5" />`;
-                  svgHtml += `<text x="${x}" y="${y - 1.5}" font-size="2.6" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
+                  svgHtml += `<text x="${x}" y="${y - 1.5}" font-size="2.6" font-weight="500" font-family="'Public Sans', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
               }
 
               if (idx === 0) lineD += `M${x},${y} `;
@@ -7411,7 +7419,7 @@
                   svgHtml += `<polygon points="${xQty + barWidth},${yQty} ${xQty + barWidth + depth},${yQty - depth} ${xQty + barWidth + depth},${100 - depth} ${xQty + barWidth},100" fill="#2d0db3" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Arial', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
+                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Public Sans', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
                   }
               }
 
@@ -7422,7 +7430,7 @@
                   svgHtml += `<polygon points="${xRp + barWidth},${yRp} ${xRp + barWidth + depth},${yRp - depth} ${xRp + barWidth + depth},${100 - depth} ${xRp + barWidth},100" fill="#038c67" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
+                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Public Sans', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
                   }
               }
           });
@@ -7504,7 +7512,7 @@
                   // Side Face
                   svgHtml += `<polygon points="${x + barW},${y} ${x + barW + depth},${y - depth} ${x + barW + depth},${100 - depth} ${x + barW},100" fill="#04a37a" />`;
 
-                  svgHtml += `<text x="${x + (barW / 2)}" y="${y - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
+                  svgHtml += `<text x="${x + (barW / 2)}" y="${y - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Public Sans', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
               }
           });
 

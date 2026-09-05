@@ -2,7 +2,7 @@ const MASTER_FILE_ID = '1vuHgFUcSOUzBonCF_w_e3j-sBYlQQy8o6clL4GmcuXQ';
 const PROD_FILE_ID = '1HsWvRkojtcvBz333BDBVXBLELIPMrAhf4UR10C3rML8';
 
 function doGet(e) {
-  return HtmlService.createHtmlOutputFromFile('Index')
+  return HtmlService.createHtmlOutputFromFile('index')
     .setTitle('AiO-Tools Dashboard')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
@@ -54,8 +54,11 @@ function getMasterOperatorData() {
   if (!sheet) return [];
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return [];
-  const data = sheet.getRange(2, 3, lastRow - 1, 3).getValues();
-  return data.map(row => ({ nama: row[0], pekerjaan: row[1], karu: row[2] }));
+  // Ambil Kolom C sampai F (4 Kolom: Nama, Pekerjaan, Karu, Status)
+  const data = sheet.getRange(2, 3, lastRow - 1, 4).getValues();
+  return data
+    .filter(row => String(row[3] || '').trim().toLowerCase() === 'aktif') // Hanya status Aktif
+    .map(row => ({ nama: row[0], pekerjaan: row[1], karu: row[2], status: row[3] }));
 }
 
 function getSaldoMutasiData() {
