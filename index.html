@@ -1883,29 +1883,33 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbymeVhPeIBoFBnfk09dMzqz20Yk9B9hCo4w4F4vLwC4DwL2d9twsQNn7ddkOFv0mI06eg/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyhb_e_WFUL-RIA_pHmsmttAPmKV-ktC1pwjOvZEImhEzfUBxplLmKPEiAbMc-VjP5qaQ/exec"; 
         
         // 2. Mesin Panggil Backend Tahan Banting (Anti-CORS & Anti-Crash)
         async function panggilBackend(actionName, payloadData) {
           try {
-            console.log(`📡 Sedang menghubungi server untuk: ${actionName}...`);
+            console.log(`📡 Menghubungi server: ${actionName}...`);
             
             const response = await fetch(GAS_URL, {
               method: "POST",
-              // Kita lepas headers sepenuhnya. Biarkan browser otomatis memakai default 
-              // agar Google Script tidak salah paham dan memblokir dengan CORS "Preflight"
+              redirect: "follow",
+              cache: "no-cache",
               body: JSON.stringify({ 
                 action: actionName, 
                 payload: payloadData 
               })
             });
+
+            if (!response.ok) {
+              throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
+            }
             
             const responseText = await response.text();
             
-            // Tangkap jika yang dikembalikan adalah error peringatan HTML dari Google
+            // Jika Google mengembalikan HTML halaman login / error
             if (responseText.trim().startsWith("<")) {
-               console.error("🛑 Server memblokir! Mengembalikan kode HTML:", responseText.substring(0, 50) + "...");
-               throw new Error("Izin ditolak server. Pastikan Akses diubah menjadi 'Anyone' (Siapa saja).");
+              console.error("🛑 Server memblokir! Response HTML:", responseText.substring(0, 100));
+              throw new Error("Akses ditolak server Google. Pastikan setelan Deploy adalah 'Anyone'.");
             }
             
             const result = JSON.parse(responseText);

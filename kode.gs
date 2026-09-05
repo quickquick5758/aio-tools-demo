@@ -8,23 +8,34 @@ function doGet(e) {
 }
 
 function verifikasiLogin(inputUsername, inputPassword) {
-  const ss = SpreadsheetApp.openById(MASTER_FILE_ID);
-  const sheet = ss.getSheetByName("MASTER_ID_ACCOUNT"); 
-  if (!sheet) return { success: false, message: "Sheet tidak ditemukan!" };
-  
-  const data = sheet.getDataRange().getValues();
-  // Mulai dari baris ke-3 (indeks 2) sesuai struktur sheet
-  for (let i = 2; i < data.length; i++) {
-    if (data[i][2] === inputUsername && data[i][3] === inputPassword) {
-      return { 
-        success: true, 
-        name: data[i][1],      // Nama User (Kolom B)
-        role: data[i][4],      // Level/Role (Kolom E)
-        unit: data[i][5]       // Divisi/Unit (Kolom F)
-      };
+  try {
+    const ss = SpreadsheetApp.openById(MASTER_FILE_ID);
+    const sheet = ss.getSheetByName("MASTER_ID_ACCOUNT"); 
+    if (!sheet) return { success: false, message: "Sheet MASTER_ID_ACCOUNT tidak ditemukan!" };
+    
+    const data = sheet.getDataRange().getValues();
+    const cleanUser = String(inputUsername || '').trim();
+    const cleanPass = String(inputPassword || '').trim();
+
+    // Mulai dari baris ke-3 (indeks 2)
+    for (let i = 2; i < data.length; i++) {
+      // Paksa konversi ke String agar jika di Sheet berupa angka (misal PIN/NIK), tetap cocok
+      const sheetUser = String(data[i][2] !== undefined ? data[i][2] : '').trim();
+      const sheetPass = String(data[i][3] !== undefined ? data[i][3] : '').trim();
+
+      if (sheetUser === cleanUser && sheetPass === cleanPass) {
+        return { 
+          success: true, 
+          name: data[i][1],      // Nama User (Kolom B)
+          role: data[i][4],      // Level/Role (Kolom E)
+          unit: data[i][5]       // Divisi/Unit (Kolom F)
+        };
+      }
     }
+    return { success: false, message: "Username atau Password salah!" };
+  } catch (err) {
+    return { success: false, message: "Error Server: " + err.message };
   }
-  return { success: false, message: "Username atau Password salah!" };
 }
 
 function getMasterBarangData() {
@@ -918,18 +929,18 @@ function saveBbkToSheet(data) {
 }
 
 // Tambahkan ini di file Kode.gs Anda
-// Tambahkan ini di file Kode.gs Anda (Gantikan doPost yang lama)
 function doPost(e) {
   try {
-    // Tangkap request dari frontend
+    if (!e || !e.postData || !e.postData.contents) {
+      throw new Error("Data kiriman kosong (e.postData is empty).");
+    }
+
     let request = JSON.parse(e.postData.contents);
-    let action = request.action;   // Nama fungsi yang ingin dipanggil
-    let payload = request.payload; // Data yang dikirim (parameter)
+    let action = request.action;   
+    let payload = request.payload || {}; 
     
     let result;
 
-    // --- SISTEM ROUTER ---
-    // Arahkan ke fungsi asli Anda berdasarkan 'action'
     if (action === 'verifikasiLogin') {
       result = verifikasiLogin(payload.username, payload.password);
     } 
@@ -961,7 +972,6 @@ function doPost(e) {
       result = getBbkDetailData();
     }
     else if (action === 'saveProduksiToSheet') {
-      // payload diasumsikan berisi object 'data'
       result = saveProduksiToSheet(payload); 
     }
     else if (action === 'getSisaOmData') {
@@ -986,15 +996,13 @@ function doPost(e) {
       result = saveBbkToSheet(payload);
     }
     else {
-      throw new Error("Action '" + action + "' tidak ditemukan di router backend.");
+      throw new Error("Action '" + action + "' tidak terdaftar di router.");
     }
 
-    // Kembalikan hasil dari fungsi asli ke frontend
     return ContentService.createTextOutput(JSON.stringify({ status: 'success', data: result }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
-    // Jika ada error di backend
     return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: error.message }))
       .setMimeType(ContentService.MimeType.JSON);
   }
