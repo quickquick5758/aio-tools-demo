@@ -2,7 +2,7 @@ const MASTER_FILE_ID = '1vuHgFUcSOUzBonCF_w_e3j-sBYlQQy8o6clL4GmcuXQ';
 const PROD_FILE_ID = '1HsWvRkojtcvBz333BDBVXBLELIPMrAhf4UR10C3rML8';
 
 function doGet(e) {
-  return HtmlService.createHtmlOutputFromFile('Index')
+  return HtmlService.createHtmlOutputFromFile('index')
     .setTitle('AiO-Tools Dashboard')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
