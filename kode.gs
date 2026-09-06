@@ -1214,3 +1214,8 @@ function doPost(e) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 }
+
+function mintaIzinAksesExternal() {
+  UrlFetchApp.fetch("https://www.google.com");
+  Logger.log("Izin external request berhasil diberikan!");
+}
