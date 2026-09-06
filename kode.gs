@@ -4,7 +4,7 @@ const GEMINI_API_KEY = 'AQ.Ab8RN6LU5v5WdtQwDsLPvLNO-k8fDchl0HXuNB9sOFIWMoWALg';
 
 function recognizeHandwritingOCR(base64Image, jenisForm) {
   try {
-    if (!GEMINI_API_KEY || GEMINI_API_KEY === 'AQ.Ab8RN6LU5v5WdtQwDsLPvLNO-k8fDchl0HXuNB9sOFIWMoWALg') {
+    if (!GEMINI_API_KEY || GEMINI_API_KEY.trim() === '') {
       throw new Error("GEMINI_API_KEY belum disetel di backend!");
     }
 
