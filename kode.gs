@@ -1,6 +1,6 @@
 const MASTER_FILE_ID = '1vuHgFUcSOUzBonCF_w_e3j-sBYlQQy8o6clL4GmcuXQ';
 const PROD_FILE_ID = '1HsWvRkojtcvBz333BDBVXBLELIPMrAhf4UR10C3rML8';
-const GEMINI_API_KEY = 'AQ.Ab8RN6LU5v5WdtQwDsLPvLNO-k8fDchl0HXuNB9sOFIWMoWALg';
+const GEMINI_API_KEY = 'AIzaSyBvosHZxK0CNW9CIBW7CVPChf8IENJYFe0';
 
 function recognizeHandwritingOCR(base64Image, jenisForm) {
   try {
