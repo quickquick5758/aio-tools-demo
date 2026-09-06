@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         /* CSS Reset & Global Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Public Sans', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
         body { background-color: #f4f7fe; color: #2b3674; display: flex; height: 100vh; overflow: hidden; position: relative; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -215,6 +215,9 @@
 
         /* Area form dinamis diperluas minimum tingginya agar kotak sugesti (dropdown) kode tidak terpotong */
         .scrollable-form-container { min-height: 260px; overflow: visible; }
+        .barang-row-item, .bs-row-item, .bbk-row-item { position: relative; }
+        .barang-row-item:focus-within, .bs-row-item:focus-within, .bbk-row-item:focus-within { z-index: 50; }
+        .barang-suggestions, .bs-barang-suggestions, .bbk-barang-suggestions { z-index: 9999 !important; }
 
         /* Login & Footer */
         .login-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #2b3674 0%, #4318ff 100%); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(8px); }
@@ -572,6 +575,14 @@
                     <p id="login-error" style="color: #ee5d50; font-size: 13px; font-weight: 700; display: none; margin-bottom: 15px;"></p>
                     <button type="submit" class="login-btn">Masuk</button>
                 </form>
+
+                <!-- Icon Tiket Aduan / Bantuan Login -->
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #e0e5f2; display: flex; justify-content: center; align-items: center;">
+                    <button type="button" onclick="bukaTiketAduan()" style="background: none; border: none; color: #4318ff; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 4px; transition: 0.2s;" onmouseover="this.style.background='#f4f7fe'" onmouseout="this.style.background='none'">
+                        <svg style="width: 18px; height: 18px; color: #4318ff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        Kendala Login / Tiket Aduan
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1587,8 +1598,44 @@
                                     </div>
                                 </div>
                         
-                                <!-- 8.6 VIEW SUMMARY (RAPOR OPERATOR) -->
-                                <div id="view-summary" class="view-section">
+                                <!-- 8.55 VIEW GANTI PASSWORD -->
+                                <div id="view-ganti-password" class="view-section">
+                                    <div class="input-wrapper" style="max-width: 520px; margin: 20px auto; padding: 32px;">
+                                        <div style="text-align: center; margin-bottom: 24px;">
+                                            <div style="width: 56px; height: 56px; background: #e0e5ff; color: #4318ff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                                                <svg style="width: 28px; height: 28px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                            </div>
+                                            <h3 class="text-secondary font-bold" style="font-size: 22px;">Ganti Password Akun</h3>
+                                            <p style="font-size: 13px; color: #8f9bba; margin-top: 6px; line-height: 1.5;">
+                                                Ganti password dibatasi <b>maksimal 2 kali dalam sebulan</b> (jeda minimal 15 hari). Default Pass digunakan Admin saat reset akun.
+                                            </p>
+                                        </div>
+
+                                        <form onsubmit="submitGantiPassword(event); return false;">
+                                            <div class="form-group">
+                                                <label>ID Akun</label>
+                                                <input type="text" id="gp-userid" class="form-control" disabled style="background:#f8fafc; font-weight:700; color:#2b3674;">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Password Lama <span class="text-danger">*</span></label>
+                                                <input type="password" id="gp-old-pass" class="form-control" placeholder="Masukkan password saat ini" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Password Baru <span class="text-danger">*</span></label>
+                                                <input type="password" id="gp-new-pass" class="form-control" placeholder="Minimal 5 karakter" minlength="5" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Konfirmasi Password Baru <span class="text-danger">*</span></label>
+                                                <input type="password" id="gp-confirm-pass" class="form-control" placeholder="Ketik ulang password baru" minlength="5" required>
+                                            </div>
+
+                                            <div class="button-center" style="margin-top: 25px;">
+                                                <button type="button" class="btn-modern" style="background:#f3f4f6; color:#374151;" onclick="switchView('dashboard')">Batal</button>
+                                                <button type="submit" id="btn-submit-gp" class="btn-modern" style="background:#4318ff; padding: 10px 24px;">Simpan Password Baru</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                                     <div class="card" style="margin-bottom: 24px; min-height: 85vh; border-radius: 4px;">
                                         
                                         <!-- 1. BARIS HEADER & FILTER PENCARIAN (TEMA DEFAULT) -->
@@ -1883,7 +1930,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwSOo7B8FzTmbJEzTiNhV-3TApb2ww998x6o_JQIAwP39Xcog3KdnZW6Srvh5jmBWoXnA/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwi-XnNoMFYKYSnftrUB24hpgtD84pPwl42Y8Pv-Bxi7khUOyU8fwnP_2kIh7JbqZRIkA/exec"; 
         
         // 2. Mesin Panggil Backend Tahan Banting (Anti-CORS & Anti-Crash)
         async function panggilBackend(actionName, payloadData) {
@@ -3468,10 +3515,12 @@
                     window.currentUserRole = response.role || "Operator";
                     window.currentUserUnit = response.unit || "";
                     window.currentUserName = response.name || user;
+                    window.currentUserId = response.userId || user; // Rekam User ID akun
 
                     // STAY TO LOGIN (Simpan di memory browser)
                     sessionStorage.setItem('authSession', JSON.stringify({
                         user: window.currentUserName,
+                        userId: window.currentUserId,
                         role: window.currentUserRole,
                         unit: window.currentUserUnit
                     }));
@@ -3549,9 +3598,79 @@
         }
 
         function changePassword() {
-            alert("Fitur Ganti Password sedang dalam tahap pengembangan.");
             const dropdown = document.getElementById('profileDropdown');
             if(dropdown) dropdown.classList.remove('show');
+            
+            const userIdEl = document.getElementById('gp-userid');
+            if(userIdEl) userIdEl.value = window.currentUserId || window.currentUserName;
+            
+            document.getElementById('gp-old-pass').value = '';
+            document.getElementById('gp-new-pass').value = '';
+            document.getElementById('gp-confirm-pass').value = '';
+            
+            switchView('ganti-password');
+        }
+
+        async function submitGantiPassword(e) {
+            if(e) e.preventDefault();
+            const userId = document.getElementById('gp-userid').value.trim();
+            const oldPass = document.getElementById('gp-old-pass').value.trim();
+            const newPass = document.getElementById('gp-new-pass').value.trim();
+            const confirmPass = document.getElementById('gp-confirm-pass').value.trim();
+            const btnSubmit = document.getElementById('btn-submit-gp');
+
+            if(!oldPass || !newPass || !confirmPass) {
+                return showDialog("Mohon lengkapi seluruh kolom password!", "warning");
+            }
+            if(newPass !== confirmPass) {
+                return showDialog("Konfirmasi password baru tidak cocok!", "warning");
+            }
+            if(newPass === oldPass) {
+                return showDialog("Password baru tidak boleh sama dengan password lama!", "warning");
+            }
+
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = "Memproses...";
+
+            try {
+                const res = await panggilBackend('gantiPassword', {
+                    userId: userId,
+                    oldPassword: oldPass,
+                    newPassword: newPass
+                });
+
+                if(res && res.success) {
+                    showDialog(res.message, "warning", () => {
+                        switchView('dashboard');
+                    });
+                } else {
+                    showDialog(res.message || "Gagal mengubah password.", "warning");
+                }
+            } catch (err) {
+                showDialog("Gagal terhubung ke server: " + err.message, "warning");
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = "Simpan Password Baru";
+            }
+        }
+
+        function bukaTiketAduan() {
+            showDialog(`
+                <div style="text-align: left; font-size: 13px; line-height: 1.6;">
+                    <b style="color:#2b3674; display:block; margin-bottom:8px; font-size:14px;">Pusat Bantuan & Tiket Aduan</b>
+                    Mengalami kendala login atau akses akun?
+                    <ul style="margin: 8px 0 12px 18px; color:#555;">
+                        <li><b>Lupa Password:</b> Hubungi Admin untuk reset ke <i>Default Pass</i>.</li>
+                        <li><b>Akun Non-Aktif:</b> Hubungi Supervisor / Admin Unit Anda.</li>
+                        <li><b>Jeda Password:</b> Ganti password dibatasi jeda 15 hari.</li>
+                    </ul>
+                    Silakan hubungi PIC IT / Admin melalui kontak helpdesk di bawah ini:
+                    <div style="margin-top: 10px; background:#f4f7fe; padding:10px; border-radius:6px; border:1px dashed #4318ff; text-align:center;">
+                        <span style="font-size:11px; color:#8f9bba;">KONTAK ADMIN PRODUKSI / IT</span><br>
+                        <b style="font-size:15px; color:#4318ff;">+62 812-XXXX-XXXX</b>
+                    </div>
+                </div>
+            `, "warning");
         }
 
         function applyRoleAccess(roleStr) {
@@ -3843,7 +3962,9 @@
                 idLaporan: existingId,
                 status: existingStatus,
                 tipe: "PRD", unit, tanggal, karu, shift, pekerjaan,
-                operators: operators.join(', '), items
+                operators: operators.join(', '), items,
+                userId: window.currentUserId || "",
+                userName: window.currentUserName || ""
             };
             
             // Langsung eksekusi submit ke server tanpa harus membuka halaman Preview
@@ -3905,7 +4026,9 @@
             globalPayloadToSubmit = {
                 idLaporan: existingId,
                 status: existingStatus,
-                tipe: "BS", unit, tanggal, karu, shift, pekerjaan: "-", operators: "-", items
+                tipe: "BS", unit, tanggal, karu, shift, pekerjaan: "-", operators: "-", items,
+                userId: window.currentUserId || "",
+                userName: window.currentUserName || ""
             };
             
             // Langsung eksekusi submit ke server tanpa harus membuka halaman Preview
@@ -4426,7 +4549,11 @@
                 return showDialog("Ada baris bahan baku yang belum lengkap. Silakan lengkapi atau hapus baris kosong!", "warning");
             }
 
-            const payload = { unit, tanggal, pekerjaan, operator, shift, supplier, refDokumen, refOm, ketHeader, items };
+            const payload = { 
+                unit, tanggal, pekerjaan, operator, shift, supplier, refDokumen, refOm, ketHeader, items,
+                userId: window.currentUserId || "",
+                userName: window.currentUserName || ""
+            };
 
             const modalAnim = document.getElementById('modal-success-anim');
             const loaderContainer = document.getElementById('loader-icon-container');
@@ -4704,7 +4831,7 @@
                     Object.keys(tableDataByPekerjaan).forEach(pek => {
                         tablesHtml += `
                         <div style="min-width: 350px; background:#fff;">
-                            <table class="table-thin" style="width:100%; border-collapse:collapse; border: 1px solid #7ea3c8; font-family: Public Sans, sans-serif;">
+                            <table class="table-thin" style="width:100%; border-collapse:collapse; border: 1px solid #7ea3c8; font-family: Arial, sans-serif;">
                                 <thead>
                                     <tr style="background:#9ebde3;">
                                         <th style="padding:6px 8px; border:1px solid #7ea3c8; color:#000; font-size:11px; text-transform:none; font-weight:bold; text-align:center;">Kategori</th>
@@ -5557,7 +5684,11 @@
                     actionsContainer.innerHTML = '<span style="color:#2b3674; font-weight:bold;">Memproses pembatalan...</span>';
                 }
 
-                panggilBackend('updateStatusBatal', { idLaporan: idLaporan })
+                panggilBackend('updateStatusBatal', { 
+                    idLaporan: idLaporan,
+                    userId: window.currentUserId || "",
+                    userName: window.currentUserName || ""
+                })
                     .then(res => {
                         if (res && res.success) {
                             document.getElementById('doc-open-badge').innerHTML = '<span style="background:#fce8e8; color:#ee5d50; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold; vertical-align:middle; margin-left:10px;">BATAL</span>';
@@ -5591,7 +5722,11 @@
 
                 try {
                     // Nembak ke Backend pakai fetch (pengganti google.script.run)
-                    const res = await panggilBackend('updateStatusApprove', { idLaporan: idLaporan });
+                    const res = await panggilBackend('updateStatusApprove', { 
+                        idLaporan: idLaporan,
+                        userId: window.currentUserId || "",
+                        userName: window.currentUserName || ""
+                    });
                     
                     if (res && res.success) {
                         // Munculkan Modal Animasi Sukses
@@ -6101,8 +6236,17 @@
                 container.style.display = 'none';
                 return;
             }
-            if (!window.allMasterBarang) {
-                container.style.display = 'none';
+            
+            // Jika data master belum siap, tampilkan pesan memuat dan fetch kembali
+            if (!window.allMasterBarang || window.allMasterBarang.length === 0) {
+                container.innerHTML = '<div style="padding:10px; font-size:12px; color:#8f9bba; text-align:center;">Memuat master barang...</div>';
+                container.style.display = 'block';
+                panggilBackend('getMasterBarangData', {}).then(res => {
+                    if (res && res.success) {
+                        window.allMasterBarang = res.data;
+                        handleBarangInput(input, showAll);
+                    }
+                }).catch(() => {});
                 return;
             }
             
@@ -7209,7 +7353,7 @@
                   svgHtml += `<polygon points="${xQty + barWidth},${yQty} ${xQty + barWidth + depth},${yQty - depth} ${xQty + barWidth + depth},${100 - depth} ${xQty + barWidth},100" fill="#2d0db3" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.5}" font-size="2.6" font-weight="500" font-family="'Public Sans', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
+                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.5}" font-size="2.6" font-weight="500" font-family="'Arial', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
                   }
               }
 
@@ -7220,7 +7364,7 @@
                   svgHtml += `<polygon points="${xRp + barWidth},${yRp} ${xRp + barWidth + depth},${yRp - depth} ${xRp + barWidth + depth},${100 - depth} ${xRp + barWidth},100" fill="#038c67" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.5}" font-size="2.6" font-weight="500" font-family="'Public Sans', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
+                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.5}" font-size="2.6" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
                   }
               }
           });
@@ -7309,7 +7453,7 @@
 
               if (val > 0) {
                   svgHtml += `<rect x="${x - (barW / 2)}" y="${y}" width="${barW}" height="${h}" fill="url(#gradYearBar)" rx="1.5" />`;
-                  svgHtml += `<text x="${x}" y="${y - 1.5}" font-size="2.6" font-weight="500" font-family="'Public Sans', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
+                  svgHtml += `<text x="${x}" y="${y - 1.5}" font-size="2.6" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
               }
 
               if (idx === 0) lineD += `M${x},${y} `;
@@ -7419,7 +7563,7 @@
                   svgHtml += `<polygon points="${xQty + barWidth},${yQty} ${xQty + barWidth + depth},${yQty - depth} ${xQty + barWidth + depth},${100 - depth} ${xQty + barWidth},100" fill="#2d0db3" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Public Sans', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
+                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Arial', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
                   }
               }
 
@@ -7430,7 +7574,7 @@
                   svgHtml += `<polygon points="${xRp + barWidth},${yRp} ${xRp + barWidth + depth},${yRp - depth} ${xRp + barWidth + depth},${100 - depth} ${xRp + barWidth},100" fill="#038c67" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Public Sans', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
+                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
                   }
               }
           });
@@ -7512,7 +7656,7 @@
                   // Side Face
                   svgHtml += `<polygon points="${x + barW},${y} ${x + barW + depth},${y - depth} ${x + barW + depth},${100 - depth} ${x + barW},100" fill="#04a37a" />`;
 
-                  svgHtml += `<text x="${x + (barW / 2)}" y="${y - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Public Sans', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
+                  svgHtml += `<text x="${x + (barW / 2)}" y="${y - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
               }
           });
 

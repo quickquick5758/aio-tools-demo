@@ -7,11 +7,41 @@ function doGet(e) {
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
+// Fungsi Pencatat Riwayat Log Aktivitas ke Sheet LOG_AKTIFITAS
+function catatLogAktivitas(aktifitas, idAkun, namaUser, noDokumen, status, keteranganGagal) {
+  try {
+    const ss = SpreadsheetApp.openById(PROD_FILE_ID);
+    let sheet = ss.getSheetByName("LOG_AKTIFITAS");
+    if (!sheet) {
+      sheet = ss.insertSheet("LOG_AKTIFITAS");
+      sheet.appendRow(["RIWAYAT LOG AKTIVITAS"]);
+      sheet.appendRow(["Waktu Server", "Aktifitas", "ID Akun", "Nama User", "No. Dokumen", "Status"]);
+    }
+
+    const waktuServer = Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyy-MM-dd HH:mm:ss");
+    let statusText = status;
+    if (String(status).toLowerCase() === 'gagal' && keteranganGagal) {
+      statusText = `Gagal: ${keteranganGagal}`;
+    }
+
+    sheet.appendRow([
+      waktuServer,
+      aktifitas || "-",
+      idAkun || "-",
+      namaUser || "-",
+      noDokumen || "-",
+      statusText
+    ]);
+  } catch (err) {
+    console.error("Gagal mencatat log aktivitas: " + err.message);
+  }
+}
+
 function verifikasiLogin(inputUsername, inputPassword) {
   try {
     const ss = SpreadsheetApp.openById(MASTER_FILE_ID);
-    const sheet = ss.getSheetByName("MASTER_ID_ACCOUNT"); 
-    if (!sheet) return { success: false, message: "Sheet MASTER_ID_ACCOUNT tidak ditemukan!" };
+    let sheet = ss.getSheetByName("MASTER_ID_ACCOUNT") || ss.getSheetByName("MASTER ID AKUN"); 
+    if (!sheet) return { success: false, message: "Sheet Akun tidak ditemukan!" };
     
     const data = sheet.getDataRange().getValues();
     const cleanUser = String(inputUsername || '').trim();
@@ -19,22 +49,99 @@ function verifikasiLogin(inputUsername, inputPassword) {
 
     // Mulai dari baris ke-3 (indeks 2)
     for (let i = 2; i < data.length; i++) {
-      // Paksa konversi ke String agar jika di Sheet berupa angka (misal PIN/NIK), tetap cocok
-      const sheetUser = String(data[i][2] !== undefined ? data[i][2] : '').trim();
-      const sheetPass = String(data[i][3] !== undefined ? data[i][3] : '').trim();
+      const sheetUser   = String(data[i][2] !== undefined ? data[i][2] : '').trim(); // Kolom C (ID)
+      const defaultPass = String(data[i][3] !== undefined ? data[i][3] : '').trim(); // Kolom D (Default Pass)
+      const currentPass = String(data[i][4] !== undefined ? data[i][4] : '').trim(); // Kolom E (Current Pass)
+      const status      = String(data[i][7] !== undefined ? data[i][7] : '').trim().toLowerCase(); // Kolom H (Status)
 
-      if (sheetUser === cleanUser && sheetPass === cleanPass) {
-        return { 
-          success: true, 
-          name: data[i][1],      // Nama User (Kolom B)
-          role: data[i][4],      // Level/Role (Kolom E)
-          unit: data[i][5]       // Divisi/Unit (Kolom F)
-        };
+      if (sheetUser === cleanUser) {
+        if (status && status !== 'aktif') {
+          return { success: false, message: "Akun Anda berstatus non-aktif. Silakan hubungi Admin!" };
+        }
+        
+        // Gunakan Current Pass jika terisi, jika kosong gunakan Default Pass
+        const activePass = currentPass !== "" ? currentPass : defaultPass;
+
+        if (activePass === cleanPass) {
+          return { 
+            success: true, 
+            userId: sheetUser,     // ID Login (Kolom C)
+            name: data[i][1],      // Nama User (Kolom B)
+            role: data[i][5],      // Level/Role (Kolom F)
+            unit: data[i][6]       // Divisi/Unit (Kolom G)
+          };
+        } else {
+          return { success: false, message: "Password salah!" };
+        }
       }
     }
-    return { success: false, message: "Username atau Password salah!" };
+    return { success: false, message: "Username / ID tidak ditemukan!" };
   } catch (err) {
     return { success: false, message: "Error Server: " + err.message };
+  }
+}
+
+function gantiPassword(userId, oldPassword, newPassword) {
+  try {
+    const ss = SpreadsheetApp.openById(MASTER_FILE_ID);
+    let sheet = ss.getSheetByName("MASTER_ID_ACCOUNT") || ss.getSheetByName("MASTER ID AKUN");
+    if (!sheet) return { success: false, message: "Sheet Akun tidak ditemukan!" };
+
+    const cleanId = String(userId || '').trim();
+    const cleanOld = String(oldPassword || '').trim();
+    const cleanNew = String(newPassword || '').trim();
+
+    if (!cleanNew || cleanNew.length < 5) {
+      return { success: false, message: "Password baru minimal 5 karakter!" };
+    }
+
+    const data = sheet.getDataRange().getValues();
+
+    // Buat Header Kolom I (LAST_CHANGE_PASS) jika belum ada
+    if (sheet.getLastColumn() < 9 || String(sheet.getRange(2, 9).getValue()).trim() === "") {
+      sheet.getRange(2, 9).setValue("LAST_CHANGE_PASS");
+    }
+
+    for (let i = 2; i < data.length; i++) {
+      const sheetUser = String(data[i][2] || '').trim();
+      if (sheetUser === cleanId) {
+        const defaultPass = String(data[i][3] || '').trim();
+        const currentPass = String(data[i][4] || '').trim();
+        const activePass = currentPass !== "" ? currentPass : defaultPass;
+
+        if (activePass !== cleanOld) {
+          return { success: false, message: "Password lama tidak sesuai!" };
+        }
+
+        // Cek jeda 15 hari di Kolom I (Indeks 8)
+        const lastChangeVal = data[i][8];
+        const now = new Date();
+        if (lastChangeVal) {
+          const lastDate = new Date(lastChangeVal);
+          if (!isNaN(lastDate.getTime())) {
+            const diffTime = now.getTime() - lastDate.getTime();
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays < 15) {
+              const sisaHari = 15 - diffDays;
+              return { 
+                success: false, 
+                message: `Ganti password dibatasi maksimal 2x sebulan (jeda 15 hari). Anda baru dapat mengganti password ${sisaHari} hari lagi.` 
+              };
+            }
+          }
+        }
+
+        // Simpan password baru di Kolom E (Kolom ke-5) dan tanggal di Kolom I (Kolom ke-9)
+        const rowNum = i + 1;
+        sheet.getRange(rowNum, 5).setValue(cleanNew);
+        sheet.getRange(rowNum, 9).setValue(Utilities.formatDate(now, "Asia/Jakarta", "yyyy-MM-dd HH:mm:ss"));
+
+        return { success: true, message: "Password berhasil diperbarui!" };
+      }
+    }
+    return { success: false, message: "User tidak ditemukan!" };
+  } catch (err) {
+    return { success: false, message: "Gagal mengganti password: " + err.message };
   }
 }
 
@@ -501,8 +608,19 @@ function saveProduksiToSheet(data) {
       globalSheet.appendRow([unit, idLaporan, data.tanggal, data.tipe, data.karu, data.shift, data.pekerjaan, data.operators, totalQtyGlobal, docStatus]);
     }
 
+    // Tentukan jenis aktifitas untuk log
+    let namaAktifitas = "";
+    if (isEdit) {
+      namaAktifitas = "Edit Dokumen";
+    } else {
+      namaAktifitas = (data.tipe === "BS") ? "Submit Form BS" : "Submit Form Baru";
+    }
+
+    catatLogAktivitas(namaAktifitas, data.userId, data.userName, idLaporan, "Berhasil");
     return { success: true, idLaporan: idLaporan };
   } catch (error) {
+    let namaAktifitas = data ? (data.idLaporan ? "Edit Dokumen" : (data.tipe === "BS" ? "Submit Form BS" : "Submit Form Baru")) : "Submit Form";
+    catatLogAktivitas(namaAktifitas, data ? data.userId : "-", data ? data.userName : "-", data ? data.idLaporan : "-", "Gagal", error.toString());
     return { success: false, message: error.toString() };
   }
 }
@@ -536,7 +654,7 @@ function getSisaOmData() {
   }
 }
 
-function updateStatusBatal(idLaporan) {
+function updateStatusBatal(idLaporan, userId, userName) {
   try {
     const ss = SpreadsheetApp.openById(PROD_FILE_ID);
     const sheetGlobal = ss.getSheetByName("DATA_PRODUKSI_GLOBAL");
@@ -566,18 +684,22 @@ function updateStatusBatal(idLaporan) {
       }
     }
 
-    if (updatedCount === 0) return { success: false, message: "ID Laporan tidak ditemukan." };
+    if (updatedCount === 0) {
+      catatLogAktivitas("Batalkan Dokumen", userId, userName, idLaporan, "Gagal", "ID Laporan tidak ditemukan");
+      return { success: false, message: "ID Laporan tidak ditemukan." };
+    }
+    catatLogAktivitas("Batalkan Dokumen", userId, userName, idLaporan, "Berhasil");
     return { success: true, message: "Dokumen dibatalkan." };
   } catch (e) {
+    catatLogAktivitas("Batalkan Dokumen", userId, userName, idLaporan, "Gagal", e.message);
     return { success: false, message: e.message };
   }
 }
 
-function updateStatusApprove(idLaporan) {
+function updateStatusApprove(idLaporan, userId, userName) {
   try {
     const ss = SpreadsheetApp.openById(PROD_FILE_ID);
     
-    // Harus update kedua Sheet: Global & Detail
     const sheetGlobal = ss.getSheetByName("DATA_PRODUKSI_GLOBAL"); 
     const sheetDetail = ss.getSheetByName("DATA_PRODUKSI_DETAIL"); 
     
@@ -587,7 +709,7 @@ function updateStatusApprove(idLaporan) {
 
     let updatedCount = 0;
 
-    // 1. Update Sheet Global (Status berada di Kolom J / Kolom ke-10)
+    // 1. Update Sheet Global
     const dataGlobal = sheetGlobal.getDataRange().getValues();
     for (let i = 0; i < dataGlobal.length; i++) {
       if (dataGlobal[i][1] === idLaporan) {
@@ -596,8 +718,7 @@ function updateStatusApprove(idLaporan) {
       }
     }
 
-    // 2. Update Sheet Detail (Status berada di Kolom Q / Kolom ke-17)
-    // 2. Update Sheet Detail (Status berada di Kolom R / Kolom ke-18)
+    // 2. Update Sheet Detail
     const dataDetail = sheetDetail.getDataRange().getValues();
     for (let i = 0; i < dataDetail.length; i++) {
       if (dataDetail[i][1] === idLaporan) {
@@ -606,11 +727,14 @@ function updateStatusApprove(idLaporan) {
     }
 
     if (updatedCount === 0) {
+      catatLogAktivitas("Approve Dokumen", userId, userName, idLaporan, "Gagal", "ID Laporan tidak ditemukan");
       return { success: false, message: "ID Laporan " + idLaporan + " tidak ditemukan." };
     }
 
+    catatLogAktivitas("Approve Dokumen", userId, userName, idLaporan, "Berhasil");
     return { success: true, message: "Dokumen berhasil disahkan!" };
   } catch (e) {
+    catatLogAktivitas("Approve Dokumen", userId, userName, idLaporan, "Gagal", e.message);
     return { success: false, message: e.message };
   }
 }
@@ -924,9 +1048,11 @@ function saveBbkToSheet(data) {
       ]);
     }
 
-    // Kembalikan ID Dokumen ke frontend
+    // Kembalikan ID Dokumen ke frontend & catat log berhasil
+    catatLogAktivitas("Submit Form BBK", data.userId, data.userName, noDokumenBBK, "Berhasil");
     return { success: true, idLaporan: noDokumenBBK };
   } catch(error) {
+    catatLogAktivitas("Submit Form BBK", data ? data.userId : "-", data ? data.userName : "-", "-", "Gagal", error.toString());
     return { success: false, message: error.toString() };
   }
 }
@@ -946,6 +1072,9 @@ function doPost(e) {
 
     if (action === 'verifikasiLogin') {
       result = verifikasiLogin(payload.username, payload.password);
+    } 
+    else if (action === 'gantiPassword') {
+      result = gantiPassword(payload.userId, payload.oldPassword, payload.newPassword);
     } 
     else if (action === 'getMasterBarangData') {
       result = getMasterBarangData();
@@ -981,10 +1110,10 @@ function doPost(e) {
       result = getSisaOmData();
     }
     else if (action === 'updateStatusBatal') {
-      result = updateStatusBatal(payload.idLaporan);
+      result = updateStatusBatal(payload.idLaporan, payload.userId, payload.userName);
     }
     else if (action === 'updateStatusApprove') {
-      result = updateStatusApprove(payload.idLaporan);
+      result = updateStatusApprove(payload.idLaporan, payload.userId, payload.userName);
     }
     else if (action === 'getTrackingSjData') {
       result = getTrackingSjData();
