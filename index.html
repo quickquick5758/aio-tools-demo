@@ -1765,7 +1765,7 @@
                                         <div class="print-no" style="display:flex; justify-content:space-between; align-items:center; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0; flex-shrink: 0;">
                                             <div style="display:flex; align-items:center; gap:12px;">
                                                 <h3 class="text-secondary font-bold" style="font-size:20px; margin:0; display:flex; align-items:center;">Tinjauan Dokumen <span id="doc-open-badge"></span></h3>
-                                                <span id="doc-state-status" style="display:none; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:800; color:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.1); letter-spacing: 0.5px;">-</span>
+                                                <span id="doc-state-status" style="display:none; padding:4px 8px; border-radius:2px; font-size:12px; font-weight:600; color:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.1); letter-spacing: 0.5px;">-</span>
                                             </div>
                                             <div style="display:flex; gap:8px;" id="doc-header-action-wrapper">
                                                 <button class="btn-modern" style="background:#ee5d50;" onclick="goBackFromDocument()">&times; Tutup</button>
@@ -2004,6 +2004,9 @@
             if(modalAnim) modalAnim.style.display = 'none';
             if(btnOk) btnOk.style.display = 'none';
             
+            // Pastikan modal dokumen selalu tertutup bersih
+            goBackFromDocument();
+
             // Logika pindah halaman sesuai fungsi terakhir
             if (window.nextViewAfterSuccess === 'buku-pengecekan') {
                 clearBbkForm();
@@ -2144,13 +2147,22 @@
                 }
             });
             
+            // AUTO OPEN SUGESTI: Tutup sugesti lain dan buka langsung sugesti baris yang di-klik/tap
             document.body.addEventListener('click', function(e) {
-                if (e.target.classList.contains('input-barang-search')) {
-                    handleBarangInput(e.target, true);
-                } else if (e.target.classList.contains('bs-barang-search')) {
-                    handleBsInput(e.target, true);
-                } else if (e.target.classList.contains('bbk-barang-search')) {
-                    handleBbkInput(e.target, true);
+                if (e.target.matches('.input-barang-search, .bs-barang-search, .bbk-barang-search')) {
+                    // Tutup dropdown baris lain
+                    document.querySelectorAll('.barang-suggestions, .bs-barang-suggestions, .bbk-barang-suggestions').forEach(el => {
+                        if (el !== e.target.nextElementSibling) el.style.display = 'none';
+                    });
+                    
+                    // Buka dropdown baris aktif
+                    if (e.target.classList.contains('input-barang-search')) {
+                        handleBarangInput(e.target, true);
+                    } else if (e.target.classList.contains('bs-barang-search')) {
+                        handleBsInput(e.target, true);
+                    } else if (e.target.classList.contains('bbk-barang-search')) {
+                        handleBbkInput(e.target, true);
+                    }
                 }
             });
 
@@ -3816,8 +3828,12 @@
                 modalIntip.style.display = 'none';
             }
 
-            if (!event.target.closest('.barang-row-item') && !event.target.closest('.bs-row-item')) {
-                document.querySelectorAll('.barang-suggestions, .bs-barang-suggestions').forEach(el => {
+            // AUTO CLOSE SUGESTI: Jika klik di luar input pencarian dan di luar kotak sugesti, tutup semua dropdown
+            const isClickOnSearchInput = event.target.matches('.input-barang-search, .bs-barang-search, .bbk-barang-search');
+            const isClickInsideSuggestions = event.target.closest('.barang-suggestions, .bs-barang-suggestions, .bbk-barang-suggestions');
+            
+            if (!isClickOnSearchInput && !isClickInsideSuggestions) {
+                document.querySelectorAll('.barang-suggestions, .bs-barang-suggestions, .bbk-barang-suggestions').forEach(el => {
                     el.style.display = 'none';
                 });
             }
@@ -4052,6 +4068,9 @@
                 alert("Data dokumen tidak ditemukan.");
                 return;
             }
+
+            // Tutup modal tinjauan dokumen secara otomatis agar form edit langsung terlihat
+            goBackFromDocument();
 
             const roleLower = (window.currentUserRole || "").toLowerCase();
             const privilegedRoles = ['author', 'supervisor', 'ppic']; 
@@ -5699,6 +5718,9 @@
                             
                             if (window.currentEditingReport) window.currentEditingReport[9] = 'Batal';
                             loadLaporanData(); 
+
+                            // Tutup modal dokumen otomatis setelah dibatalkan
+                            goBackFromDocument();
                             showDialog("Dokumen berhasil dibatalkan. Saldo telah dikembalikan.", "warning");
                         } else {
                             showDialog("Gagal membatalkan dokumen: " + (res ? res.message : "Kesalahan internal"), "warning");
@@ -5778,8 +5800,11 @@
 
                         if (window.currentEditingReport) window.currentEditingReport[9] = 'Approved';
                         loadLaporanData(); 
+
+                        // Tutup modal tinjauan dokumen secara otomatis
+                        goBackFromDocument();
                         
-                        // Menangani Bug nomor 4: Pastikan Modal Tampil beserta tombol penutupnya ("OK")
+                        // Menampilkan modal sukses approve
                         const btnOk = document.getElementById('btn-success-ok');
                         if(btnOk) {
                             btnOk.style.display = 'block';
