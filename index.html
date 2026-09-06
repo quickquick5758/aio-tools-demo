@@ -999,7 +999,7 @@
                     <hr style="margin: 20px 0;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
                         <label style="font-weight: 700; color: #2b3674; margin-bottom: 0;">Rincian Bahan Baku yang Diperiksa <span class="text-danger">*</span></label>
-                        <div>
+                        <div id="btn-ocr-wrapper-bbk" style="display:none;">
                             <input type="file" id="ocr-input-bbk" accept="image/*" capture="environment" style="display:none;" onchange="handleOCRImageSelected(this, 'bbk')">
                             <button type="button" class="btn-modern" style="background:#8b5cf6; color:#fff; padding:6px 12px; font-size:12px; display:inline-flex; align-items:center; gap:6px;" onclick="document.getElementById('ocr-input-bbk').click()">
                                 <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -1086,7 +1086,7 @@
                     <hr style="margin: 20px 0;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
                         <label style="font-weight: 700; color: #2b3674; margin-bottom: 0;">Rincian Barang Produksi <span class="text-danger">*</span></label>
-                        <div>
+                        <div id="btn-ocr-wrapper-prod" style="display:none;">
                             <input type="file" id="ocr-input-prod" accept="image/*" capture="environment" style="display:none;" onchange="handleOCRImageSelected(this, 'prod')">
                             <button type="button" class="btn-modern" style="background:#8b5cf6; color:#fff; padding:6px 12px; font-size:12px; display:inline-flex; align-items:center; gap:6px;" onclick="document.getElementById('ocr-input-prod').click()">
                                 <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -1154,7 +1154,7 @@
                     <hr style="margin: 20px 0;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
                         <label style="font-weight: 700; color: #2b3674; margin-bottom: 0;">Rincian Barang BS <span class="text-danger">*</span></label>
-                        <div>
+                        <div id="btn-ocr-wrapper-bs" style="display:none;">
                             <input type="file" id="ocr-input-bs" accept="image/*" capture="environment" style="display:none;" onchange="handleOCRImageSelected(this, 'bs')">
                             <button type="button" class="btn-modern" style="background:#8b5cf6; color:#fff; padding:6px 12px; font-size:12px; display:inline-flex; align-items:center; gap:6px;" onclick="document.getElementById('ocr-input-bs').click()">
                                 <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -3828,6 +3828,14 @@
             const isRupiahAllowed = allowedRupiahRoles.includes(role);
             document.querySelectorAll('.stat-rupiah').forEach(el => {
                 el.style.display = isRupiahAllowed ? 'block' : 'none';
+            });
+
+            // PEMBATASAN FITUR SCAN OCR (HANYA AUTHOR SELAMA TAHAP PENGEMBANGAN)
+            const isAuthor = (role === 'author');
+            const ocrWrappers = ['btn-ocr-wrapper-bbk', 'btn-ocr-wrapper-prod', 'btn-ocr-wrapper-bs'];
+            ocrWrappers.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = isAuthor ? 'block' : 'none';
             });
 
             // Dashboard Harus Selalu Tampil
@@ -7989,6 +7997,13 @@
 
       // --- LOGIKA OCR TULISAN TANGAN DENGAN KOMPRESI CLIENT-SIDE ---
       async function handleOCRImageSelected(fileInput, formType) {
+          const roleLower = (window.currentUserRole || "").toLowerCase().trim();
+          if (roleLower !== 'author') {
+              showDialog("Fitur Scan Tulisan Tangan saat ini sedang dalam tahap uji coba dan hanya dapat diakses oleh Author.", "warning");
+              fileInput.value = "";
+              return;
+          }
+
           const file = fileInput.files[0];
           if (!file) return;
 
