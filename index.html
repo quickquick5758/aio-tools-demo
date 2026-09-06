@@ -997,7 +997,16 @@
                     </div>
 
                     <hr style="margin: 20px 0;">
-                    <label style="font-weight: 700; color: #2b3674; margin-bottom: 10px; display: block;">Rincian Bahan Baku yang Diperiksa <span class="text-danger">*</span></label>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                        <label style="font-weight: 700; color: #2b3674; margin-bottom: 0;">Rincian Bahan Baku yang Diperiksa <span class="text-danger">*</span></label>
+                        <div>
+                            <input type="file" id="ocr-input-bbk" accept="image/*" capture="environment" style="display:none;" onchange="handleOCRImageSelected(this, 'bbk')">
+                            <button type="button" class="btn-modern" style="background:#8b5cf6; color:#fff; padding:6px 12px; font-size:12px; display:inline-flex; align-items:center; gap:6px;" onclick="document.getElementById('ocr-input-bbk').click()">
+                                <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Scan Tulisan Tangan
+                            </button>
+                        </div>
+                    </div>
                     <div class="scrollable-form-container">
                         <div style="display: grid; grid-template-columns: 3fr 1fr 2fr 40px; gap: 8px; margin-bottom: 5px;">
                             <label style="font-size: 12px; font-weight: 700; color: #2b3674;">Detail Barang <span class="text-danger">*</span></label>
@@ -1075,7 +1084,16 @@
                     </div>
 
                     <hr style="margin: 20px 0;">
-                    <label style="font-weight: 700; color: #2b3674; margin-bottom: 10px; display: block;">Rincian Barang Produksi <span class="text-danger">*</span></label>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                        <label style="font-weight: 700; color: #2b3674; margin-bottom: 0;">Rincian Barang Produksi <span class="text-danger">*</span></label>
+                        <div>
+                            <input type="file" id="ocr-input-prod" accept="image/*" capture="environment" style="display:none;" onchange="handleOCRImageSelected(this, 'prod')">
+                            <button type="button" class="btn-modern" style="background:#8b5cf6; color:#fff; padding:6px 12px; font-size:12px; display:inline-flex; align-items:center; gap:6px;" onclick="document.getElementById('ocr-input-prod').click()">
+                                <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Scan Tulisan Tangan
+                            </button>
+                        </div>
+                    </div>
                     <div class="scrollable-form-container">
                         <div style="display: grid; grid-template-columns: 3fr 1fr 1fr 2fr 40px; gap: 8px; margin-bottom: 5px;">
                             <label style="font-size: 12px; font-weight: 700; color: #2b3674;">Detail Barang</label>
@@ -1134,6 +1152,16 @@
                     </div>
 
                     <hr style="margin: 20px 0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                        <label style="font-weight: 700; color: #2b3674; margin-bottom: 0;">Rincian Barang BS <span class="text-danger">*</span></label>
+                        <div>
+                            <input type="file" id="ocr-input-bs" accept="image/*" capture="environment" style="display:none;" onchange="handleOCRImageSelected(this, 'bs')">
+                            <button type="button" class="btn-modern" style="background:#8b5cf6; color:#fff; padding:6px 12px; font-size:12px; display:inline-flex; align-items:center; gap:6px;" onclick="document.getElementById('ocr-input-bs').click()">
+                                <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Scan Tulisan Tangan
+                            </button>
+                        </div>
+                    </div>
 
                     <div class="scrollable-form-container">
                         <div style="display: grid; grid-template-columns: 3fr 1fr 2fr 40px; gap: 8px; margin-bottom: 5px;">
@@ -1933,7 +1961,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwi-XnNoMFYKYSnftrUB24hpgtD84pPwl42Y8Pv-Bxi7khUOyU8fwnP_2kIh7JbqZRIkA/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxxTTWqjtROLGSZAO_81DnlZkBC5AkE4wHF9MN3vECw52P46lP-ocUOK3tLbFeFBB7jaA/exec"; 
         
         // 2. Mesin Panggil Backend Tahan Banting (Anti-CORS & Anti-Crash)
         async function panggilBackend(actionName, payloadData) {
@@ -7957,6 +7985,163 @@
                   filterLaporanData();
               }
           }, 100);
+      }
+
+      // --- LOGIKA OCR TULISAN TANGAN DENGAN KOMPRESI CLIENT-SIDE ---
+      async function handleOCRImageSelected(fileInput, formType) {
+          const file = fileInput.files[0];
+          if (!file) return;
+
+          // Animasi Modal Loading
+          const modalAnim = document.getElementById('modal-success-anim');
+          const loaderContainer = document.getElementById('loader-icon-container');
+          const checkContainer = document.getElementById('success-check-container');
+          const titleText = document.getElementById('modal-title-text');
+          const descText = document.getElementById('modal-desc-text');
+          const docNumEl = document.getElementById('success-doc-number');
+          const btnOk = document.getElementById('btn-success-ok');
+
+          if (loaderContainer) loaderContainer.style.display = 'block';
+          if (checkContainer) checkContainer.style.display = 'none';
+          if (btnOk) btnOk.style.display = 'none';
+          if (titleText) titleText.textContent = "Membaca Tulisan Tangan...";
+          if (descText) descText.innerHTML = "Sedang mengenali teks tulisan tangan via AI. Mohon tunggu...";
+          if (docNumEl) docNumEl.textContent = "AI Scanning...";
+          if (modalAnim) modalAnim.style.display = 'flex';
+
+          try {
+              // 1. Kompresi gambar di browser agar transmisi < 150KB (super cepat)
+              const compressedBase64 = await compressImageForOCR(file, 1024, 0.7);
+
+              // 2. Kirim ke backend GAS
+              const res = await panggilBackend('recognizeHandwritingOCR', {
+                  base64Image: compressedBase64,
+                  jenisForm: formType
+              });
+
+              if (modalAnim) modalAnim.style.display = 'none';
+
+              if (res && res.success && Array.isArray(res.items) && res.items.length > 0) {
+                  populateOcrResultsToForm(res.items, formType);
+                  showDialog(`Berhasil mendeteksi <b>${res.items.length} baris barang</b> dari tulisan tangan! Silakan periksa kembali sebelum submit.`, "warning");
+              } else {
+                  throw new Error(res ? res.message : "Tidak ada teks yang dapat dikenali.");
+              }
+          } catch (err) {
+              if (modalAnim) modalAnim.style.display = 'none';
+              showDialog("Gagal OCR: " + err.message, "warning");
+          } finally {
+              fileInput.value = ""; // Reset file input
+          }
+      }
+
+      function compressImageForOCR(file, maxDimension, quality) {
+          return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                  const img = new Image();
+                  img.onload = () => {
+                      let width = img.width;
+                      let height = img.height;
+                      if (width > height) {
+                          if (width > maxDimension) {
+                              height = Math.round((height * maxDimension) / width);
+                              width = maxDimension;
+                          }
+                      } else {
+                          if (height > maxDimension) {
+                              width = Math.round((width * maxDimension) / height);
+                              height = maxDimension;
+                          }
+                      }
+                      const canvas = document.createElement('canvas');
+                      canvas.width = width;
+                      canvas.height = height;
+                      const ctx = canvas.getContext('2d');
+                      ctx.drawImage(img, 0, 0, width, height);
+                      resolve(canvas.toDataURL('image/jpeg', quality));
+                  };
+                  img.onerror = reject;
+                  img.src = e.target.result;
+              };
+              reader.onerror = reject;
+              reader.readAsDataURL(file);
+          });
+      }
+
+      function populateOcrResultsToForm(items, formType) {
+          let containerId = '';
+          let rowSelector = '';
+          let inputSearchClass = '';
+          let inputQtyClass = '';
+          let inputKetClass = '';
+
+          if (formType === 'prod') {
+              containerId = 'dynamic-rows-container';
+              rowSelector = '.barang-row-item';
+              inputSearchClass = '.input-barang-search';
+              inputQtyClass = '.input-qty-val';
+              inputKetClass = '.input-ket-val';
+          } else if (formType === 'bbk') {
+              containerId = 'dynamic-bbk-rows-container';
+              rowSelector = '.bbk-row-item';
+              inputSearchClass = '.bbk-barang-search';
+              inputQtyClass = '.bbk-qty-val';
+              inputKetClass = '.bbk-ket-val';
+          } else if (formType === 'bs') {
+              containerId = 'dynamic-bs-rows-container';
+              rowSelector = '.bs-row-item';
+              inputSearchClass = '.bs-barang-search';
+              inputQtyClass = '.bs-qty-val';
+              inputKetClass = '.bs-ket-val';
+          }
+
+          const container = document.getElementById(containerId);
+          if (!container) return;
+
+          items.forEach((item) => {
+              let rows = container.querySelectorAll(rowSelector);
+              let targetRow = rows[rows.length - 1];
+              let searchInput = targetRow.querySelector(inputSearchClass);
+
+              // Jika baris terakhir sudah terisi, tambahkan baris baru
+              if (searchInput && searchInput.value.trim() !== '') {
+                  forceAddRow(formType);
+                  rows = container.querySelectorAll(rowSelector);
+                  targetRow = rows[rows.length - 1];
+                  searchInput = targetRow.querySelector(inputSearchClass);
+              }
+
+              // Cocokkan dengan master barang lokal di browser
+              let namaBarangFinal = item.barang || '';
+              if (window.allMasterBarang && window.allMasterBarang.length > 0) {
+                  const query = String(item.barang || '').toUpperCase().trim();
+                  const found = window.allMasterBarang.find(r => {
+                      const kode = String(r[0] || '').toUpperCase();
+                      const nama = String(r[1] || '').toUpperCase();
+                      return kode === query || kode.includes(query) || nama.includes(query);
+                  });
+                  if (found) {
+                      namaBarangFinal = `${found[0]} - ${found[1]} - ${found[3] || '-'}`;
+                  }
+              }
+
+              if (searchInput) searchInput.value = namaBarangFinal;
+
+              const qtyInput = targetRow.querySelector(inputQtyClass);
+              if (qtyInput) qtyInput.value = item.qty || 0;
+
+              const ketInput = targetRow.querySelector(inputKetClass);
+              if (ketInput && item.keterangan) ketInput.value = String(item.keterangan).toUpperCase();
+
+              if (formType === 'prod') {
+                  updateQtyStokDisplay(searchInput);
+              }
+          });
+
+          if (formType === 'prod') {
+              recalculateAllStok();
+          }
       }
     </script>
 </body>
