@@ -1,5 +1,77 @@
 const MASTER_FILE_ID = '1vuHgFUcSOUzBonCF_w_e3j-sBYlQQy8o6clL4GmcuXQ';
 const PROD_FILE_ID = '1HsWvRkojtcvBz333BDBVXBLELIPMrAhf4UR10C3rML8';
+const GEMINI_API_KEY = 'AQ.Ab8RN6LU5v5WdtQwDsLPvLNO-k8fDchl0HXuNB9sOFIWMoWALg';
+
+function recognizeHandwritingOCR(base64Image, jenisForm) {
+  try {
+    if (!GEMINI_API_KEY || GEMINI_API_KEY === 'AQ.Ab8RN6LU5v5WdtQwDsLPvLNO-k8fDchl0HXuNB9sOFIWMoWALg') {
+      throw new Error("GEMINI_API_KEY belum disetel di backend!");
+    }
+
+    // Ambil sampel master barang sebagai referensi pencocokan AI
+    const masterRes = getMasterBarangData();
+    let referensiBarang = [];
+    if (masterRes && masterRes.success && masterRes.data) {
+      referensiBarang = masterRes.data.map(r => `${r[0]} | ${r[1]} | ${r[3]}`);
+    }
+    const sampleRef = referensiBarang.slice(0, 150).join("\n");
+
+    const systemPrompt = `Anda adalah asisten OCR pembaca tulisan tangan di lembar kerja pabrik.
+Tugas Anda membaca baris-baris catatan/tabel tulisan tangan pada foto dan mengubahnya menjadi JSON array murni.
+
+Contoh format output:
+[
+  {"barang": "KODE_ATAU_NAMA", "qty": 50, "keterangan": "KONDISI BAIK"}
+]
+
+ATURAN:
+1. Cocokkan barang tulisan tangan dengan daftar referensi berikut semirip mungkin:
+${sampleRef}
+2. "qty" wajib berupa integer/angka murni.
+3. Keterangan jika tidak ada isi dengan string kosong "".
+4. Balas HANYA teks JSON murni tanpa markdown, tanpa tanda petik tiga (\`\`\`), tanpa pembuka atau penutup tambahan.`;
+
+    const cleanBase64 = base64Image.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, "");
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+    const payload = {
+      contents: [{
+        parts: [
+          { text: systemPrompt },
+          {
+            inlineData: {
+              mimeType: "image/jpeg",
+              data: cleanBase64
+            }
+          }
+        ]
+      }],
+      generationConfig: {
+        temperature: 0.1,
+        responseMimeType: "application/json"
+      }
+    };
+
+    const response = UrlFetchApp.fetch(url, {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+
+    const result = JSON.parse(response.getContentText());
+    if (result.error) {
+      throw new Error(result.error.message || "Gagal memproses gambar melalui Gemini.");
+    }
+
+    const rawOutput = result.candidates[0].content.parts[0].text;
+    const parsedData = JSON.parse(rawOutput);
+
+    return { success: true, items: parsedData };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+}
 
 function doGet(e) {
   return HtmlService.createHtmlOutputFromFile('index')
@@ -1126,6 +1198,9 @@ function doPost(e) {
     }
     else if (action === 'saveBbkToSheet') {
       result = saveBbkToSheet(payload);
+    }
+    else if (action === 'recognizeHandwritingOCR') {
+      result = recognizeHandwritingOCR(payload.base64Image, payload.jenisForm);
     }
     else {
       throw new Error("Action '" + action + "' tidak terdaftar di router.");
