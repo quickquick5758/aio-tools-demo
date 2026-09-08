@@ -815,23 +815,13 @@
                                 <button class="btn-period" data-period="1year" onclick="setChartPeriod('1year', this)" style="border:none; background:transparent; color:#8f9bba; padding:6px 12px; border-radius:4px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">1 Tahun</button>
                             </div>
                         </div>
-                        <div class="chart-container">
-                            <div class="chart-grid">
-                                <div class="chart-line"></div><div class="chart-line"></div>
-                                <div class="chart-line"></div><div class="chart-line"></div>
-                                <div class="chart-line"></div>
-                            </div>
-                            <svg class="chart-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
-                                <path d="M0,80 Q10,60 25,70 T50,40 T75,50 T100,20" fill="none" stroke="#4318ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M0,80 Q10,60 25,70 T50,40 T75,50 T100,20 L100,100 L0,100 Z" fill="url(#grad1)" opacity="0.1"/>
-                                <path d="M0,90 Q15,85 30,60 T60,65 T80,35 T100,45" fill="none" stroke="#05cd99" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                                <defs>
-                                    <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" stop-color="#4318ff" stop-opacity="1" />
-                                        <stop offset="100%" stop-color="#4318ff" stop-opacity="0" />
-                                    </linearGradient>
-                                </defs>
+                        <div class="chart-container" style="position: relative; height: 260px; width: 100%; margin-top: 16px;">
+                            <!-- SVG Render Modern Minimalis (Gaya Line Chart Finance) -->
+                            <svg class="chart-svg" preserveAspectRatio="none" viewBox="0 0 100 100" style="position:absolute; inset:0; width:100%; height:calc(100% - 24px); overflow:visible;">
                             </svg>
+                            <!-- Baris Penanda Tanggal Sumbu X di Bawah Chart -->
+                            <div id="dashboard-chart-x-labels" style="position: absolute; bottom: 0; left: 0; right: 0; height: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #8f9bba; font-weight: 700;">
+                            </div>
                         </div>
                     </div>
 
@@ -2388,8 +2378,9 @@
             else if (period === '1year') days = 365;
 
             const today = new Date();
-            let chartValues = [];
+            let chartData = [];
             let maxVal = 0;
+            let peakIndex = 0;
 
             // Kumpulkan Data Terbalik (Dari hari kebelakang -> Maju ke hari ini)
             for (let i = days - 1; i >= 0; i--) {
@@ -2402,46 +2393,116 @@
                 const ds = `${yyyy}-${mm}-${dd}`;
                 
                 let val = window.dashboardChartData[ds] || 0;
-                chartValues.push(val);
-                if (val > maxVal) maxVal = val;
-            }
+                chartData.push({ dateStr: ds, dd: dd, val: val });
 
-            // Cegah error pembagian 0 jika data kosong
-            if (maxVal === 0) maxVal = 10; 
-
-            // Algoritma Generator Gambar SVG Kurva
-            let xStep = 100 / (days === 1 ? 1 : days - 1);
-            let pathD = "";
-            let pathFill = "";
-
-            for (let i = 0; i < days; i++) {
-                let x = i * xStep;
-                let y = 90 - (chartValues[i] / maxVal * 80); // Y terbalik: 10(Atas) -> 90(Bawah)
-                
-                if (i === 0) {
-                    pathD += `M${x},${y} `;
-                    pathFill += `M${x},${y} `;
-                } else {
-                    pathD += `L${x},${y} `;
-                    pathFill += `L${x},${y} `;
+                if (val > maxVal) {
+                    maxVal = val;
+                    peakIndex = chartData.length - 1;
                 }
             }
 
-            // Tutup blok path untuk membuat arsiran gradien shadow di bawah grafik
-            pathFill += `L100,100 L0,100 Z`;
+            // Cegah pembagian 0 jika database masih kosong
+            if (maxVal === 0) maxVal = 100;
 
+            const totalPoints = chartData.length;
+            const xStep = 100 / (totalPoints <= 1 ? 1 : totalPoints - 1);
+            const baselineY = 92; // Garis dasar terbawah grafik
+            const topMarginY = 22; // Menyisakan ruang untuk badge melayang di atas titik tertinggi
+
+            let points = [];
+            let pathD = "";
+            let pathFillD = "";
+            let dottedLinesSvg = "";
+            let circlesSvg = "";
+
+            chartData.forEach((pt, i) => {
+                let x = i * xStep;
+                // Skala tinggi kurva: nilai tertinggi berada di topMarginY, terendah di baselineY
+                let y = baselineY - ((pt.val / maxVal) * (baselineY - topMarginY));
+                points.push({ x, y, val: pt.val, dd: pt.dd });
+
+                if (i === 0) {
+                    pathD += `M ${x} ${y} `;
+                    pathFillD += `M ${x} ${baselineY} L ${x} ${y} `;
+                } else {
+                    pathD += `L ${x} ${y} `;
+                    pathFillD += `L ${x} ${y} `;
+                }
+
+                // 1. Garis Dotted Vertikal (Drop-Lines) seperti di gambar acuan
+                dottedLinesSvg += `<line x1="${x}" y1="${y}" x2="${x}" y2="${baselineY}" stroke="#94a3b8" stroke-width="0.7" stroke-dasharray="1.5,2" opacity="0.45" />`;
+
+                // 2. Lingkaran Node Putih dengan Ring Biru Lembut
+                circlesSvg += `<circle cx="${x}" cy="${y}" r="1.5" fill="#ffffff" stroke="#0284c7" stroke-width="0.9" />`;
+            });
+
+            // Tutup area arsiran bawah
+            pathFillD += `L 100 ${baselineY} Z`;
+
+            // 3. Floating Peak Badge (Kapsul Nilai Melayang seperti 405.00 pada contoh gambar)
+            let peakBadgeSvg = "";
+            if (points.length > 0) {
+                const peakPt = points[peakIndex];
+                const badgeText = Number(peakPt.val).toLocaleString('id-ID');
+                const badgeWidth = Math.max(14, badgeText.length * 2.6);
+                const badgeHeight = 7.5;
+                const badgeX = Math.max(badgeWidth / 2 + 1, Math.min(100 - badgeWidth / 2 - 1, peakPt.x));
+                const badgeY = peakPt.y - 12;
+
+                peakBadgeSvg = `
+                    <g style="filter: drop-shadow(0 2px 4px rgba(43,54,116,0.18));">
+                        <!-- Kotak Kapsul Badge -->
+                        <rect x="${badgeX - (badgeWidth / 2)}" y="${badgeY}" width="${badgeWidth}" height="${badgeHeight}" rx="3.5" fill="#ffffff" stroke="#e0e5f2" stroke-width="0.6"/>
+                        <!-- Segitiga Panah Menunjuk ke Node -->
+                        <polygon points="${badgeX - 1.8},${badgeY + badgeHeight} ${badgeX + 1.8},${badgeY + badgeHeight} ${badgeX},${badgeY + badgeHeight + 2}" fill="#ffffff"/>
+                        <!-- Nilai Text Badge -->
+                        <text x="${badgeX}" y="${badgeY + 5.2}" font-size="3.5" font-family="'Arial', sans-serif" font-weight="800" fill="#2b3674" text-anchor="middle">${badgeText}</text>
+                    </g>
+                `;
+            }
+
+            // Render ke Elemen SVG
             const svgContainer = document.querySelector('.chart-svg');
             if (svgContainer) {
                 svgContainer.innerHTML = `
                     <defs>
-                        <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#4318ff" stop-opacity="1" />
-                            <stop offset="100%" stop-color="#4318ff" stop-opacity="0" />
+                        <!-- Gradien Halus dan Tipis Menyesuaikan Gambar -->
+                        <linearGradient id="thinFinanceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.32" />
+                            <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.08" />
+                            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0" />
                         </linearGradient>
                     </defs>
-                    <path d="${pathD}" fill="none" stroke="#4318ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="${pathFill}" fill="url(#grad1)" opacity="0.1"/>
+
+                    <!-- Garis Dotted Drop-Lines -->
+                    ${dottedLinesSvg}
+
+                    <!-- Area Gradien Tipis -->
+                    <path d="${pathFillD}" fill="url(#thinFinanceGradient)" />
+
+                    <!-- Garis Utama (Line Stroke Bersih) -->
+                    <path d="${pathD}" fill="none" stroke="#0284c7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+
+                    <!-- Titik Koordinat Bulat (Nodes) -->
+                    ${circlesSvg}
+
+                    <!-- Badge Nilai Puncak (Finance Badge) -->
+                    ${peakBadgeSvg}
                 `;
+            }
+
+            // Render Label Sumbu X (Tanggal / Hari di Bawah Grafik)
+            const xLabelsContainer = document.getElementById('dashboard-chart-x-labels');
+            if (xLabelsContainer) {
+                let xLabelsHtml = '';
+                let stepLabel = days > 14 ? (days > 30 ? 30 : 5) : 1;
+                
+                chartData.forEach((pt, idx) => {
+                    if (idx % stepLabel === 0 || idx === totalPoints - 1) {
+                        xLabelsHtml += `<span>${pt.dd}</span>`;
+                    }
+                });
+                xLabelsContainer.innerHTML = xLabelsHtml;
             }
         }
 
@@ -4543,7 +4604,9 @@
                 const nama = (row[1] || '').toUpperCase();
                 const warna = (row[3] || '-').toUpperCase();
 
-                div.innerHTML = `<span><b>${kode} - ${nama} - ${warna}</b></span>`;
+                const rawBbkText = `${kode} - ${nama} - ${warna}`;
+                const highlightedBbkText = highlightSearchBadge(rawBbkText, keyword);
+                div.innerHTML = `<div style="font-size:13px; color:#2b3674;">${highlightedBbkText}</div>`;
                 div.onmouseover = () => div.style.backgroundColor = '#f4f7fe';
                 div.onmouseout = () => div.style.backgroundColor = '#fff';
                 
@@ -6278,6 +6341,17 @@
             });
         }
 
+        // Helper untuk menandai kata kunci pencarian dengan Bold-Badge yang kontras dan fokus
+        function highlightSearchBadge(fullText, queryStr) {
+            if (!queryStr || !queryStr.trim()) return `<span>${fullText}</span>`;
+            const keywords = queryStr.trim().split(/\s+/).filter(Boolean);
+            if (keywords.length === 0) return `<span>${fullText}</span>`;
+            
+            // Regex case-insensitive untuk semua pecahan kata kunci
+            const regex = new RegExp(`(${keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+            return fullText.replace(regex, '<span style="background:#e0e5ff; color:#4318ff; padding:1px 6px; border-radius:4px; font-weight:800; border:1px solid #c7d2fe; box-shadow:0 1px 3px rgba(67,24,255,0.15);">$1</span>');
+        }
+
         let debounceTimer;
         function debouncedHandleBarangInput(input) {
             clearTimeout(debounceTimer);
@@ -6353,7 +6427,9 @@
                 const nama = (row[1] || '').toUpperCase();
                 const warna = (row[3] || '-').toUpperCase();
                 
-                div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%;"><span><b>${kode} - ${nama} - ${warna}</b></span></div>`;
+                const rawBarangText = `${kode} - ${nama} - ${warna}`;
+                const highlightedBadgeText = highlightSearchBadge(rawBarangText, keyword);
+                div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%; font-size:13px; color:#2b3674;"><span>${highlightedBadgeText}</span></div>`;
                 
                 div.onmouseover = () => div.style.backgroundColor = '#f4f7fe';
                 div.onmouseout = () => div.style.backgroundColor = '#fff';
@@ -6608,7 +6684,9 @@
                 const nama = (row[1] || '').toUpperCase();
                 const warna = (row[3] || '-').toUpperCase();
                 
-                div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%;"><span><b>${kode} - ${nama} - ${warna}</b></span></div>`;
+                const rawBsText = `${kode} - ${nama} - ${warna}`;
+                const highlightedBsText = highlightSearchBadge(rawBsText, keyword);
+                div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%; font-size:13px; color:#2b3674;"><span>${highlightedBsText}</span></div>`;
                 
                 div.onmouseover = () => div.style.backgroundColor = '#f4f7fe';
                 div.onmouseout = () => div.style.backgroundColor = '#fff';
