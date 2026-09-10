@@ -460,10 +460,27 @@
        @media print {
         @page { 
             size: A4 portrait; 
-            margin: 10mm 12mm 12mm 12mm; 
+            margin: 10mm 12mm 15mm 12mm; 
         }
 
-        /* Buka kunci tinggi layar dan scroll body agar bisa lebih dari 1 halaman */
+        /* 1. HILANGKAN SEMUA ELEMEN LAIN DENGAN DISPLAY: NONE AGAR TIDAK MEMAKAN RUANG KOSONG DI ATAS */
+        .sidebar, 
+        .header, 
+        .footer-ticker, 
+        .sidebar-overlay, 
+        .view-section, 
+        #loginOverlay, 
+        #modal-intip, 
+        #modal-success-anim, 
+        #custom-dialog,
+        #view-document-open button, 
+        #view-document-open .btn,
+        #view-document-open .print-no,
+        #view-document-open h4 { 
+            display: none !important; 
+        }
+
+        /* 2. RESET CONTAINER BODY & WRAPPER AGAR DOKUMEN DIMULAI DARI PALING ATAS */
         html, body {
             height: auto !important;
             min-height: 100% !important;
@@ -475,13 +492,23 @@
             color: black !important;
         }
 
-        body * { visibility: hidden !important; }
-        #view-document-open, #view-document-open * { visibility: visible !important; }
+        body, .main-wrapper, .content-body {
+            display: block !important;
+            position: static !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            height: auto !important;
+            min-height: auto !important;
+            overflow: visible !important;
+            width: 100% !important;
+        }
 
-        /* Ubah modal overlay menjadi dokumen alur normal statis agar memecah halaman otomatis */
+        /* 3. DOKUMEN CETAK TAMPIL PENUH & MULAI DI POSISI NOL */
         #view-document-open {
             position: static !important;
             display: block !important;
+            visibility: visible !important;
             width: 100% !important; 
             max-width: 100% !important; 
             height: auto !important;
@@ -492,6 +519,10 @@
             background: white !important;
             overflow: visible !important;
             box-sizing: border-box !important;
+        }
+
+        #view-document-open * {
+            visibility: visible !important;
         }
         
         #view-document-open .input-wrapper {
@@ -521,27 +552,44 @@
             box-sizing: border-box !important;
         }
 
-        /* HEADER INFO BOXES (Pas di lebar kertas) */
+        /* 4. HEADER & INFO BOX */
+        #view-document-open .print-header { 
+            display: block !important; 
+            text-align: center; 
+            margin-top: 0 !important;
+            margin-bottom: 12px !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+        #view-document-open .print-header h1 { 
+            font-size: 14pt !important; 
+            font-weight: bold; 
+            border-bottom: 2px solid black; 
+            padding-bottom: 4px; 
+            margin: 0;
+        }
+
         #view-document-open .info-box-grid {
             display: flex !important; 
             flex-wrap: wrap !important; 
             gap: 6px !important; 
-            margin-bottom: 15px !important;
+            margin-bottom: 12px !important;
             width: 100% !important;
             box-sizing: border-box !important;
             page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
         #view-document-open .info-box {
             flex: 1 1 18% !important; 
             min-width: 0 !important; 
             border: 1px solid #000 !important;
-            padding: 5px 8px !important; 
+            padding: 4px 6px !important; 
             border-radius: 0 !important; 
             box-shadow: none !important;
             box-sizing: border-box !important;
         }
         
-        /* TABLE AUTO FIT (A4 RATIO TETAP DI DALAM BATAS KERTAS) */
+        /* 5. TABEL UTAMA */
         #view-document-open .table-thin {
             width: 100% !important; 
             max-width: 100% !important;
@@ -552,28 +600,26 @@
             page-break-inside: auto !important;
         }
 
-        /* Ulangi header tabel di setiap lembar halaman baru */
         #view-document-open .table-thin thead {
             display: table-header-group !important;
         }
         
-        /* Cegah satu baris tabel terbelah di tengah halaman */
         #view-document-open .table-thin tr {
             page-break-inside: avoid !important;
+            break-inside: avoid !important;
             page-break-after: auto !important;
         }
 
-        /* Border tegas dan word-wrap agar teks panjang tidak meluber ke kanan */
         #view-document-open .table-thin th, 
         #view-document-open .table-thin td {
-            font-size: 9pt !important;
+            font-size: 8.5pt !important;
             white-space: normal !important; 
             word-wrap: break-word !important; 
             overflow-wrap: break-word !important;
             word-break: break-word !important;
             border: 1px solid black !important;
             color: black !important;
-            padding: 4px 6px !important;
+            padding: 3px 5px !important;
             vertical-align: middle !important;
             box-sizing: border-box !important;
         }
@@ -586,43 +632,28 @@
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
-
-        #view-document-open .print-header { 
-            display: block !important; 
-            text-align: center; 
-            margin-bottom: 12px;
-            page-break-inside: avoid !important;
-        }
-        #view-document-open .print-header h1 { 
-            font-size: 15pt !important; 
-            font-weight: bold; 
-            border-bottom: 2px solid black; 
-            padding-bottom: 4px; 
-            margin: 0;
-        }
         
-        /* Tanda tangan tidak terpotong di tepi bawah */
+        /* 6. TANDA TANGAN (MENGGUNAKAN DISPLAY: TABLE AGAR ANTI-TERPOTONG & UTUH) */
         #view-document-open .print-signatures { 
-            display: flex !important; 
-            justify-content: space-around !important; 
-            margin-top: 30px !important; 
-            text-align: center; 
-            page-break-inside: avoid !important;
+            display: table !important; 
             width: 100% !important;
+            table-layout: fixed !important;
+            margin-top: 25px !important; 
+            margin-bottom: 10px !important;
+            page-break-inside: avoid !important; 
+            break-inside: avoid !important; /* Standar browser modern Chrome/Edge */
+            box-sizing: border-box !important;
         }
         #view-document-open .print-signatures .sig-box { 
-            width: 28%; 
-            font-size: 9.5pt;
-            font-weight: bold; 
+            display: table-cell !important;
+            width: 33.33% !important; 
+            text-align: center !important;
+            vertical-align: top !important;
+            font-size: 9.5pt !important;
+            font-weight: bold !important; 
             color: black !important;
-        }
-        
-        /* Sembunyikan tombol UI saat print */
-        #view-document-open button, 
-        #view-document-open .btn,
-        #view-document-open .print-no,
-        #view-document-open h4 { 
-            display: none !important; 
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
     }
     </style>
