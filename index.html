@@ -940,11 +940,11 @@
                             </div>
                         </div>
                         <div class="chart-container" style="position: relative; height: 260px; width: 100%; margin-top: 16px;">
-                            <!-- SVG Render Modern Minimalis (Gaya Line Chart Finance) -->
-                            <svg class="chart-svg" preserveAspectRatio="none" viewBox="0 0 100 100" style="position:absolute; inset:0; width:100%; height:calc(100% - 24px); overflow:visible;">
+                            <!-- SVG Render Proporsional Pixel-Exact (Bebas Gepeng/Distorsi) -->
+                            <svg class="chart-svg" style="position:absolute; inset:0; width:100%; height:calc(100% - 28px); overflow:visible; display:block;">
                             </svg>
-                            <!-- Baris Penanda Tanggal Sumbu X di Bawah Chart -->
-                            <div id="dashboard-chart-x-labels" style="position: absolute; bottom: 0; left: 0; right: 0; height: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #8f9bba; font-weight: 700;">
+                            <!-- Baris Penanda Tanggal Sumbu X Presisi di Bawah Garis Drop-Line -->
+                            <div id="dashboard-chart-x-labels" style="position: absolute; bottom: 0; left: 24px; right: 24px; height: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #8f9bba; font-weight: 700;">
                             </div>
                         </div>
                     </div>
@@ -2525,13 +2525,26 @@
                 }
             }
 
-            // Cegah pembagian 0 jika database masih kosong
             if (maxVal === 0) maxVal = 100;
 
+            const svgContainer = document.querySelector('.chart-svg');
+            if (!svgContainer) return;
+
+            // MENGGUNAKAN PIXEL AKTUAL AGAR LINGKARAN & TEKS BULAT SEMPURNA (TIDAK GEPENG)
+            const rect = svgContainer.getBoundingClientRect();
+            const width = Math.max(300, Math.round(rect.width || svgContainer.clientWidth || 800));
+            const height = Math.max(160, Math.round(rect.height || 220));
+
+            // Set viewBox persis sesuai pixel container sehingga aspek rasio selalu 1:1
+            svgContainer.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
             const totalPoints = chartData.length;
-            const xStep = 100 / (totalPoints <= 1 ? 1 : totalPoints - 1);
-            const baselineY = 92; // Garis dasar terbawah grafik
-            const topMarginY = 22; // Menyisakan ruang untuk badge melayang di atas titik tertinggi
+            const sidePadding = 24; // Ruang sisi kiri & kanan
+            const effectiveWidth = width - (sidePadding * 2);
+            const xStep = totalPoints <= 1 ? 0 : (effectiveWidth / (totalPoints - 1));
+            
+            const baselineY = height - 12; // Garis dasar bawah
+            const topMarginY = 48; // Ruang atas untuk kapsul badge melayang
 
             let points = [];
             let pathD = "";
@@ -2540,8 +2553,7 @@
             let circlesSvg = "";
 
             chartData.forEach((pt, i) => {
-                let x = i * xStep;
-                // Skala tinggi kurva: nilai tertinggi berada di topMarginY, terendah di baselineY
+                let x = sidePadding + (i * xStep);
                 let y = baselineY - ((pt.val / maxVal) * (baselineY - topMarginY));
                 points.push({ x, y, val: pt.val, dd: pt.dd });
 
@@ -2553,69 +2565,63 @@
                     pathFillD += `L ${x} ${y} `;
                 }
 
-                // 1. Garis Dotted Vertikal (Drop-Lines) seperti di gambar acuan
-                dottedLinesSvg += `<line x1="${x}" y1="${y}" x2="${x}" y2="${baselineY}" stroke="#94a3b8" stroke-width="0.7" stroke-dasharray="1.5,2" opacity="0.45" />`;
+                // 1. Garis Putus-putus Drop-Line Tegak Lurus Presisi
+                dottedLinesSvg += `<line x1="${x}" y1="${y}" x2="${x}" y2="${baselineY}" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.4" />`;
 
-                // 2. Lingkaran Node Putih dengan Ring Biru Lembut
-                circlesSvg += `<circle cx="${x}" cy="${y}" r="1.5" fill="#ffffff" stroke="#0284c7" stroke-width="0.9" />`;
+                // 2. Titik Lingkaran Node Bulat Normal (Radius 4px proporsional)
+                circlesSvg += `<circle cx="${x}" cy="${y}" r="4" fill="#ffffff" stroke="#0284c7" stroke-width="2" />`;
             });
 
-            // Tutup area arsiran bawah
-            pathFillD += `L 100 ${baselineY} Z`;
+            pathFillD += `L ${points[points.length - 1].x} ${baselineY} Z`;
 
-            // 3. Floating Peak Badge (Kapsul Nilai Melayang seperti 405.00 pada contoh gambar)
+            // 3. Floating Peak Badge Normal (Bebas Distorsi Gepeng)
             let peakBadgeSvg = "";
-            if (points.length > 0) {
+            if (points.length > 0 && maxVal > 0) {
                 const peakPt = points[peakIndex];
                 const badgeText = Number(peakPt.val).toLocaleString('id-ID');
-                const badgeWidth = Math.max(14, badgeText.length * 2.6);
-                const badgeHeight = 7.5;
-                const badgeX = Math.max(badgeWidth / 2 + 1, Math.min(100 - badgeWidth / 2 - 1, peakPt.x));
-                const badgeY = peakPt.y - 12;
+                const badgeWidth = Math.max(52, badgeText.length * 8.5 + 22);
+                const badgeHeight = 26;
+                const badgeX = Math.max(badgeWidth / 2 + 8, Math.min(width - badgeWidth / 2 - 8, peakPt.x));
+                const badgeY = Math.max(8, peakPt.y - 36);
 
                 peakBadgeSvg = `
-                    <g style="filter: drop-shadow(0 2px 4px rgba(43,54,116,0.18));">
-                        <!-- Kotak Kapsul Badge -->
-                        <rect x="${badgeX - (badgeWidth / 2)}" y="${badgeY}" width="${badgeWidth}" height="${badgeHeight}" rx="3.5" fill="#ffffff" stroke="#e0e5f2" stroke-width="0.6"/>
-                        <!-- Segitiga Panah Menunjuk ke Node -->
-                        <polygon points="${badgeX - 1.8},${badgeY + badgeHeight} ${badgeX + 1.8},${badgeY + badgeHeight} ${badgeX},${badgeY + badgeHeight + 2}" fill="#ffffff"/>
-                        <!-- Nilai Text Badge -->
-                        <text x="${badgeX}" y="${badgeY + 5.2}" font-size="3.5" font-family="'Arial', sans-serif" font-weight="800" fill="#2b3674" text-anchor="middle">${badgeText}</text>
+                    <g style="filter: drop-shadow(0 3px 6px rgba(43,54,116,0.16));">
+                        <!-- Kapsul Badge Normal -->
+                        <rect x="${badgeX - (badgeWidth / 2)}" y="${badgeY}" width="${badgeWidth}" height="${badgeHeight}" rx="13" fill="#ffffff" stroke="#e0e5f2" stroke-width="1"/>
+                        <!-- Segitiga Penunjuk ke Node -->
+                        <polygon points="${badgeX - 5},${badgeY + badgeHeight} ${badgeX + 5},${badgeY + badgeHeight} ${badgeX},${badgeY + badgeHeight + 5}" fill="#ffffff"/>
+                        <!-- Teks Nilai Normal, Tajam dan Tegak -->
+                        <text x="${badgeX}" y="${badgeY + 17}" font-size="12" font-family="'Arial', sans-serif" font-weight="800" fill="#2b3674" text-anchor="middle">${badgeText}</text>
                     </g>
                 `;
             }
 
-            // Render ke Elemen SVG
-            const svgContainer = document.querySelector('.chart-svg');
-            if (svgContainer) {
-                svgContainer.innerHTML = `
-                    <defs>
-                        <!-- Gradien Halus dan Tipis Menyesuaikan Gambar -->
-                        <linearGradient id="thinFinanceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.32" />
-                            <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.08" />
-                            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0" />
-                        </linearGradient>
-                    </defs>
+            svgContainer.innerHTML = `
+                <defs>
+                    <linearGradient id="thinFinanceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.30" />
+                        <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.06" />
+                        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0" />
+                    </linearGradient>
+                </defs>
 
-                    <!-- Garis Dotted Drop-Lines -->
-                    ${dottedLinesSvg}
+                <!-- Dotted Drop-Lines -->
+                ${dottedLinesSvg}
 
-                    <!-- Area Gradien Tipis -->
-                    <path d="${pathFillD}" fill="url(#thinFinanceGradient)" />
+                <!-- Arsiran Gradien Halus -->
+                <path d="${pathFillD}" fill="url(#thinFinanceGradient)" />
 
-                    <!-- Garis Utama (Line Stroke Bersih) -->
-                    <path d="${pathD}" fill="none" stroke="#0284c7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                <!-- Garis Tren Utama (Stroke Ramping & Bersih 2px) -->
+                <path d="${pathD}" fill="none" stroke="#0284c7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
 
-                    <!-- Titik Koordinat Bulat (Nodes) -->
-                    ${circlesSvg}
+                <!-- Titik-titik Lingkaran Bulat Normal -->
+                ${circlesSvg}
 
-                    <!-- Badge Nilai Puncak (Finance Badge) -->
-                    ${peakBadgeSvg}
-                `;
-            }
+                <!-- Badge Kapsul Puncak -->
+                ${peakBadgeSvg}
+            `;
 
-            // Render Label Sumbu X (Tanggal / Hari di Bawah Grafik)
+            // Render Tanggal Sumbu X di Bawah Garis
             const xLabelsContainer = document.getElementById('dashboard-chart-x-labels');
             if (xLabelsContainer) {
                 let xLabelsHtml = '';
@@ -2629,6 +2635,14 @@
                 xLabelsContainer.innerHTML = xLabelsHtml;
             }
         }
+
+        // Listener responsif agar saat ukuran layar/jendela berubah grafik otomatis disesuaikan tanpa distorsi
+        window.addEventListener('resize', () => {
+            const dashView = document.getElementById('view-dashboard');
+            if (dashView && dashView.classList.contains('active')) {
+                updateDashboardChart();
+            }
+        });
 
         async function switchView(viewName, element) {
             // Tutup sidebar otomatis di mobile setelah klik menu
