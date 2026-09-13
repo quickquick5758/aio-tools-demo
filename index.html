@@ -40,25 +40,30 @@
         .sidebar-menu { padding: 24px; }
         .menu-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; display: block; color: #a3aed1; }
         
-        /* Layout Item Menu Utama - Dibuat Lebih Ringkas & Compact */
-        .menu-item { display: flex; align-items: center; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #8f9bba; margin-bottom: 4px; transition: all 0.3s ease; cursor: pointer; font-size: 14px; position: relative; }
+        /* Layout Item Menu Utama - Garis Halus Modern Sesuai Gambar 1 */
+        .sidebar-menu nav > .menu-item, 
+        .sidebar-menu nav > .menu-group {
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+        }
+        .menu-item { display: flex; align-items: center; padding: 9px 12px; border-radius: 6px; text-decoration: none; color: #8f9bba; transition: all 0.25s ease; cursor: pointer; font-size: 13.5px; position: relative; }
         .menu-item svg { width: 18px; height: 18px; margin-right: 12px; }
-        .menu-item:hover { color: #4318ff; background-color: #f4f7fe; }
-        .menu-item.active { background-color: #4318ff; color: #ffffff; box-shadow: 0 2px 10px rgba(67,24,255,0.3); border-left: 4px solid #2b3674; }
+        .menu-item:hover { color: #4318ff; background-color: #f8fafc; }
+        .menu-item.active { background-color: #4318ff; color: #ffffff; box-shadow: 0 4px 12px rgba(67,24,255,0.25); border-left: 4px solid #1e1b4b; }
 
         .has-submenu { cursor: pointer; justify-content: space-between; }
         .menu-item-content { display: flex; align-items: center; }
         .chevron { width: 14px; height: 14px; transition: transform 0.3s ease; }
         
-        /* Tree Line Styling untuk Container Submenu */
-        .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding-left: 32px; position: relative; }
-        .submenu::before { content: ''; position: absolute; left: 18px; top: 0; bottom: 18px; width: 1px; background-color: #d1d5db; }
-        .submenu.open { max-height: 600px; }
+        /* Tree Line Styling & Garis Halus Submenu */
+        .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding-left: 28px; position: relative; }
+        .submenu::before { content: ''; position: absolute; left: 16px; top: 0; bottom: 12px; width: 1px; background-color: #e2e8f0; }
+        .submenu.open { max-height: 600px; padding-bottom: 4px; }
         
-        /* Submenu Item dengan Garis Horizontal Tree Line */
-        .submenu-item { display: block; padding: 8px 12px !important; color: #8f9bba; text-decoration: none; font-size: 13.5px; margin-bottom: 2px; border-radius: 6px; transition: all 0.3s ease; position: relative; }
-        .submenu-item::before { content: ''; position: absolute; left: -14px; top: 17px; width: 10px; height: 1px; background-color: #d1d5db; }
-        .submenu-item:hover { color: #4318ff; background-color: #f4f7fe; }
+        .submenu-item { display: block; padding: 7px 12px !important; color: #8f9bba; text-decoration: none; font-size: 13px; margin-bottom: 2px; border-radius: 4px; transition: all 0.25s ease; position: relative; border-bottom: 1px dashed #f1f5f9; }
+        .submenu-item::before { content: ''; position: absolute; left: -12px; top: 15px; width: 8px; height: 1px; background-color: #cbd5e1; }
+        .submenu-item:hover { color: #4318ff; background-color: #f8fafc; }
 
         /* Override style inline untuk sub-submenu / nested menu */
         .submenu .menu-item { padding-left: 12px !important; margin-bottom: 2px; }
@@ -846,6 +851,20 @@
                       <a href="#" class="submenu-item" onclick="switchView('summary', this)">Summary</a>
                   </div>
               </div>
+
+              <!-- KHUSUS MENU OPERATOR PRODUKSI -->
+              <a class="menu-item font-bold" id="menu-op-dashboard" style="display:none;" onclick="switchView('dashboard-operator', this)">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z"></path></svg>
+                  Dashboard Pribadi
+              </a>
+              <a class="menu-item font-bold" id="menu-op-input-baru" style="display:none; color:#10b981;" onclick="clearForm(); switchView('input-baru', this)">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                  + Input Baru
+              </a>
+              <a class="menu-item font-bold" id="menu-op-summary" style="display:none;" onclick="switchView('summary', this)">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                  Summary Rapor
+              </a>
             </nav>
         </div>
     </aside>
@@ -1004,6 +1023,116 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.5 DASHBOARD KHUSUS OPERATOR PRODUKSI (SESUAI GAMBAR 2) -->
+            <div id="view-dashboard-operator" class="view-section">
+                <!-- Baris Atas: 4 Stat Output & Jam Digital Realtime -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <div class="card" style="padding: 16px; border-radius: 6px; display: flex; flex-direction: column; justify-content: center;">
+                        <span style="font-size: 11.5px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Output Hari Ini</span>
+                        <h3 id="op-stat-today" style="font-size: 24px; color: #05cd99; font-weight: 800; margin-top: 4px;">0 <span style="font-size: 13px; font-weight: 500; color: #8f9bba;">Pcs</span></h3>
+                        <span id="op-stat-today-rp" style="font-size: 11px; color: #8f9bba; font-weight: 700;">Rp 0</span>
+                    </div>
+                    <div class="card" style="padding: 16px; border-radius: 6px; display: flex; flex-direction: column; justify-content: center;">
+                        <span style="font-size: 11.5px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Output Minggu Ini</span>
+                        <h3 id="op-stat-week" style="font-size: 24px; color: #4318ff; font-weight: 800; margin-top: 4px;">0 <span style="font-size: 13px; font-weight: 500; color: #8f9bba;">Pcs</span></h3>
+                        <span id="op-stat-week-rp" style="font-size: 11px; color: #8f9bba; font-weight: 700;">Rp 0</span>
+                    </div>
+                    <div class="card" style="padding: 16px; border-radius: 6px; display: flex; flex-direction: column; justify-content: center;">
+                        <span style="font-size: 11.5px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Output Bulan Ini</span>
+                        <h3 id="op-stat-month" style="font-size: 24px; color: #2b3674; font-weight: 800; margin-top: 4px;">0 <span style="font-size: 13px; font-weight: 500; color: #8f9bba;">Pcs</span></h3>
+                        <span id="op-stat-month-rp" style="font-size: 11px; color: #05cd99; font-weight: 800;">Rp 0</span>
+                    </div>
+                    <div class="card" style="padding: 16px; border-radius: 6px; background: linear-gradient(135deg, #4318ff 0%, #7b61ff 100%); color: #fff; display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                        <span style="font-size: 11px; color: #e0e5ff; font-weight: 700; text-transform: uppercase;">Waktu Server Sekarang</span>
+                        <h2 id="op-live-clock" style="font-size: 24px; font-weight: 900; margin: 4px 0;">--:--:--</h2>
+                        <span id="op-live-date" style="font-size: 11.5px; color: #e0e5ff; font-weight: 600;">--</span>
+                    </div>
+                </div>
+
+                <!-- Baris Tengah: Grafik Statistik Kerja & Target Donut Meter -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px;">
+                    <!-- Grafik Batang Output 7 Hari Terakhir -->
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <div>
+                                <h3 class="text-secondary font-bold" style="font-size: 16px; margin-bottom: 2px;">Statistik Output Kerja (7 Hari Terakhir)</h3>
+                                <span style="font-size: 11.5px; color: #8f9bba;">Satuan dalam Pcs</span>
+                            </div>
+                            <span class="badge" style="background:#e0e5ff; color:#4318ff; font-weight:800; font-size:11px; padding:4px 10px;">Produksi Saya</span>
+                        </div>
+                        <div id="op-bar-chart-container" style="position: relative; height: 230px; width: 100%;">
+                            <svg id="op-bar-chart-svg" style="width: 100%; height: 200px; overflow: visible;"></svg>
+                            <div id="op-bar-chart-x" style="display: flex; justify-content: space-between; font-size: 10px; color: #8f9bba; font-weight: 700; margin-top: 6px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 2 Circular Progress Donut Meters (Target Harian & Kehadiran Bulan Ini) -->
+                    <div class="card" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <h3 class="text-secondary font-bold" style="font-size: 16px; margin-bottom: 12px;">Pencapaian & Kehadiran</h3>
+                        <div style="display: flex; justify-content: space-around; align-items: center; text-align: center;">
+                            <!-- Meter 1: Target UMR Harian -->
+                            <div>
+                                <div style="position: relative; width: 95px; height: 95px; margin: 0 auto 8px;">
+                                    <svg viewBox="0 0 36 36" style="width: 100%; height: 100%;">
+                                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f4f7fe" stroke-width="3.8"/>
+                                        <path id="op-meter-target" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#4318ff" stroke-width="3.8" stroke-dasharray="0, 100" stroke-linecap="round"/>
+                                    </svg>
+                                    <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #2b3674;" id="op-pct-target">0%</div>
+                                </div>
+                                <span style="font-size: 11px; font-weight: 700; color: #2b3674; display: block;">Target Harian</span>
+                                <span style="font-size: 9.5px; color: #8f9bba;">vs Rp 110.960</span>
+                            </div>
+                            <!-- Meter 2: Kehadiran HK -->
+                            <div>
+                                <div style="position: relative; width: 95px; height: 95px; margin: 0 auto 8px;">
+                                    <svg viewBox="0 0 36 36" style="width: 100%; height: 100%;">
+                                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f4f7fe" stroke-width="3.8"/>
+                                        <path id="op-meter-absen" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#05cd99" stroke-width="3.8" stroke-dasharray="0, 100" stroke-linecap="round"/>
+                                    </svg>
+                                    <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #2b3674;" id="op-pct-absen">0%</div>
+                                </div>
+                                <span style="font-size: 11px; font-weight: 700; color: #2b3674; display: block;">Kehadiran HK</span>
+                                <span style="font-size: 9.5px; color: #8f9bba;" id="op-stat-hk-label">0 Hari Kerja</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 14px; background: #ebfcf6; border: 1px dashed #05cd99; padding: 8px 12px; border-radius: 4px; text-align: center;">
+                            <span style="font-size: 11px; color: #065f46; font-weight: 700;">Grade Produktivitas: </span>
+                            <b id="op-dashboard-grade" style="font-size: 15px; color: #05cd99;">-</b>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Baris Bawah: Riwayat Kerja Terakhir & Kalender Absensi Pribadi -->
+                <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px;">
+                    <!-- Tabel Riwayat Kerja -->
+                    <div class="card" style="padding: 20px;">
+                        <h3 class="text-secondary font-bold" style="font-size: 16px; margin-bottom: 12px;">Riwayat Input Produksi Terkini</h3>
+                        <div class="table-container" style="box-shadow: none; border: 1px solid #f0f0f0; max-height: 220px; overflow-y: auto;">
+                            <table class="table-thin" style="width: 100%; font-size: 11.5px;">
+                                <thead>
+                                    <tr>
+                                        <th>Tgl</th>
+                                        <th>Pekerjaan</th>
+                                        <th>Barang</th>
+                                        <th style="text-align: right;">Qty</th>
+                                        <th style="text-align: right;">Insentif</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="op-dashboard-history-tbody">
+                                    <tr><td colspan="5" style="text-align: center; color: #8f9bba; padding: 20px;">Memuat data riwayat...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Kalender Kehadiran Bulan Berjalan -->
+                    <div class="card" style="padding: 20px; display: flex; flex-direction: column;">
+                        <h3 class="text-secondary font-bold" style="font-size: 16px; margin-bottom: 12px;">Absensi Bulan Ini</h3>
+                        <div id="op-calendar-container" style="flex: 1;"></div>
                     </div>
                 </div>
             </div>
@@ -2815,6 +2944,7 @@
                 targetView.classList.add('active');
                 
                 if(viewName === 'dashboard') loadDashboardStats();
+                if(viewName === 'dashboard-operator') loadOperatorDashboard();
                 if(viewName === 'input-baru') clearForm();
                 if(viewName === 'input-bs') clearBsForm();
                 
@@ -4128,6 +4258,38 @@
                 if(menuProduksi) menuProduksi.style.display = 'block';
                 if(subInputBbk) subInputBbk.style.display = 'block';
             }
+            else if (role === 'operator produksi' || role === 'operator') {
+                // LOGIKA KHUSUS LEVEL OPERATOR PRODUKSI:
+                // HANYA MUNCULKAN 3 MENU: DASHBOARD PRIBADI, + INPUT BARU, SUMMARY
+                const menuOpDash = document.getElementById('menu-op-dashboard');
+                const menuOpInput = document.getElementById('menu-op-input-baru');
+                const menuOpSumm = document.getElementById('menu-op-summary');
+                
+                if(menuOpDash) menuOpDash.style.display = 'flex';
+                if(menuOpInput) menuOpInput.style.display = 'flex';
+                if(menuOpSumm) menuOpSumm.style.display = 'flex';
+
+                // SEMBUNYIKAN SEMUA MENU STANDAR LAINNYA
+                if(menuDashboard) menuDashboard.style.display = 'none';
+                if(menuMaster) menuMaster.style.display = 'none';
+                if(menuPlanning) menuPlanning.style.display = 'none';
+                if(menuProduksi) menuProduksi.style.display = 'none';
+                if(menuTrackingSj) menuTrackingSj.style.display = 'none';
+                if(menuInventories) menuInventories.style.display = 'none';
+                if(menuOperator) menuOperator.style.display = 'none';
+
+                // Otomatis Buka Dashboard Operator
+                switchView('dashboard-operator', menuOpDash);
+                return;
+            }
+
+            // Reset menu operator bila role bukan operator
+            const menuOpDash = document.getElementById('menu-op-dashboard');
+            const menuOpInput = document.getElementById('menu-op-input-baru');
+            const menuOpSumm = document.getElementById('menu-op-summary');
+            if(menuOpDash) menuOpDash.style.display = 'none';
+            if(menuOpInput) menuOpInput.style.display = 'none';
+            if(menuOpSumm) menuOpSumm.style.display = 'none';
             
             // Hak akses Input BBK untuk Author, Supervisor, Admin Produksi, Staff Produksi
             if (['author', 'supervisor', 'admin produksi', 'staff produksi'].includes(role)) {
@@ -5501,24 +5663,21 @@
 
             rawData.forEach(row => {
                 if (!row[1]) return;
+                
+                // HANYA OLAH DOKUMEN PRODUKSI (PRD), ABAIKAN BBK AGAR AKUN AUTHOR TIDAK TERBAWA
+                const tipeDok = String(row[3] || '').toUpperCase().trim();
+                if (tipeDok !== 'PRD') return;
+
                 const tgl = row[2];
                 if (startDate && tgl < startDate) return;
                 if (endDate && tgl > endDate) return;
 
                 const opNames = (row[7] || '').split(',').map(n => n.trim());
                 opNames.forEach(opName => {
-                    if (!opName || opName === '-') return;
+                    if (!opName || opName === '-' || opName.toLowerCase() === 'system') return;
 
-                    if (!ops[opName]) {
-                        ops[opName] = {
-                            unit: row[0] || 'CV JHB',
-                            pekerjaan: row[6] || '-',
-                            totalInsentif: 0,
-                            totalQty: 0,
-                            days: new Set(),
-                            dailyData: {}
-                        };
-                    }
+                    // FILTER KETAT: NAMA HARUS RESMI TERDAFTAR DI MASTER_OPERATOR
+                    if (!ops[opName]) return;
 
                     const qty = parseFloat(row[13]) || 0;
                     let insentif = row[16] || '0';
@@ -5569,8 +5728,23 @@
                 listContainer.appendChild(div);
             });
 
-            if (!window.selectedSummaryOperator || !ops[window.selectedSummaryOperator]) {
-                window.selectedSummaryOperator = opNamesList[0];
+            // JIKA LOGIN SEBAGAI OPERATOR PRODUKSI: SEMBUNYIKAN SEARCH & LIST, KUNCI LANGSUNG KE NAMANYA
+            const roleLower = (window.currentUserRole || "").toLowerCase();
+            const isOperatorRole = (roleLower === 'operator produksi' || roleLower === 'operator');
+            
+            const searchBox = document.getElementById('summary-operator-search');
+            const opListWrapper = listContainer.parentElement;
+
+            if (isOperatorRole) {
+                if(searchBox && searchBox.parentElement) searchBox.parentElement.style.display = 'none';
+                if(opListWrapper) opListWrapper.style.display = 'none';
+                window.selectedSummaryOperator = window.currentUserName;
+            } else {
+                if(searchBox && searchBox.parentElement) searchBox.parentElement.style.display = 'block';
+                if(opListWrapper) opListWrapper.style.display = 'block';
+                if (!window.selectedSummaryOperator || !ops[window.selectedSummaryOperator]) {
+                    window.selectedSummaryOperator = opNamesList[0];
+                }
             }
 
             document.querySelectorAll('.summary-op-chip').forEach(c => {
@@ -5578,6 +5752,228 @@
             });
 
             loadOperatorReport(window.selectedSummaryOperator);
+        }
+
+        // --- MESIN DASHBOARD KHUSUS OPERATOR PRODUKSI (GAMBAR 2) ---
+        function loadOperatorDashboard() {
+            const opName = window.currentUserName;
+            const now = new Date();
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${yyyy}-${mm}-${dd}`;
+
+            // Jam Digital Realtime
+            const clockEl = document.getElementById('op-live-clock');
+            const dateEl = document.getElementById('op-live-date');
+            if (clockEl) {
+                const timeStr = now.toLocaleTimeString('id-ID');
+                clockEl.textContent = timeStr;
+            }
+            if (dateEl) {
+                dateEl.textContent = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            }
+
+            if (!window.rawViewData || window.rawViewData.length === 0) {
+                panggilBackend('getDataProduksi', {}).then(data => {
+                    window.rawViewData = data || [];
+                    calculateOperatorMetrics(opName, todayStr, now);
+                }).catch(() => {});
+            } else {
+                calculateOperatorMetrics(opName, todayStr, now);
+            }
+        }
+
+        function calculateOperatorMetrics(opName, todayStr, now) {
+            let todayQty = 0, todayRp = 0;
+            let weekQty = 0, weekRp = 0;
+            let monthQty = 0, monthRp = 0;
+            let attendedDays = new Set();
+            let recentRows = [];
+            let last7Days = {};
+
+            // Inisialisasi 7 hari ke belakang
+            for (let i = 6; i >= 0; i--) {
+                let d = new Date(now);
+                d.setDate(d.getDate() - i);
+                let ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                last7Days[ds] = { dd: String(d.getDate()).padStart(2,'0'), mm: String(d.getMonth()+1).padStart(2,'0'), qty: 0 };
+            }
+
+            const currentMonthPrefix = todayStr.slice(0, 7);
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1));
+            const startOfWeekStr = `${startOfWeek.getFullYear()}-${String(startOfWeek.getMonth()+1).padStart(2,'0')}-${String(startOfWeek.getDate()).padStart(2,'0')}`;
+
+            (window.rawViewData || []).forEach(row => {
+                if (!row[1] || String(row[3] || '').toUpperCase() !== 'PRD') return;
+                const tgl = String(row[2] || '');
+                const ops = (row[7] || '').split(',').map(n => n.trim().toLowerCase());
+                
+                if (ops.includes(opName.toLowerCase())) {
+                    const sharedCount = ops.length || 1;
+                    const qty = (parseFloat(row[13]) || 0) / sharedCount;
+                    let rawIns = String(row[16] || '0').split(',')[0].replace(/[^\d]/g, '');
+                    const rp = (parseFloat(rawIns) || 0) / sharedCount;
+
+                    // Hari Ini
+                    if (tgl === todayStr) {
+                        todayQty += qty;
+                        todayRp += rp;
+                    }
+                    // Minggu Ini
+                    if (tgl >= startOfWeekStr && tgl <= todayStr) {
+                        weekQty += qty;
+                        weekRp += rp;
+                    }
+                    // Bulan Ini
+                    if (tgl.startsWith(currentMonthPrefix)) {
+                        monthQty += qty;
+                        monthRp += rp;
+                        attendedDays.add(tgl);
+                    }
+                    // 7 Hari Terakhir
+                    if (last7Days[tgl]) {
+                        last7Days[tgl].qty += qty;
+                    }
+                    // Riwayat
+                    if (recentRows.length < 15) {
+                        recentRows.push({ tgl, pek: row[6], barang: `${row[8]} - ${row[9]}`, qty: Math.round(qty), rp: Math.round(rp) });
+                    }
+                }
+            });
+
+            // Update DOM Nilai
+            document.getElementById('op-stat-today').innerHTML = `${Math.round(todayQty).toLocaleString('id-ID')} <span style="font-size:13px; font-weight:500; color:#8f9bba;">Pcs</span>`;
+            document.getElementById('op-stat-today-rp').textContent = `Rp ${Math.round(todayRp).toLocaleString('id-ID')}`;
+            document.getElementById('op-stat-week').innerHTML = `${Math.round(weekQty).toLocaleString('id-ID')} <span style="font-size:13px; font-weight:500; color:#8f9bba;">Pcs</span>`;
+            document.getElementById('op-stat-week-rp').textContent = `Rp ${Math.round(weekRp).toLocaleString('id-ID')}`;
+            document.getElementById('op-stat-month').innerHTML = `${Math.round(monthQty).toLocaleString('id-ID')} <span style="font-size:13px; font-weight:500; color:#8f9bba;">Pcs</span>`;
+            document.getElementById('op-stat-month-rp').textContent = `Rp ${Math.round(monthRp).toLocaleString('id-ID')}`;
+
+            // Meter Target UMR Harian (Rp 110.960)
+            const targetDailyPct = Math.min(100, Math.round((todayRp / 110960) * 100));
+            document.getElementById('op-meter-target').style.strokeDasharray = `${targetDailyPct}, 100`;
+            document.getElementById('op-pct-target').textContent = `${targetDailyPct}%`;
+
+            // Meter Kehadiran Hari Kerja
+            const totalHkMonth = 25;
+            const absenPct = Math.min(100, Math.round((attendedDays.size / totalHkMonth) * 100));
+            document.getElementById('op-meter-absen').style.strokeDasharray = `${absenPct}, 100`;
+            document.getElementById('op-pct-absen').textContent = `${absenPct}%`;
+            document.getElementById('op-stat-hk-label').textContent = `${attendedDays.size} / ${totalHkMonth} Hari Kerja`;
+
+            // Grade Produktivitas
+            const avgRpDaily = attendedDays.size > 0 ? (monthRp / attendedDays.size) : todayRp;
+            const scoreGrade = (absenPct * 0.7) + (Math.min(100, (avgRpDaily / 110960) * 100) * 0.3);
+            let gradeStr = 'C';
+            if (scoreGrade >= 90) gradeStr = 'A (Sangat Baik)';
+            else if (scoreGrade >= 80) gradeStr = 'B (Baik)';
+            else if (scoreGrade >= 70) gradeStr = 'C (Cukup)';
+            else gradeStr = 'D (Perlu Ditingkatkan)';
+            document.getElementById('op-dashboard-grade').textContent = gradeStr;
+
+            // Render SVG Grafik Batang 7 Hari Terakhir
+            renderOperatorBarChart(last7Days);
+
+            // Render Riwayat Tabel
+            const tbody = document.getElementById('op-dashboard-history-tbody');
+            if (recentRows.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#8f9bba; padding:15px;">Belum ada inputan produksi.</td></tr>`;
+            } else {
+                tbody.innerHTML = recentRows.slice(0, 6).map(r => `
+                    <tr>
+                        <td style="padding:6px 8px;">${r.tgl}</td>
+                        <td style="padding:6px 8px; font-weight:600;">${r.pek}</td>
+                        <td style="padding:6px 8px;">${r.barang}</td>
+                        <td style="padding:6px 8px; text-align:right; font-weight:800; color:#4318ff;">${r.qty}</td>
+                        <td style="padding:6px 8px; text-align:right; font-weight:700; color:#05cd99;">Rp ${r.rp.toLocaleString('id-ID')}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // Render Kalender Bulan Ini
+            renderOperatorCalendar(attendedDays, now);
+        }
+
+        function renderOperatorBarChart(last7Days) {
+            const svg = document.getElementById('op-bar-chart-svg');
+            const xContainer = document.getElementById('op-bar-chart-x');
+            if (!svg) return;
+
+            const dates = Object.keys(last7Days);
+            let maxVal = 0;
+            dates.forEach(d => { if (last7Days[d].qty > maxVal) maxVal = last7Days[d].qty; });
+            if (maxVal === 0) maxVal = 100;
+
+            const width = svg.clientWidth || 500;
+            const height = 180;
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+            const numBars = dates.length;
+            const step = width / numBars;
+            const barWidth = step * 0.45;
+            let svgHtml = '';
+            let xHtml = '';
+
+            dates.forEach((d, idx) => {
+                const val = last7Days[d].qty;
+                const h = (val / maxVal) * (height - 35);
+                const x = (idx * step) + (step / 2) - (barWidth / 2);
+                const y = height - h - 10;
+
+                // Garis Grid Tipis
+                svgHtml += `<line x1="0" y1="${height - 10}" x2="${width}" y2="${height - 10}" stroke="#e2e8f0" stroke-width="1.5" />`;
+
+                // Bar
+                svgHtml += `<rect x="${x}" y="${y}" width="${barWidth}" height="${h}" rx="4" fill="#4318ff" />`;
+                if (val > 0) {
+                    svgHtml += `<text x="${x + barWidth/2}" y="${y - 6}" font-size="11" font-weight="800" fill="#2b3674" text-anchor="middle">${val}</text>`;
+                }
+
+                xHtml += `<span style="flex:1; text-align:center;">${last7Days[d].dd}/${last7Days[d].mm}</span>`;
+            });
+
+            svg.innerHTML = svgHtml;
+            if (xContainer) xContainer.innerHTML = xHtml;
+        }
+
+        function renderOperatorCalendar(attendedSet, now) {
+            const container = document.getElementById('op-calendar-container');
+            if (!container) return;
+
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            let startDayIdx = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+            const totalDays = lastDay.getDate();
+
+            let calHtml = `
+                <div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; gap:2px; font-size:10px; font-weight:700; color:#8f9bba; margin-bottom:6px;">
+                    <div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div><div style="color:#ee5d50;">Min</div>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(7, 1fr); gap:4px; text-align:center; font-size:11px; font-weight:700;">
+            `;
+
+            for (let i = 0; i < startDayIdx; i++) calHtml += `<div></div>`;
+
+            for (let day = 1; day <= totalDays; day++) {
+                let dString = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                let isHadir = attendedSet.has(dString);
+                let isSunday = new Date(year, month, day).getDay() === 0;
+
+                if (isHadir) {
+                    calHtml += `<div style="background:#05cd99; color:#fff; border-radius:50%; width:22px; height:22px; margin:0 auto; display:flex; align-items:center; justify-content:center;">${day}</div>`;
+                } else if (isSunday) {
+                    calHtml += `<div style="color:#ee5d50; background:#fce8e8; border-radius:50%; width:22px; height:22px; margin:0 auto; display:flex; align-items:center; justify-content:center;">${day}</div>`;
+                } else {
+                    calHtml += `<div style="color:#2b3674; height:22px; display:flex; align-items:center; justify-content:center;">${day}</div>`;
+                }
+            }
+
+            calHtml += `</div>`;
+            container.innerHTML = calHtml;
         }
 
         function filterSummaryOperatorChips() {
