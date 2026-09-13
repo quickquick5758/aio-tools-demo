@@ -674,6 +674,20 @@
             break-inside: avoid !important;
         }
     }
+
+    /* Animasi Centang Hijau Cepat 0.5s */
+    @keyframes quickPopIn {
+        0% { transform: scale(0.6); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    .check-path-anim {
+        stroke-dasharray: 28;
+        stroke-dashoffset: 28;
+        animation: drawCheckAnim 0.45s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+    @keyframes drawCheckAnim {
+        to { stroke-dashoffset: 0; }
+    }
     </style>
 </head>
 <body>
@@ -958,11 +972,11 @@
                             </div>
                         </div>
                         <div class="chart-container" style="position: relative; height: 260px; width: 100%; margin-top: 16px;">
-                            <!-- SVG Render Proporsional Pixel-Exact (Bebas Gepeng/Distorsi) -->
+                            <!-- SVG Render Pixel-Exact (Termasuk Sumbu Y 0 - 10.000 & Garis Grid) -->
                             <svg class="chart-svg" style="position:absolute; inset:0; width:100%; height:calc(100% - 28px); overflow:visible; display:block;">
                             </svg>
-                            <!-- Baris Penanda Tanggal Sumbu X Presisi di Bawah Garis Drop-Line -->
-                            <div id="dashboard-chart-x-labels" style="position: absolute; bottom: 0; left: 24px; right: 24px; height: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #8f9bba; font-weight: 700;">
+                            <!-- Baris Penanda Sumbu X Presisi di Bawah Titik Grafik -->
+                            <div id="dashboard-chart-x-labels" style="position: absolute; bottom: 0; left: 52px; right: 18px; height: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #8f9bba; font-weight: 700;">
                             </div>
                         </div>
                     </div>
@@ -2056,7 +2070,7 @@
                         <!-- FOOTER WITH TICKER -->
     <footer class="footer-ticker">
         <div class="ticker-text">
-            Sistem Informasi Produksi AiO Tools &bull; Pembaruan Data Terakhir: Otomatis &bull; Pengumuman: Rapat evaluasi produksi hari Jumat pkl 09:00 WIB.
+            Sistem Informasi Produksi AiO Tools &bull; Pembaruan Data Terakhir: Otomatis &bull; Pengumuman: Rapat evaluasi produksi setiap hari Sabtu, jam 13:00 WIB.
         </div>
     </footer>
 
@@ -2087,6 +2101,18 @@
             <button id="btn-success-ok" class="btn-modern" style="display:none; width:100%; margin-top: 20px;" onclick="closeSuccessModal()">OK</button>
         </div>
     </div>
+    <!-- POPUP ANIMASI CENTANG HIJAU (0.5 DETIK) -->
+    <div id="quick-success-modal" style="display:none; position:fixed; inset:0; background:rgba(43,54,116,0.2); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(2px);">
+        <div style="background:#ffffff; border-radius:14px; padding:22px 30px; box-shadow:0 15px 40px rgba(0,0,0,0.15); display:flex; flex-direction:column; align-items:center; animation:quickPopIn 0.25s ease-out forwards; text-align:center; min-width:180px;">
+            <div style="width: 58px; height: 58px; border-radius: 50%; background: #ebfcf6; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                <svg style="width: 34px; height: 34px; stroke: #05cd99; stroke-width: 3.5; fill: none; stroke-linecap: round; stroke-linejoin: round;" viewBox="0 0 24 24">
+                    <path d="M5 13l4 4L19 7" class="check-path-anim"></path>
+                </svg>
+            </div>
+            <h4 id="quick-success-title" style="margin:0; font-size:16px; font-weight:800; color:#2b3674;">Berhasil!</h4>
+        </div>
+    </div>
+
     <!-- BOX NOTIF / KONFIRMASI CUSTOM -->
     <div id="custom-dialog" class="custom-dialog-overlay">
         <div class="custom-dialog-box">
@@ -2525,87 +2551,81 @@
             let chartData = [];
 
             if (period === '1year') {
-                // 1. OPSI 1 TAHUN: 12 Bulan ke Belakang dari Bulan Saat Ini (Rolling 12 Months)
+                // 1. OPSI 1 TAHUN: 12 Bulan ke Belakang dari Bulan Saat Ini
                 for (let i = 11; i >= 0; i--) {
                     let d = new Date(today.getFullYear(), today.getMonth() - i, 1);
                     let yyyy = d.getFullYear();
                     let mm = String(d.getMonth() + 1).padStart(2, '0');
                     let prefix = `${yyyy}-${mm}`;
                     
-                    // Akumulasi QTY seluruh hari dalam bulan tersebut
                     let totalMonthQty = 0;
                     for (let dStr in window.dashboardChartData) {
                         if (dStr.startsWith(prefix)) {
                             totalMonthQty += (window.dashboardChartData[dStr] || 0);
                         }
                     }
-                    
                     chartData.push({
                         label: monthNames[d.getMonth()],
-                        fullDate: `${monthNames[d.getMonth()]} ${yyyy}`,
                         val: totalMonthQty
                     });
                 }
             } 
             else if (period === '1month') {
-                // 2. OPSI 1 BULAN: 30 atau 31 Hari ke Belakang dari Hari Ini (Menyesuaikan Hari dalam Bulan Ini)
-                // Menghitung jumlah hari pada bulan saat ini (28, 29, 30, atau 31 hari)
+                // 2. OPSI 1 BULAN: 30 atau 31 Hari ke Belakang Tanpa Diloncati
                 const totalDaysBack = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-                
                 for (let i = totalDaysBack - 1; i >= 0; i--) {
                     let d = new Date(today);
                     d.setDate(today.getDate() - i);
-                    
                     let yyyy = d.getFullYear();
                     let mm = String(d.getMonth() + 1).padStart(2, '0');
                     let dd = String(d.getDate()).padStart(2, '0');
                     let ds = `${yyyy}-${mm}-${dd}`;
-                    
                     chartData.push({
-                        label: String(parseInt(dd, 10)), // Label tanggal angka (1, 2, ..., 31)
-                        fullDate: `${dd}/${mm}/${yyyy}`,
+                        label: String(parseInt(dd, 10)),
                         val: window.dashboardChartData[ds] || 0
                     });
                 }
             } 
             else if (period === '3days') {
-                // 3. OPSI 3 HARI: 3 Hari ke Belakang dari Hari Ini
+                // 3. OPSI 3 HARI: 3 Hari ke Belakang
                 for (let i = 2; i >= 0; i--) {
                     let d = new Date(today);
                     d.setDate(today.getDate() - i);
-                    
                     let yyyy = d.getFullYear();
                     let mm = String(d.getMonth() + 1).padStart(2, '0');
                     let dd = String(d.getDate()).padStart(2, '0');
                     let ds = `${yyyy}-${mm}-${dd}`;
-                    
                     chartData.push({
                         label: `${dd}/${mm}`,
-                        fullDate: `${dd}/${mm}/${yyyy}`,
                         val: window.dashboardChartData[ds] || 0
                     });
                 }
             } 
             else { 
-                // 4. OPSI 1 MINGGU: 7 Hari ke Belakang dari Hari Ini
+                // 4. OPSI 1 MINGGU: 7 Hari ke Belakang
                 for (let i = 6; i >= 0; i--) {
                     let d = new Date(today);
                     d.setDate(today.getDate() - i);
-                    
                     let yyyy = d.getFullYear();
                     let mm = String(d.getMonth() + 1).padStart(2, '0');
                     let dd = String(d.getDate()).padStart(2, '0');
                     let ds = `${yyyy}-${mm}-${dd}`;
-                    
                     chartData.push({
                         label: `${dd}/${mm}`,
-                        fullDate: `${dd}/${mm}/${yyyy}`,
                         val: window.dashboardChartData[ds] || 0
                     });
                 }
             }
 
-            // Sumbu Y: Tetap di skala standar 0 - 10.000 Pcs (Toleransi jika data produksi melampaui 10k)
+            const svgContainer = document.querySelector('.chart-svg');
+            if (!svgContainer) return;
+
+            const rect = svgContainer.getBoundingClientRect();
+            const width = Math.max(320, Math.round(rect.width || svgContainer.clientWidth || 800));
+            const height = Math.max(160, Math.round(rect.height || 220));
+            svgContainer.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+            // Sumbu Y Tetap di Rentang 0 - 10.000 Pcs
             let peakVal = 0;
             let peakIndex = 0;
             chartData.forEach((pt, idx) => {
@@ -2617,22 +2637,105 @@
 
             const maxVal = Math.max(10000, Math.ceil(peakVal / 2500) * 2500);
 
-            // Render Grid Sumbu Y Presisi (Skala 0, 2.500, 5.000, 7.500, 10.000 Pcs)
-            const yGridContainer = document.getElementById('dashboard-chart-y-grid');
-            if (yGridContainer) {
-                let yHtml = '';
-                const steps = [10000, 7500, 5000, 2500, 0];
-                steps.forEach(val => {
-                    let labelText = val === 10000 ? '10.000' : (val === 0 ? '0' : Number(val).toLocaleString('id-ID'));
-                    yHtml += `
-                        <div style="display: flex; align-items: center; gap: 8px; height: 0;">
-                            <span style="width: 45px; text-align: right; font-size: 9.5px; font-weight: 700; color: #8f9bba; margin-top: -6px;">${labelText}</span>
-                            <div style="flex: 1; height: 1px; border-bottom: 1px solid #f0f0f0;"></div>
-                        </div>
-                    `;
-                });
-                yGridContainer.innerHTML = yHtml;
+            // Area Plot Sumbu X & Sumbu Y
+            const yAxisWidth = 52; // Lebar khusus untuk angka Sumbu Y di sisi kiri
+            const rightPadding = 18;
+            const effectiveWidth = width - yAxisWidth - rightPadding;
+            const totalPoints = chartData.length;
+            const xStep = totalPoints <= 1 ? 0 : (effectiveWidth / (totalPoints - 1));
+
+            const baselineY = height - 12; // Garis dasar 0
+            const topMarginY = 28; // Batas atas 10.000
+
+            // 1. RENDER LANGSUNG SUMBU Y (GRID & TEXT 0 - 10.000) DI DALAM SVG
+            let yGridSvg = '';
+            const ySteps = [10000, 7500, 5000, 2500, 0];
+            ySteps.forEach(val => {
+                const yPos = baselineY - ((val / maxVal) * (baselineY - topMarginY));
+                const labelText = val === 10000 ? '10.000' : (val === 0 ? '0' : Number(val).toLocaleString('id-ID'));
+                
+                // Teks Angka Sumbu Y di Kiri
+                yGridSvg += `<text x="${yAxisWidth - 10}" y="${yPos + 3.5}" font-size="9.5" font-family="'Arial', sans-serif" font-weight="700" fill="#8f9bba" text-anchor="end">${labelText}</text>`;
+                // Garis Horizontal Grid Tipis
+                yGridSvg += `<line x1="${yAxisWidth}" y1="${yPos}" x2="${width - rightPadding}" y2="${yPos}" stroke="#edf2f7" stroke-width="1" />`;
+            });
+
+            // 2. RENDER LINE & NODE DATA
+            let points = [];
+            let pathD = "";
+            let pathFillD = "";
+            let dottedLinesSvg = "";
+            let circlesSvg = "";
+
+            chartData.forEach((pt, i) => {
+                let x = yAxisWidth + (i * xStep);
+                let y = baselineY - ((pt.val / maxVal) * (baselineY - topMarginY));
+                points.push({ x, y, val: pt.val, label: pt.label });
+
+                if (i === 0) {
+                    pathD += `M ${x} ${y} `;
+                    pathFillD += `M ${x} ${baselineY} L ${x} ${y} `;
+                } else {
+                    pathD += `L ${x} ${y} `;
+                    pathFillD += `L ${x} ${y} `;
+                }
+
+                dottedLinesSvg += `<line x1="${x}" y1="${y}" x2="${x}" y2="${baselineY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2,2" opacity="0.3" />`;
+                circlesSvg += `<circle cx="${x}" cy="${y}" r="${period === '1month' ? '2.5' : '3.5'}" fill="#ffffff" stroke="#0284c7" stroke-width="1.8" />`;
+            });
+
+            pathFillD += `L ${points[points.length - 1].x} ${baselineY} Z`;
+
+            // Floating Peak Badge
+            let peakBadgeSvg = "";
+            if (points.length > 0 && peakVal > 0) {
+                const peakPt = points[peakIndex];
+                const badgeText = Number(peakPt.val).toLocaleString('id-ID');
+                const badgeWidth = Math.max(50, badgeText.length * 8 + 16);
+                const badgeHeight = 22;
+                const badgeX = Math.max(yAxisWidth + badgeWidth / 2, Math.min(width - rightPadding - badgeWidth / 2, peakPt.x));
+                const badgeY = Math.max(6, peakPt.y - 30);
+
+                peakBadgeSvg = `
+                    <g style="filter: drop-shadow(0 2px 4px rgba(43,54,116,0.15));">
+                        <rect x="${badgeX - (badgeWidth / 2)}" y="${badgeY}" width="${badgeWidth}" height="${badgeHeight}" rx="11" fill="#ffffff" stroke="#e0e5f2" stroke-width="1"/>
+                        <polygon points="${badgeX - 4},${badgeY + badgeHeight} ${badgeX + 4},${badgeY + badgeHeight} ${badgeX},${badgeY + badgeHeight + 4}" fill="#ffffff"/>
+                        <text x="${badgeX}" y="${badgeY + 15}" font-size="10.5" font-family="'Arial', sans-serif" font-weight="800" fill="#2b3674" text-anchor="middle">${badgeText}</text>
+                    </g>
+                `;
             }
+
+            // Injeksi Elemen ke SVG
+            svgContainer.innerHTML = `
+                <defs>
+                    <linearGradient id="thinFinanceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.25" />
+                        <stop offset="70%" stop-color="#38bdf8" stop-opacity="0.04" />
+                        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0" />
+                    </linearGradient>
+                </defs>
+                ${yGridSvg}
+                ${dottedLinesSvg}
+                <path d="${pathFillD}" fill="url(#thinFinanceGradient)" />
+                <path d="${pathD}" fill="none" stroke="#0284c7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                ${circlesSvg}
+                ${peakBadgeSvg}
+            `;
+
+            // 3. RENDER SUMBU X SEJAJAR DENGAN TITIK GRAFIK
+            const xLabelsContainer = document.getElementById('dashboard-chart-x-labels');
+            if (xLabelsContainer) {
+                xLabelsContainer.style.left = `${yAxisWidth}px`;
+                xLabelsContainer.style.right = `${rightPadding}px`;
+                
+                let xLabelsHtml = '';
+                const fontSize = period === '1month' ? '8.5px' : '10px';
+                chartData.forEach(pt => {
+                    xLabelsHtml += `<span style="flex: 1; text-align: center; font-size: ${fontSize}; color: #8f9bba; font-weight: 700;">${pt.label}</span>`;
+                });
+                xLabelsContainer.innerHTML = xLabelsHtml;
+            }
+        }
 
             const svgContainer = document.querySelector('.chart-svg');
             if (!svgContainer) return;
@@ -4259,7 +4362,7 @@
                         partialRow = true; // Baris diisi setengah, atau Qty 0
                     } else {
                         if (seenBarang.has(barang.toUpperCase()) && !duplicateMsg) {
-                            duplicateMsg = `Terdapat input ganda untuk item dengan motif yang sama persis:<br><b style="color:#2b3674;">${barang}</b><br>Sistem melarang input duplikat. Silakan gabungkan Qty pada baris yang sama. (Diizinkan menambah baris jika motifnya berbeda).`;
+                            duplicateMsg = `Terdapat input ganda untuk item dengan motif yang sama persis:<br><b style="color:#2b3674;">${barang}</b><br>Silakan gabungkan Qty pada baris yang sama.`;
                         }
                         seenBarang.add(barang.toUpperCase());
 
@@ -4902,41 +5005,25 @@
                 userName: window.currentUserName || ""
             };
 
-            const modalAnim = document.getElementById('modal-success-anim');
-            const loaderContainer = document.getElementById('loader-icon-container');
-            const checkContainer = document.getElementById('success-check-container');
-            const titleText = document.getElementById('modal-title-text');
-            const descText = document.getElementById('modal-desc-text');
-            const docNumEl = document.getElementById('success-doc-number');
-            const btnOk = document.getElementById('btn-success-ok');
-            
-            // 1. Tampilkan Status Loading Terlebih Dahulu
-            if(loaderContainer) loaderContainer.style.display = 'block';
-            if(checkContainer) checkContainer.style.display = 'none';
-            if(btnOk) btnOk.style.display = 'none';
-            if(titleText) titleText.textContent = "Menyimpan Data BBK...";
-            if(descText) descText.innerHTML = "Mohon tunggu, sistem sedang memproses dokumen.";
-            if(docNumEl) docNumEl.textContent = "Memproses...";
-            
-            if(modalAnim) modalAnim.style.display = 'flex';
-            window.nextViewAfterSuccess = 'buku-pengecekan'; // Set arah kembalian BBK
+            // 1. Langsung Munculkan Animasi Centang Hijau
+            showQuickSuccess("Data BBK Tersimpan!");
 
-              try {
-                  const res = await panggilBackend('saveBbkToSheet', payload);
-                  if(res && res.success) {
-                      if(loaderContainer) loaderContainer.style.display = 'none';
-                      if(checkContainer) checkContainer.style.display = 'flex';
-                      titleText.textContent = "Data BBK Disimpan!";
-                      docNumEl.textContent = res.idLaporan || "-";
-                      btnOk.style.display = 'block';
-                      loadBbkGlobalData();
-                  } else {
-                      throw new Error(res.message);
-                  }
-              } catch (err) {
-                  modalAnim.style.display = 'none';
-                  showDialog("Gagal: " + err.message, "warning");
-              }
+            // 2. Langsung Tutup & Pindah Halaman
+            clearBbkForm();
+            switchView('buku-pengecekan');
+
+            // 3. Simpan di Latar Belakang
+            panggilBackend('saveBbkToSheet', payload)
+                .then(res => {
+                    if(res && res.success) {
+                        loadBbkGlobalData();
+                    } else {
+                        showDialog("Gagal simpan BBK: " + (res ? res.message : 'Error server'), "warning");
+                    }
+                })
+                .catch(err => {
+                    showDialog("Koneksi gagal saat simpan BBK: " + err.message, "warning");
+                });
         }
 
         function toggleSubmenu(element) {
@@ -6093,66 +6180,13 @@
                     });
                     
                     if (res && res.success) {
-                        // Munculkan Modal Animasi Sukses
-                        const modalAnim = document.getElementById('modal-success-anim');
-                        const loaderContainer = document.getElementById('loader-icon-container');
-                        const checkContainer = document.getElementById('success-check-container');
-                        const titleText = document.getElementById('modal-title-text');
-                        const descText = document.getElementById('modal-desc-text');
-                        
-                        if(loaderContainer) loaderContainer.style.display = 'none';
-                        if(checkContainer) checkContainer.style.display = 'flex';
-                        if(titleText) titleText.textContent = "Berhasil Disetujui!";
-                        if(descText) descText.innerHTML = `Dokumen <b>${idLaporan}</b> telah di-Approve.`;
-                        
-                        const docNumEl = document.getElementById('success-doc-number');
-                        if(docNumEl) docNumEl.textContent = idLaporan;
-                        
-                        if(modalAnim) modalAnim.style.display = 'flex';
-                        
-                        // Mengatur Warna dinamis Badge Status Pada Buka Dokumen Utama
-                        const elStatusState = document.getElementById('doc-state-status');
-                        let stateColorBg = '#10b981'; // Statik menjadi warna hijau karena proses sudah 100% SUKSES Approve
-                        
-                        if (elStatusState) {
-                            elStatusState.style.display = 'inline-block';
-                            elStatusState.style.background = stateColorBg;
-                            elStatusState.innerText = 'APPROVED';
-                        }
-                        
-                        const topActions = document.getElementById('doc-header-action-wrapper');
-                        if (topActions) {
-                            topActions.innerHTML = `
-                                <button class="btn-modern" style="background:#fff; color:#05cd99; border:1px solid #05cd99; padding:6px 12px; display:flex; align-items:center; gap:6px; box-shadow:0 2px 5px rgba(5, 205, 153, 0.1);" onclick="cetakDokumen('${idLaporan}')" title="Print / Simpan PDF">
-                                    <svg style="width:14px; height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 00-2-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg> Cetak PDF
-                                </button>
-                                <button class="btn-modern" style="background:#fff; color:#10b981; border:1px solid #10b981; padding:6px 12px; display:flex; align-items:center; gap:6px; box-shadow:0 2px 5px rgba(16, 185, 129, 0.1);" onclick="exportDetailToExcel('${idLaporan}')" title="Export Excel">
-                                    <svg style="width:14px; height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Export Excel
-                                </button>
-                                <button class="btn-modern" style="background:#ee5d50;" onclick="goBackFromDocument()">&times; Tutup</button>
-                            `;
-                        }
-
-                        // Sembunyikan blok aksi Edit & Approve yang ada di Footer Form Dokumen Utama
-                        const actionBawah = document.getElementById('doc-open-actions');
-                        if (actionBawah) actionBawah.style.display = 'none';
+                        // Tampilkan Animasi Centang Hijau Cepat
+                        showQuickSuccess("Dokumen Disetujui!", () => {
+                            goBackFromDocument();
+                            loadLaporanData();
+                        });
 
                         if (window.currentEditingReport) window.currentEditingReport[9] = 'Approved';
-                        loadLaporanData(); 
-
-                        // Tutup modal tinjauan dokumen secara otomatis
-                        goBackFromDocument();
-                        
-                        // Menampilkan modal sukses approve
-                        const btnOk = document.getElementById('btn-success-ok');
-                        if(btnOk) {
-                            btnOk.style.display = 'block';
-                            window.nextViewAfterSuccess = 'data-laporan'; 
-                        } else {
-                            setTimeout(() => {
-                                if(modalAnim) modalAnim.style.display = 'none';
-                            }, 2000);
-                        }
                         } else {
                         throw new Error(res ? res.message : "Kesalahan server");
                     }
@@ -6467,58 +6501,61 @@
             }
         }
 
-        async function executeFinalSubmit() {
-          const modalAnim = document.getElementById('modal-success-anim');
-          const loaderContainer = document.getElementById('loader-icon-container');
-          const checkContainer = document.getElementById('success-check-container');
-          const titleText = document.getElementById('modal-title-text');
-          const descText = document.getElementById('modal-desc-text');
-          const docNumEl = document.getElementById('success-doc-number');
-          const btnOk = document.getElementById('btn-success-ok');
-          
-          // 1. Tampilkan Box Loading di Layar
-          if(loaderContainer) loaderContainer.style.display = 'block';
-          if(checkContainer) checkContainer.style.display = 'none';
-          if(btnOk) btnOk.style.display = 'none';
-          if(titleText) titleText.textContent = "Menyimpan Data...";
-          if(descText) descText.innerHTML = "Mohon tunggu, sistem sedang memproses dokumen...";
-          if(docNumEl) docNumEl.textContent = "Memproses...";
-          
-          if(modalAnim) modalAnim.style.display = 'flex';
-          window.nextViewAfterSuccess = 'data-laporan'; // Set arah kembalian PRD/BS
+        // Helper Animasi Centang Hijau Cepat (0.5 detik)
+        function showQuickSuccess(titleText = "Berhasil!", callback = null) {
+            const modal = document.getElementById('quick-success-modal');
+            const title = document.getElementById('quick-success-title');
+            if (title) title.textContent = titleText;
+            if (modal) {
+                const path = modal.querySelector('.check-path-anim');
+                if (path) {
+                    path.style.animation = 'none';
+                    path.offsetHeight; /* trigger reflow */
+                    path.style.animation = 'drawCheckAnim 0.45s cubic-bezier(0.65, 0, 0.45, 1) forwards';
+                }
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    if (callback) callback();
+                }, 750); // Tayang singkat & halus lalu tertutup otomatis
+            } else if (callback) {
+                callback();
+            }
+        }
 
-          try {
-              // 2. Kirim data ke Google Sheets via Web App
-              const res = await panggilBackend('saveProduksiToSheet', globalPayloadToSubmit);
-              
-              if(res && res.success) {
-                  // 3. Jika Sukses, ubah tampilan modal jadi Ceklis Hijau
-                  if(loaderContainer) loaderContainer.style.display = 'none';
-                  if(checkContainer) checkContainer.style.display = 'flex';
-                  if(titleText) titleText.textContent = "Berhasil Dikirim!";
-                  if(descText) descText.innerHTML = "Data telah tersimpan di server.";
-                  if(docNumEl) docNumEl.textContent = res.idLaporan || "Tersimpan";
-                  if(btnOk) btnOk.style.display = 'block';
+        // SIMPAN DOKUMEN PRODUKSI INSTAN TANPA LOADING KUBUS (LATAR BELAKANG)
+        function executeFinalSubmit() {
+            const payload = Object.assign({}, globalPayloadToSubmit);
+            
+            // 1. Langsung Tampilkan Animasi Centang Hijau
+            showQuickSuccess(payload.tipe === "BS" ? "Data BS Tersimpan!" : "Dokumen Tersimpan!");
 
-                  // 4. Tarik data terbaru di belakang layar
-                  const data = await panggilBackend('getDataLaporanLatest', {});
-                  window.rawLaporanData = data || [];
-                  filterLaporanData();
-                  
-                  loadDashboardStats();
-                  
-                  const mutasiRes = await panggilBackend('getSaldoMutasiData', {});
-                  window.allMutasiData = (mutasiRes && mutasiRes.success) ? mutasiRes.data : [];
-                  
-              } else {
-                  throw new Error(res ? res.message : "Gagal menyimpan data");
-              }
-          } catch (error) {
-              // Kalau internet putus atau sheet gagal tulis
-              if(modalAnim) modalAnim.style.display = 'none';
-              showDialog("Gagal Kirim: " + error.message, "warning");
-          }
-      }
+            // 2. Langsung Bersihkan Form & Pindah View agar user bisa langsung lanjut kerja
+            clearForm();
+            clearBsForm();
+            switchView('data-laporan');
+
+            // 3. Simpan ke Google Sheets di LATAR BELAKANG
+            panggilBackend('saveProduksiToSheet', payload)
+                .then(res => {
+                    if (res && res.success) {
+                        // Refresh data laporan & dashboard secara halus tanpa mengganggu user
+                        panggilBackend('getDataLaporanLatest', {}).then(data => {
+                            window.rawLaporanData = data || [];
+                            filterLaporanData();
+                        });
+                        loadDashboardStats();
+                        panggilBackend('getSaldoMutasiData', {}).then(mutasiRes => {
+                            if (mutasiRes && mutasiRes.success) window.allMutasiData = mutasiRes.data || [];
+                        });
+                    } else {
+                        showDialog("Peringatan: Gagal menyimpan data ke server (" + (res ? res.message : 'Error') + "). Mohon periksa koneksi!", "warning");
+                    }
+                })
+                .catch(err => {
+                    showDialog("Peringatan: Terjadi kendala koneksi ke server saat menyimpan di latar belakang (" + err.message + ").", "warning");
+                });
+        }
 
         // --- TAMBAHAN: Fungsi Navigasi Keyboard (Up/Down/Enter) ---
         function navigateSuggestions(event, inputEl) {
