@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         /* CSS Reset & Global Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Asta Sans', sans-serif; }
         body { background-color: #f4f7fe; color: #2b3674; display: flex; height: 100vh; overflow: hidden; position: relative; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -901,6 +901,7 @@
                         <option value="Staff Produksi">Staff Produksi</option>
                         <option value="Admin Produksi">Admin Produksi</option>
                         <option value="Karu">Karu</option>
+                        <option value="Operator Produksi">Operator Produksi</option>
                         <option value="Helper">Helper</option>
                     </select>
                 </div>
@@ -984,10 +985,10 @@
                         <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                             <h3 class="text-secondary font-bold" style="margin-bottom:0;">Tren Produksi</h3>
                             <div id="chart-period-container" style="display: flex; gap: 4px; background: #f8fafc; padding: 4px; border-radius: 6px; border: 1px solid #e0e5f2;">
-                                <button class="btn-period" data-period="3days" onclick="setChartPeriod('3days', this)" style="border:none; background:transparent; color:#8f9bba; padding:6px 12px; border-radius:4px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">3 Hari</button>
-                                <button class="btn-period active" data-period="1week" onclick="setChartPeriod('1week', this)" style="border:none; background:#4318ff; color:#fff; padding:6px 12px; border-radius:4px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">1 Minggu</button>
-                                <button class="btn-period" data-period="1month" onclick="setChartPeriod('1month', this)" style="border:none; background:transparent; color:#8f9bba; padding:6px 12px; border-radius:4px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">1 Bulan</button>
-                                <button class="btn-period" data-period="1year" onclick="setChartPeriod('1year', this)" style="border:none; background:transparent; color:#8f9bba; padding:6px 12px; border-radius:4px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">1 Tahun</button>
+                                <button class="btn-period" data-period="3days" onclick="setChartPeriod('3days', this)" style="border:none; background:transparent; color:#8f9bba; padding:6px 12px; border-radius:2px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">3 Hari</button>
+                                <button class="btn-period active" data-period="1week" onclick="setChartPeriod('1week', this)" style="border:none; background:#4318ff; color:#fff; padding:6px 12px; border-radius:2px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">1 Minggu</button>
+                                <button class="btn-period" data-period="1month" onclick="setChartPeriod('1month', this)" style="border:none; background:transparent; color:#8f9bba; padding:6px 12px; border-radius:2px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">1 Bulan</button>
+                                <button class="btn-period" data-period="1year" onclick="setChartPeriod('1year', this)" style="border:none; background:transparent; color:#8f9bba; padding:6px 12px; border-radius:2px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">1 Tahun</button>
                             </div>
                         </div>
                         <div class="chart-container" style="position: relative; height: 260px; width: 100%; margin-top: 16px;">
@@ -1003,7 +1004,7 @@
                     <div class="card" style="display: flex; flex-direction: column; max-height: 400px; padding: 18px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap:wrap; gap: 8px;">
                             <h3 class="text-secondary font-bold" style="margin-bottom: 0; font-size: 16px;">Antrean Approval</h3>
-                            <span class="badge" style="background:#ffedd5; color:#f97316; font-size:11px; padding:4px 8px; border-radius:4px; font-weight:800; display:none;" id="count-pending-dash">0 Laporan</span>
+                            <span class="badge" style="background:#ffedd5; color:#f97316; font-size:11px; padding:4px 8px; border-radius:2px; font-weight:800; display:none;" id="count-pending-dash">0 Laporan</span>
                         </div>
                         <p style="font-size: 11px; color:#8f9bba; margin-bottom: 12px;">Berikut adalah daftar dokumen yang telah di-submit ke pusat, namun masih menunggu approve.</p>
                         
@@ -1031,24 +1032,23 @@
             <div id="view-dashboard-operator" class="view-section">
                 <!-- Baris Atas: 4 Stat Output & Jam Digital Realtime -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
-                    <div class="card" style="padding: 16px; border-radius: 6px; display: flex; flex-direction: column; justify-content: center;">
+                    <div class="card" style="padding: 16px; border-radius: 2px; display: flex; flex-direction: column; justify-content: center;">
                         <span style="font-size: 11.5px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Output Hari Ini</span>
                         <h3 id="op-stat-today" style="font-size: 24px; color: #05cd99; font-weight: 800; margin-top: 4px;">0 <span style="font-size: 13px; font-weight: 500; color: #8f9bba;">Pcs</span></h3>
                         <span id="op-stat-today-rp" style="font-size: 11px; color: #8f9bba; font-weight: 700;">Rp 0</span>
                     </div>
-                    <div class="card" style="padding: 16px; border-radius: 6px; display: flex; flex-direction: column; justify-content: center;">
+                    <div class="card" style="padding: 16px; border-radius: 2px; display: flex; flex-direction: column; justify-content: center;">
                         <span style="font-size: 11.5px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Output Minggu Ini</span>
                         <h3 id="op-stat-week" style="font-size: 24px; color: #4318ff; font-weight: 800; margin-top: 4px;">0 <span style="font-size: 13px; font-weight: 500; color: #8f9bba;">Pcs</span></h3>
                         <span id="op-stat-week-rp" style="font-size: 11px; color: #8f9bba; font-weight: 700;">Rp 0</span>
                     </div>
-                    <div class="card" style="padding: 16px; border-radius: 6px; display: flex; flex-direction: column; justify-content: center;">
+                    <div class="card" style="padding: 16px; border-radius: 2px; display: flex; flex-direction: column; justify-content: center;">
                         <span style="font-size: 11.5px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Output Bulan Ini</span>
                         <h3 id="op-stat-month" style="font-size: 24px; color: #2b3674; font-weight: 800; margin-top: 4px;">0 <span style="font-size: 13px; font-weight: 500; color: #8f9bba;">Pcs</span></h3>
                         <span id="op-stat-month-rp" style="font-size: 11px; color: #05cd99; font-weight: 800;">Rp 0</span>
                     </div>
-                    <div class="card" style="padding: 16px; border-radius: 6px; background: linear-gradient(135deg, #4318ff 0%, #7b61ff 100%); color: #fff; display: flex; flex-direction: column; justify-content: center; text-align: center;">
-                        <span style="font-size: 11px; color: #e0e5ff; font-weight: 700; text-transform: uppercase;">Waktu Server Sekarang</span>
-                        <h2 id="op-live-clock" style="font-size: 24px; font-weight: 900; margin: 4px 0;">--:--:--</h2>
+                    <div class="card" style="padding: 16px; border-radius: 2px; background: linear-gradient(135deg, #4318ff 0%, #7b61ff 100%); color: #fff; display: flex; flex-direction: column; justify-content: center; text-align: center;">                        
+                        <h2 id="op-live-clock" style="font-size: 24px; font-weight: 700; margin: 4px 0;">--:--:--</h2>
                         <span id="op-live-date" style="font-size: 11.5px; color: #e0e5ff; font-weight: 600;">--</span>
                     </div>
                 </div>
@@ -1108,9 +1108,15 @@
 
                 <!-- Baris Bawah: Riwayat Kerja Terakhir & Kalender Absensi Pribadi -->
                 <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px;">
-                    <!-- Tabel Riwayat Kerja -->
+                    <!-- Tabel Riwayat Kerja (Tanpa Insentif & Dilengkapi Filter Tanggal) -->
                     <div class="card" style="padding: 20px;">
-                        <h3 class="text-secondary font-bold" style="font-size: 16px; margin-bottom: 12px;">Riwayat Input Produksi Terkini</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                            <h3 class="text-secondary font-bold" style="font-size: 16px; margin: 0;">Riwayat Input Produksi Terkini</h3>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <input type="date" id="op-history-filter-date" class="search-input" style="height: 30px; padding: 2px 8px; font-size: 11.5px; width: 130px; border-radius: 4px;" onchange="filterOperatorRecentHistory()">
+                                <button class="btn-modern" style="height: 30px; padding: 0 10px; font-size: 11px; background: #f4f7fe; color: #4318ff; border: 1px solid #4318ff;" onclick="resetOperatorHistoryFilter()">Semua</button>
+                            </div>
+                        </div>
                         <div class="table-container" style="box-shadow: none; border: 1px solid #f0f0f0; max-height: 220px; overflow-y: auto;">
                             <table class="table-thin" style="width: 100%; font-size: 11.5px;">
                                 <thead>
@@ -1119,11 +1125,10 @@
                                         <th>Pekerjaan</th>
                                         <th>Barang</th>
                                         <th style="text-align: right;">Qty</th>
-                                        <th style="text-align: right;">Insentif</th>
                                     </tr>
                                 </thead>
                                 <tbody id="op-dashboard-history-tbody">
-                                    <tr><td colspan="5" style="text-align: center; color: #8f9bba; padding: 20px;">Memuat data riwayat...</td></tr>
+                                    <tr><td colspan="4" style="text-align: center; color: #8f9bba; padding: 20px;">Memuat data riwayat...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -1484,7 +1489,7 @@
                         <button class="btn-modern" onclick="editPreviewData()" style="background:#f3f4f6; color:#374151; border: 1px solid #d1d5db; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">Kembali</button>
                     </div>
                     <p style="color:#8f9bba; font-size:13px; margin-bottom:20px;">Periksa kembali data di bawah ini sebelum dikirim ke server!</p>
-                    <div id="preview-page-content" style="border:1px solid #e0e5f2; border-radius:8px; padding:20px; margin-bottom:25px; font-size:14px; background:#f4f7fe;"></div>
+                    <div id="preview-page-content" style="border:1px solid #e0e5f2; border-radius:2px; padding:20px; margin-bottom:25px; font-size:14px; background:#f4f7fe;"></div>
                     <div style="display:flex; justify-content:center; gap:20px;">
                         <button type="button" class="btn-modern" style="background:#f59e0b; color:#ffffff; padding:8px 24px; font-weight:600; font-size:13px; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);" onclick="editPreviewData()">Edit</button>
                         <button type="button" class="btn-modern" style="background:#10b981; color:#ffffff; padding:8px 24px; font-weight:600; font-size:13px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);" onclick="executeFinalSubmit()">Submit</button>
@@ -1809,10 +1814,10 @@
                                                         </label>
                                                     </div>
                                                 </div>
-                                                <!-- Legend -->
+                                                <!-- Legend Pastel -->
                                                 <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 11px; font-weight: 700; color: #8f9bba;">
-                                                    <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; background: #4318ff; border-radius: 2px;"></span> Qty (Pcs)</div>
-                                                    <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; background: #05cd99; border-radius: 2px;"></span> Rupiah (Rp)</div>
+                                                    <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; background: #7e92f5; border-radius: 3px;"></span> Qty (Pcs)</div>
+                                                    <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; background: #52cbb3; border-radius: 3px;"></span> Rupiah (Rp)</div>
                                                 </div>
                                                 <div id="perf-bar-container" style="position: relative; height: 220px; width: 100%;">
                                                     <!-- Grid Lines Injected by JS -->
@@ -2223,7 +2228,7 @@
             </div>
             <h3 id="modal-title-text" style="color:#2b3674; font-size:22px; font-weight:800; margin-bottom:8px;">Menyimpan Data...</h3>
             <p id="modal-desc-text" style="color:#8f9bba; font-size:14px; margin-bottom:15px;">Mohon tunggu, sistem sedang memproses nomor dokumen.</p>
-            <div style="background:#f4f7fe; border:1px dashed #4318ff; padding:10px; border-radius:8px; display:inline-block;">
+            <div style="background:#f4f7fe; border:1px dashed #4318ff; padding:10px; border-radius:2px; display:inline-block;">
                 <span style="font-size:11px; color:#8f9bba; display:block; margin-bottom:4px; font-weight:700;">NOMOR DOKUMEN</span>
                 <span id="success-doc-number" style="font-size:16px; color:#4318ff; font-weight:800;">Memproses...</span>
             </div>
@@ -2793,7 +2798,7 @@
                 const labelText = val === 10000 ? '10.000' : (val === 0 ? '0' : Number(val).toLocaleString('id-ID'));
                 
                 // Teks Angka Sumbu Y di Kiri
-                yGridSvg += `<text x="${yAxisWidth - 10}" y="${yPos + 3.5}" font-size="9.5" font-family="'Arial', sans-serif" font-weight="700" fill="#8f9bba" text-anchor="end">${labelText}</text>`;
+                yGridSvg += `<text x="${yAxisWidth - 10}" y="${yPos + 3.5}" font-size="9.5" font-family="'Asta Sans', sans-serif" font-weight="700" fill="#8f9bba" text-anchor="end">${labelText}</text>`;
                 // Garis Horizontal Grid Tipis
                 yGridSvg += `<line x1="${yAxisWidth}" y1="${yPos}" x2="${width - rightPadding}" y2="${yPos}" stroke="#edf2f7" stroke-width="1" />`;
             });
@@ -2838,7 +2843,7 @@
                     <g style="filter: drop-shadow(0 2px 4px rgba(43,54,116,0.15));">
                         <rect x="${badgeX - (badgeWidth / 2)}" y="${badgeY}" width="${badgeWidth}" height="${badgeHeight}" rx="11" fill="#ffffff" stroke="#e0e5f2" stroke-width="1"/>
                         <polygon points="${badgeX - 4},${badgeY + badgeHeight} ${badgeX + 4},${badgeY + badgeHeight} ${badgeX},${badgeY + badgeHeight + 4}" fill="#ffffff"/>
-                        <text x="${badgeX}" y="${badgeY + 15}" font-size="10.5" font-family="'Arial', sans-serif" font-weight="800" fill="#2b3674" text-anchor="middle">${badgeText}</text>
+                        <text x="${badgeX}" y="${badgeY + 15}" font-size="10.5" font-family="'Asta Sans', sans-serif" font-weight="800" fill="#2b3674" text-anchor="middle">${badgeText}</text>
                     </g>
                 `;
             }
@@ -3511,9 +3516,9 @@
 
                         let infoMode = '';
                         if (canEdit && (statusVal === 'approve' || statusVal === 'approved')) {
-                            infoMode = `<div class="print-no" style="margin-top:15px; padding:10px; background:#e0e5ff; color:#4318ff; border-radius:4px; font-weight:bold; text-align:center; font-size:12px;">Mode Author: Mengedit dokumen yang sudah di-Approve.</div>`;
+                            infoMode = `<div class="print-no" style="margin-top:15px; padding:10px; background:#e0e5ff; color:#4318ff; border-radius:2px; font-weight:bold; text-align:center; font-size:12px;">Mode Author: Mengedit dokumen yang sudah di-Approve.</div>`;
                         } else if (!canEdit) {
-                            infoMode = `<div class="print-no" style="margin-top:15px; padding:10px; background:#d1fae5; color:#065f46; border-radius:4px; font-weight:bold; text-align:center; font-size:12px;">Hanya Lihat.</div>`;
+                            infoMode = `<div class="print-no" style="margin-top:15px; padding:10px; background:#d1fae5; color:#065f46; border-radius:2px; font-weight:bold; text-align:center; font-size:12px;">Hanya Lihat.</div>`;
                         }
 
                         let docPrintTitle = isBS ? "LAPORAN DATA BARANG BS / REJECT" : "LAPORAN DATA HASIL PRODUKSI";
@@ -3846,23 +3851,23 @@
                                 <p>Nomor Dokumen: <b>${row[3] || '-'}</b></p>
                             </div>
                             <div class="info-box-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px;">
-                                <div class="info-box" style="background:#fff; border:1px solid #e0e5f2; padding:12px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+                                <div class="info-box" style="background:#fff; border:1px solid #e0e5f2; padding:12px; border-radius:2px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
                                     <div style="font-size:10px; color:#8f9bba; font-weight:700; text-transform:uppercase;">Unit Penerima</div>
                                     <div style="font-size:14px; color:#2b3674; font-weight:800; margin-top:4px;">${row[0] || '-'}</div>
                                 </div>
-                                <div class="info-box" style="background:#fff; border:1px solid #e0e5f2; padding:12px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+                                <div class="info-box" style="background:#fff; border:1px solid #e0e5f2; padding:12px; border-radius:2px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
                                     <div style="font-size:10px; color:#8f9bba; font-weight:700; text-transform:uppercase;">Nomor Dokumen</div>
                                     <div style="font-size:14px; color:#4318ff; font-weight:800; margin-top:4px;">${row[3] || '-'}</div>
                                 </div>
-                                <div class="info-box" style="background:#fff; border:1px solid #e0e5f2; padding:12px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+                                <div class="info-box" style="background:#fff; border:1px solid #e0e5f2; padding:12px; border-radius:2px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
                                     <div style="font-size:10px; color:#8f9bba; font-weight:700; text-transform:uppercase;">Tanggal / Waktu</div>
                                     <div style="font-size:14px; color:#2b3674; font-weight:800; margin-top:4px;">${row[1] || '-'} <span style="font-size:11px; font-weight:normal;">(${row[5] || '-'})</span></div>
                                 </div>
-                                <div class="info-box" style="background:#fff; border:1px solid #e0e5f2; padding:12px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+                                <div class="info-box" style="background:#fff; border:1px solid #e0e5f2; padding:12px; border-radius:2px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
                                     <div style="font-size:10px; color:#8f9bba; font-weight:700; text-transform:uppercase;">Pekerjaan Area</div>
                                     <div style="font-size:14px; color:#2b3674; font-weight:800; margin-top:4px;">${row[2] || '-'}</div>
                                 </div>
-                                <div class="info-box" style="background:#fff; border:1px solid #e0e5f2; padding:12px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.02); grid-column: span 2;">
+                                <div class="info-box" style="background:#fff; border:1px solid #e0e5f2; padding:12px; border-radius:2px; box-shadow:0 2px 8px rgba(0,0,0,0.02); grid-column: span 2;">
                                     <div style="font-size:10px; color:#8f9bba; font-weight:700; text-transform:uppercase;">Supplier & Ekspedisi</div>
                                     <div style="font-size:14px; color:#2b3674; font-weight:800; margin-top:4px; overflow:hidden; text-overflow:ellipsis;">${row[6] || '-'} <span style="font-weight:normal; font-size:12px; color:#8f9bba;">| Surat Jalan: ${row[7] || '-'}</span></div>
                                 </div>
@@ -3870,7 +3875,7 @@
                             <div class="print-section-title" style="display:none;">Data Rincian Fisik Aktual</div>
                             <h4 style="margin-bottom:12px; color:#2b3674;">Rincian Pemeriksaan Bahan Baku</h4>
                             <div>
-                                <div id="scroll-wrapper" style="background:#fff; border-radius:4px; border:1px solid #e0e5f2; overflow-x:auto; width:100%;">
+                                <div id="scroll-wrapper" style="background:#fff; border-radius:2px; border:1px solid #e0e5f2; overflow-x:auto; width:100%;">
                                     <table class="table-thin" style="width:100%; border-collapse: collapse; min-width: 800px;">
                                         <thead>
                                             <tr style="background:#f8fafc;">
@@ -3888,7 +3893,7 @@
                                     </table>
                                 </div>
                             </div>                            
-                            <div style="margin-top:15px; padding:10px; background:#d1fae5; color:#065f46; border-radius:4px; font-weight:bold; text-align:center; font-size:12px;">Hanya Lihat. Dokumen BBK saat ini tidak dapat diubah setelah di-submit.</div>
+                            <div style="margin-top:15px; padding:10px; background:#d1fae5; color:#065f46; border-radius:2px; font-weight:bold; text-align:center; font-size:12px;">Hanya Lihat. Dokumen BBK saat ini tidak dapat diubah setelah di-submit.</div>
                         `;
                         
                         // Sembunyikan Action Buttons untuk BBK (karena read-only untuk saat ini)
@@ -4149,7 +4154,7 @@
                         <li><b>Jeda Password:</b> Ganti password dibatasi jeda 15 hari.</li>
                     </ul>
                     Silakan hubungi PIC IT / Admin melalui kontak helpdesk di bawah ini:
-                    <div style="margin-top: 10px; background:#f4f7fe; padding:10px; border-radius:6px; border:1px dashed #4318ff; text-align:center;">
+                    <div style="margin-top: 10px; background:#f4f7fe; padding:10px; border-radius:2px; border:1px dashed #4318ff; text-align:center;">
                         <span style="font-size:11px; color:#8f9bba;">KONTAK ADMIN PRODUKSI / IT</span><br>
                         <b style="font-size:15px; color:#4318ff;">+62 812-XXXX-XXXX</b>
                     </div>
@@ -4807,10 +4812,13 @@
                 }
             }
 
+            const roleLower = (window.currentUserRole || "").toLowerCase();
+            const isOperatorRole = (roleLower === 'operator produksi' || roleLower === 'operator');
+
             const checkPerbantuan = document.getElementById('check-perbantuan');
             if(checkPerbantuan) {
                 checkPerbantuan.checked = false;
-                checkPerbantuan.disabled = false;
+                checkPerbantuan.disabled = isOperatorRole;
             }
             toggleManualOp();
             updateOperatorList();
@@ -5162,8 +5170,46 @@
             const container = document.getElementById('operator-container');
             if(!container) return;
             container.innerHTML = '';
-            
-            // Tampilkan semua operator aktif tanpa dibatasi Karu (memungkinkan pinjam operator)
+
+            const roleLower = (window.currentUserRole || "").toLowerCase();
+            const isOperator = (roleLower === 'operator produksi' || roleLower === 'operator');
+
+            // JIKA LOGIN SEBAGAI OPERATOR PRODUKSI: KUNCI TOTAL KE DIRI SENDIRI
+            if (isOperator) {
+                const currentName = window.currentUserName;
+                const div = document.createElement('div');
+                div.className = 'operator-tile selected';
+                div.textContent = currentName;
+                div.style.pointerEvents = 'none'; // Tidak bisa diklik / batal
+                div.style.background = '#4318ff';
+                div.style.color = '#fff';
+                div.title = 'Operator terkunci ke akun Anda';
+                container.appendChild(div);
+
+                // Sembunyikan pencarian operator & form perbantuan
+                const searchWrap = document.getElementById('wrapper-filter-op-input');
+                const perbantuanWrap = document.getElementById('check-perbantuan')?.parentElement;
+                if (searchWrap) searchWrap.style.display = 'none';
+                if (perbantuanWrap) perbantuanWrap.style.display = 'none';
+
+                // Otomatis pilihkan Karu dari database master jika tersedia
+                const opData = allOperators.find(o => String(o.nama || '').trim().toLowerCase() === currentName.toLowerCase());
+                if (opData && opData.karu) {
+                    const kSelect = document.getElementById('select-karu');
+                    if (kSelect) {
+                        kSelect.value = opData.karu;
+                        kSelect.disabled = true; // Kunci Karu sesuai regu aslinya
+                    }
+                }
+                return;
+            }
+
+            // UNTUK LEVEL LAIN (Karu, Admin, Supervisor, Author): Tampilkan semua operator aktif
+            const searchWrap = document.getElementById('wrapper-filter-op-input');
+            const perbantuanWrap = document.getElementById('check-perbantuan')?.parentElement;
+            if (searchWrap) searchWrap.style.display = 'block';
+            if (perbantuanWrap) perbantuanWrap.style.display = 'flex';
+
             const seen = new Set();
             const uniqueOperators = [];
             allOperators.forEach(item => {
@@ -5174,14 +5220,13 @@
                 }
             });
             
-            // Urutkan nama operator secara alfabetis A-Z
             uniqueOperators.sort((a, b) => a.nama.localeCompare(b.nama));
             
             uniqueOperators.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'operator-tile';
                 div.textContent = item.nama;
-                div.title = `Karu Asal: ${item.karu || '-'}`; // Info tooltip karu asal
+                div.title = `Karu Asal: ${item.karu || '-'}`;
                 div.onclick = function() { this.classList.toggle('selected'); };
                 container.appendChild(div);
             });
@@ -5362,7 +5407,7 @@
                     Object.keys(tableDataByPekerjaan).forEach(pek => {
                         tablesHtml += `
                         <div style="min-width: 350px; background:#fff;">
-                            <table class="table-thin" style="width:100%; border-collapse:collapse; border: 1px solid #7ea3c8; font-family: Arial, sans-serif;">
+                            <table class="table-thin" style="width:100%; border-collapse:collapse; border: 1px solid #7ea3c8; font-family: Asta Sans, sans-serif;">
                                 <thead>
                                     <tr style="background:#9ebde3;">
                                         <th style="padding:6px 8px; border:1px solid #7ea3c8; color:#000; font-size:11px; text-transform:none; font-weight:bold; text-align:center;">Kategori</th>
@@ -5876,24 +5921,48 @@
             // Render SVG Grafik Batang 7 Hari Terakhir
             renderOperatorBarChart(last7Days);
 
-            // Render Riwayat Tabel
+            // Simpan riwayat lengkap untuk keperluan filter tanggal
+            window.opFullRecentRows = recentRows;
+            renderOperatorRecentHistoryTable(recentRows);
+
+            // Render Kalender Bulan Ini
+            renderOperatorCalendar(attendedDays, now);
+        }
+
+        // FUNGSI RENDER TABEL RIWAYAT (TANPA INSENTIF)
+        function renderOperatorRecentHistoryTable(rows) {
             const tbody = document.getElementById('op-dashboard-history-tbody');
-            if (recentRows.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#8f9bba; padding:15px;">Belum ada inputan produksi.</td></tr>`;
+            if (!tbody) return;
+            if (!rows || rows.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#8f9bba; padding:15px;">Tidak ada riwayat inputan pada tanggal ini.</td></tr>`;
             } else {
-                tbody.innerHTML = recentRows.slice(0, 6).map(r => `
+                tbody.innerHTML = rows.slice(0, 8).map(r => `
                     <tr>
                         <td style="padding:6px 8px;">${r.tgl}</td>
                         <td style="padding:6px 8px; font-weight:600;">${r.pek}</td>
                         <td style="padding:6px 8px;">${r.barang}</td>
                         <td style="padding:6px 8px; text-align:right; font-weight:800; color:#4318ff;">${r.qty}</td>
-                        <td style="padding:6px 8px; text-align:right; font-weight:700; color:#05cd99;">Rp ${r.rp.toLocaleString('id-ID')}</td>
                     </tr>
                 `).join('');
             }
+        }
 
-            // Render Kalender Bulan Ini
-            renderOperatorCalendar(attendedDays, now);
+        // FILTER TANGGAL RIWAYAT OPERATOR
+        function filterOperatorRecentHistory() {
+            const filterDate = document.getElementById('op-history-filter-date')?.value;
+            if (!window.opFullRecentRows) return;
+            if (!filterDate) {
+                renderOperatorRecentHistoryTable(window.opFullRecentRows);
+                return;
+            }
+            const filtered = window.opFullRecentRows.filter(r => r.tgl === filterDate);
+            renderOperatorRecentHistoryTable(filtered);
+        }
+
+        function resetOperatorHistoryFilter() {
+            const dateInp = document.getElementById('op-history-filter-date');
+            if (dateInp) dateInp.value = '';
+            if (window.opFullRecentRows) renderOperatorRecentHistoryTable(window.opFullRecentRows);
         }
 
         function renderOperatorBarChart(last7Days) {
@@ -6456,7 +6525,7 @@
                 })
                     .then(res => {
                         if (res && res.success) {
-                            document.getElementById('doc-open-badge').innerHTML = '<span style="background:#fce8e8; color:#ee5d50; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold; vertical-align:middle; margin-left:10px;">BATAL</span>';
+                            document.getElementById('doc-open-badge').innerHTML = '<span style="background:#fce8e8; color:#ee5d50; padding:4px 8px; border-radius:2px; font-size:12px; font-weight:bold; vertical-align:middle; margin-left:10px;">BATAL</span>';
                             if(actionsContainer) actionsContainer.style.display = 'none';
                             
                             if (window.currentEditingReport) window.currentEditingReport[9] = 'Batal';
@@ -6779,7 +6848,7 @@
                 <hr style="margin: 15px 0; border: none; border-top: 1px solid #e0e5f2;">
                 <div>
                     <h4 style="margin-bottom:12px; color:#2b3674;">Rincian Barang Produksi</h4>
-                    <div style="background:#fff; border-radius:4px; border:1px solid #e0e5f2; overflow:hidden;">
+                    <div style="background:#fff; border-radius:2px; border:1px solid #e0e5f2; overflow:hidden;">
                         <table class="table-thin" style="width:100%; border-collapse: collapse;">
                             <thead>
                                 <tr style="background:#f8fafc;">
@@ -6938,7 +7007,7 @@
             
             // Regex case-insensitive untuk semua pecahan kata kunci
             const regex = new RegExp(`(${keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
-            return fullText.replace(regex, '<span style="background:#e0e5ff; color:#4318ff; padding:1px 6px; border-radius:4px; font-weight:800; border:1px solid #c7d2fe; box-shadow:0 1px 3px rgba(67,24,255,0.15);">$1</span>');
+            return fullText.replace(regex, '<span style="background:#e0e5ff; color:#4318ff; padding:1px 6px; border-radius:2px; font-weight:800; border:1px solid #c7d2fe; box-shadow:0 1px 3px rgba(67,24,255,0.15);">$1</span>');
         }
 
         let debounceTimer;
@@ -7993,7 +8062,7 @@
           renderBox4_TabelInsentif(groupedByDate, TARGET_UMR);
       }
 
-      // BOX 1: Double 3D Bar Chart, Thin Value Labels, & Clean Linear Regression Line
+      // BOX 1: Double 3D Bar Chart - Pixel-Exact (Bebas Distorsi Gepeng, Nilai Pcs & Rupiah Tegak & Jelas)
       function renderBox1_Grafik(groupedByDate) {
           const svgEl = document.getElementById('perf-bar-svg');
           const xLabelEl = document.getElementById('perf-bar-x-axis');
@@ -8020,13 +8089,16 @@
               dates = Object.keys(groupedByDate).sort();
           }
 
+          if (!svgEl) return;
+
           if (dates.length === 0) {
-              if(svgEl) svgEl.innerHTML = '';
+              svgEl.innerHTML = '';
               if(xLabelEl) xLabelEl.innerHTML = '<span style="width:100%; text-align:center; color:#8f9bba;">Tidak ada data pada periode ini</span>';
               if(gridEl) gridEl.innerHTML = '';
               return;
           }
 
+          // Hitung nilai maksimum skala
           let maxPct = 0;
           let maxQty = 0;
           dates.forEach(d => {
@@ -8036,11 +8108,10 @@
               if (item.qty > maxQty) maxQty = item.qty;
           });
 
-          // Skala Y proporsional berbasis target 100%
           let chartMaxPct = Math.max(100, Math.ceil((maxPct || 1) / 25) * 25);
           maxQty = maxQty === 0 ? 100 : maxQty * 1.15;
 
-          // Render Grid Garis Tipis & Label Persentase
+          // Render Grid Garis Tipis & Label Persentase Sumbu Y
           let gridHtml = '';
           for (let i = chartMaxPct; i >= 0; i -= (chartMaxPct / 4)) {
               let roundedPct = Math.round(i);
@@ -8051,10 +8122,26 @@
           }
           if(gridEl) gridEl.innerHTML = gridHtml;
 
-          let numBars = dates.length;
-          let xStep = 100 / numBars;
-          let barWidth = Math.max(0.8, Math.min(xStep * 0.32, 5));
-          let depth = Math.min(1.5, barWidth * 0.4);
+          // Ambil dimensi piksel aktual kontainer agar teks TIDAK GEPENG
+          const rect = svgEl.getBoundingClientRect();
+          const width = Math.max(300, Math.round(rect.width || svgEl.clientWidth || 600));
+          const height = Math.max(160, Math.round(rect.height || 200));
+
+          svgEl.setAttribute('viewBox', `0 0 ${width} ${height}`);
+          svgEl.removeAttribute('preserveAspectRatio');
+
+          const numBars = dates.length;
+          const paddingLeftRight = 15;
+          const effectiveWidth = width - (paddingLeftRight * 2);
+          const xStep = effectiveWidth / numBars;
+          
+          // Lebar batang proporsional berbasis piksel
+          const barWidth = Math.max(10, Math.min(xStep * 0.28, 22));
+          const depth = Math.min(6, Math.round(barWidth * 0.45)); // Sudut 3D miring
+
+          const baselineY = height - 12; // Garis lantai bawah
+          const topMarginY = 32; // Ruang bebas atas untuk teks label
+          const plotHeight = baselineY - topMarginY;
 
           let svgHtml = '';
           let regressionPoints = [];
@@ -8063,44 +8150,56 @@
               const item = groupedByDate[d] || { qty: 0, rp: 0 };
               const realPct = (item.rp / TARGET_UMR) * 100;
 
-              let hRp = (realPct / chartMaxPct) * 100;
-              let hQty = (item.qty / maxQty) * 100;
+              const hRp = (realPct / chartMaxPct) * plotHeight;
+              const hQty = (item.qty / maxQty) * plotHeight;
 
-              let xCenter = (i * xStep) + (xStep / 2);
-              let xQty = xCenter - barWidth - 0.2;
-              let xRp = xCenter + 0.2;
+              const xCenter = paddingLeftRight + (i * xStep) + (xStep / 2);
+              const xQty = xCenter - barWidth - 1.5;
+              const xRp = xCenter + 1.5;
 
-              let yQty = 100 - hQty;
-              let yRp = 100 - hRp;
+              const yQty = baselineY - hQty;
+              const yRp = baselineY - hRp;
 
               if (item.rp > 0) {
                   regressionPoints.push({ x: xCenter, y: yRp });
               }
 
-              // --- 3D BAR QTY (BIRU) ---
+              // --- 1. BATANG 3D QTY (PASTEL PERIWINKLE / SOFT LAVENDER) ---
               if (hQty > 0) {
-                  svgHtml += `<rect x="${xQty}" y="${yQty}" width="${barWidth}" height="${hQty}" fill="#4318ff" />`;
-                  svgHtml += `<polygon points="${xQty},${yQty} ${xQty + depth},${yQty - depth} ${xQty + barWidth + depth},${yQty - depth} ${xQty + barWidth},${yQty}" fill="#7b61ff" />`;
-                  svgHtml += `<polygon points="${xQty + barWidth},${yQty} ${xQty + barWidth + depth},${yQty - depth} ${xQty + barWidth + depth},${100 - depth} ${xQty + barWidth},100" fill="#2d0db3" />`;
+                  // Muka Depan (Pastel Soft)
+                  svgHtml += `<rect x="${xQty}" y="${yQty}" width="${barWidth}" height="${hQty}" fill="#7e92f5" rx="1.5" />`;
+                  // Atap 3D (Highlight Halus)
+                  svgHtml += `<polygon points="${xQty},${yQty} ${xQty + depth},${yQty - depth} ${xQty + barWidth + depth},${yQty - depth} ${xQty + barWidth},${yQty}" fill="#b8c5fb" />`;
+                  // Sisi Kanan 3D (Bayangan Teduh)
+                  svgHtml += `<polygon points="${xQty + barWidth},${yQty} ${xQty + barWidth + depth},${yQty - depth} ${xQty + barWidth + depth},${baselineY - depth} ${xQty + barWidth},${baselineY}" fill="#586fcb" />`;
 
+                  // NILAI PCS (Label Biru Lembut namun Jelas)
                   if (showValue) {
-                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.5}" font-size="2.6" font-weight="500" font-family="'Arial', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
+                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 4}" font-size="10" font-weight="800" font-family="'Asta Sans', sans-serif" fill="#4d5fa8" text-anchor="middle">${Math.round(item.qty)}</text>`;
                   }
               }
 
-              // --- 3D BAR RUPIAH (HIJAU/EMERALD) ---
+              // --- 2. BATANG 3D RUPIAH (PASTEL SEAFOAM / SOFT MINT) ---
               if (hRp > 0) {
-                  svgHtml += `<rect x="${xRp}" y="${yRp}" width="${barWidth}" height="${hRp}" fill="#05cd99" />`;
-                  svgHtml += `<polygon points="${xRp},${yRp} ${xRp + depth},${yRp - depth} ${xRp + barWidth + depth},${yRp - depth} ${xRp + barWidth},${yRp}" fill="#46f0c2" />`;
-                  svgHtml += `<polygon points="${xRp + barWidth},${yRp} ${xRp + barWidth + depth},${yRp - depth} ${xRp + barWidth + depth},${100 - depth} ${xRp + barWidth},100" fill="#038c67" />`;
+                  // Muka Depan (Mint Pastel)
+                  svgHtml += `<rect x="${xRp}" y="${yRp}" width="${barWidth}" height="${hRp}" fill="#52cbb3" rx="1.5" />`;
+                  // Atap 3D (Highlight Pastel Cerah)
+                  svgHtml += `<polygon points="${xRp},${yRp} ${xRp + depth},${yRp - depth} ${xRp + barWidth + depth},${yRp - depth} ${xRp + barWidth},${yRp}" fill="#a5ebd9" />`;
+                  // Sisi Kanan 3D (Bayangan Sage Lembut)
+                  svgHtml += `<polygon points="${xRp + barWidth},${yRp} ${xRp + barWidth + depth},${yRp - depth} ${xRp + barWidth + depth},${baselineY - depth} ${xRp + barWidth},${baselineY}" fill="#35a691" />`;
 
+                  // NILAI RUPIAH (Label Hijau Teduh & Tegak)
                   if (showValue) {
-                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.5}" font-size="2.6" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
+                      const rpShort = item.rp >= 1000 
+                          ? 'Rp ' + (item.rp / 1000).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + 'k' 
+                          : 'Rp ' + Math.round(item.rp);
+
+                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 4}" font-size="9.5" font-weight="800" font-family="'Asta Sans', sans-serif" fill="#238270" text-anchor="middle">${rpShort}</text>`;
                   }
               }
           });
 
-          // GARIS TREN LINIER RAPI (Metode Regresi Linier Presisi)
+          // GARIS TREN LINIER
           if (showTrend && regressionPoints.length >= 2) {
               let n = regressionPoints.length;
               let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
@@ -8115,24 +8214,24 @@
               let intercept = (sumY - slope * sumX) / n;
 
               let startX = regressionPoints[0].x;
-              let startY = Math.max(2, Math.min(98, slope * startX + intercept));
+              let startY = Math.max(topMarginY, Math.min(baselineY, slope * startX + intercept));
               let endX = regressionPoints[n - 1].x;
-              let endY = Math.max(2, Math.min(98, slope * endX + intercept));
+              let endY = Math.max(topMarginY, Math.min(baselineY, slope * endX + intercept));
 
-              svgHtml += `<line x1="${startX}" y1="${startY}" x2="${endX}" y2="${endY}" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="2,2" stroke-linecap="round" />`;
-              svgHtml += `<circle cx="${startX}" cy="${startY}" r="1.2" fill="#fff" stroke="#f59e0b" stroke-width="0.8" />`;
-              svgHtml += `<circle cx="${endX}" cy="${endY}" r="1.2" fill="#fff" stroke="#f59e0b" stroke-width="0.8" />`;
+              svgHtml += `<line x1="${startX}" y1="${startY}" x2="${endX}" y2="${endY}" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="4,4" stroke-linecap="round" />`;
+              svgHtml += `<circle cx="${startX}" cy="${startY}" r="2" fill="#fff" stroke="#f59e0b" stroke-width="1.5" />`;
+              svgHtml += `<circle cx="${endX}" cy="${endY}" r="2" fill="#fff" stroke="#f59e0b" stroke-width="1.5" />`;
           }
 
-          if(svgEl) svgEl.innerHTML = svgHtml;
+          svgEl.innerHTML = svgHtml;
 
-          // Label Sumbu X
+          // Label Sumbu X (Tanggal)
           let xLabelsHtml = '';
           let stepLabel = numBars > 16 ? 2 : 1;
           dates.forEach((d, idx) => {
               let parts = d.split('-');
               let labelText = (idx % stepLabel === 0 || idx === numBars - 1) ? `${parts[2]}/${parts[1]}` : '';
-              xLabelsHtml += `<span style="width:${xStep}%; text-align:center; font-size:${numBars > 20 ? '8.5px' : '10px'};">${labelText}</span>`;
+              xLabelsHtml += `<span style="flex: 1; text-align: center; font-size: 10px; color: #8f9bba; font-weight: 700;">${labelText}</span>`;
           });
           if(xLabelEl) xLabelEl.innerHTML = xLabelsHtml;
       }
@@ -8184,7 +8283,7 @@
 
               if (val > 0) {
                   svgHtml += `<rect x="${x - (barW / 2)}" y="${y}" width="${barW}" height="${h}" fill="url(#gradYearBar)" rx="1.5" />`;
-                  svgHtml += `<text x="${x}" y="${y - 1.5}" font-size="2.6" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
+                  svgHtml += `<text x="${x}" y="${y - 1.5}" font-size="2.6" font-weight="500" font-family="'Asta Sans', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
               }
 
               if (idx === 0) lineD += `M${x},${y} `;
@@ -8294,7 +8393,7 @@
                   svgHtml += `<polygon points="${xQty + barWidth},${yQty} ${xQty + barWidth + depth},${yQty - depth} ${xQty + barWidth + depth},${100 - depth} ${xQty + barWidth},100" fill="#2d0db3" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Arial', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
+                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Asta Sans', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
                   }
               }
 
@@ -8305,7 +8404,7 @@
                   svgHtml += `<polygon points="${xRp + barWidth},${yRp} ${xRp + barWidth + depth},${yRp - depth} ${xRp + barWidth + depth},${100 - depth} ${xRp + barWidth},100" fill="#038c67" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
+                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Asta Sans', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
                   }
               }
           });
@@ -8387,7 +8486,7 @@
                   // Side Face
                   svgHtml += `<polygon points="${x + barW},${y} ${x + barW + depth},${y - depth} ${x + barW + depth},${100 - depth} ${x + barW},100" fill="#04a37a" />`;
 
-                  svgHtml += `<text x="${x + (barW / 2)}" y="${y - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Arial', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
+                  svgHtml += `<text x="${x + (barW / 2)}" y="${y - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Asta Sans', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
               }
           });
 
