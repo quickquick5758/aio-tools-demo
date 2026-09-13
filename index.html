@@ -15,7 +15,7 @@
         body { background-color: #f4f7fe; color: #2b3674; display: flex; height: 100vh; overflow: hidden; position: relative; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
 
         .text-primary { color: #0d0d0d; }
         .text-secondary { color: #2b3674; }
@@ -47,7 +47,7 @@
             padding-bottom: 4px;
             margin-bottom: 4px;
         }
-        .menu-item { display: flex; align-items: center; padding: 9px 12px; border-radius: 6px; text-decoration: none; color: #8f9bba; transition: all 0.25s ease; cursor: pointer; font-size: 13.5px; position: relative; }
+        .menu-item { display: flex; align-items: center; padding: 9px 12px; border-radius: 2px; text-decoration: none; color: #8f9bba; transition: all 0.25s ease; cursor: pointer; font-size: 13.5px; position: relative; }
         .menu-item svg { width: 18px; height: 18px; margin-right: 12px; }
         .menu-item:hover { color: #4318ff; background-color: #f8fafc; }
         .menu-item.active { background-color: #4318ff; color: #ffffff; box-shadow: 0 4px 12px rgba(67,24,255,0.25); border-left: 4px solid #1e1b4b; }
@@ -61,7 +61,7 @@
         .submenu::before { content: ''; position: absolute; left: 16px; top: 0; bottom: 12px; width: 1px; background-color: #e2e8f0; }
         .submenu.open { max-height: 600px; padding-bottom: 4px; }
         
-        .submenu-item { display: block; padding: 7px 12px !important; color: #8f9bba; text-decoration: none; font-size: 13px; margin-bottom: 2px; border-radius: 4px; transition: all 0.25s ease; position: relative; border-bottom: 1px dashed #f1f5f9; }
+        .submenu-item { display: block; padding: 7px 12px !important; color: #8f9bba; text-decoration: none; font-size: 13px; margin-bottom: 2px; border-radius: 2px; transition: all 0.25s ease; position: relative; border-bottom: 1px dashed #f1f5f9; }
         .submenu-item::before { content: ''; position: absolute; left: -12px; top: 15px; width: 8px; height: 1px; background-color: #cbd5e1; }
         .submenu-item:hover { color: #4318ff; background-color: #f8fafc; }
 
@@ -77,10 +77,10 @@
 
         .select-wrapper { position: relative; display: inline-block; }
         .select-wrapper::after { content: '\25BC'; position: absolute; top: 50%; right: 16px; transform: translateY(-50%); font-size: 10px; color: #2b3674; pointer-events: none; }
-        .header-select { background: #ffffff; border: 1px solid #f0f0f0; border-radius: 4px; color: #2b3674; font-weight: 700; padding: 0 32px 0 16px; font-size: 14px; cursor: pointer; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); height: 44px; min-width: 140px; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+        .header-select { background: #ffffff; border: 1px solid #f0f0f0; border-radius: 2px; color: #2b3674; font-weight: 700; padding: 0 32px 0 16px; font-size: 14px; cursor: pointer; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); height: 44px; min-width: 140px; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
         .header-select:disabled { background-color: #f8fafc; color: #a3aed1; cursor: not-allowed; border-color: #e2e8f0; }
 
-        .profile-wrapper { display: flex; align-items: center; background: #ffffff; padding: 0 16px 0 8px; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border: 1px solid #e0e5f2; cursor: pointer; transition: all 0.2s; height: 44px; box-sizing: border-box; }
+        .profile-wrapper { display: flex; align-items: center; background: #ffffff; padding: 0 16px 0 8px; border-radius: 2px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border: 1px solid #e0e5f2; cursor: pointer; transition: all 0.2s; height: 44px; box-sizing: border-box; }
         .profile-wrapper:hover { box-shadow: 0 4px 15px rgba(67,24,255,0.08); border-color: #4318ff; }
         .profile-img { width: 30px; height: 30px; border-radius: 50%; }
         .profile-info { display: flex; flex-direction: column; margin-left: 10px; justify-content: center; }
@@ -88,7 +88,7 @@
         .profile-role { font-size: 11px; font-weight: 600; color: #8f9bba; line-height: 1; }
 
         .profile-container { position: relative; display: inline-block; }
-        .profile-dropdown { display: none; position: absolute; right: 0; top: 110%; background-color: #ffffff; min-width: 180px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); border-radius: 4px; z-index: 100; border: 1px solid #f0f0f0; overflow: hidden; }
+        .profile-dropdown { display: none; position: absolute; right: 0; top: 110%; background-color: #ffffff; min-width: 180px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); border-radius: 2px; z-index: 100; border: 1px solid #f0f0f0; overflow: hidden; }
         .profile-dropdown.show { display: block; }
         .profile-dropdown a { color: #2b3674; padding: 12px 16px; text-decoration: none; display: flex; align-items: center; font-size: 14px; font-weight: 600; transition: background-color 0.2s; }
         .profile-dropdown a svg { width: 16px; height: 16px; margin-right: 12px; color: #8f9bba; transition: color 0.2s; }
@@ -107,7 +107,7 @@
 
         /* --- DASHBOARD STYLES --- */
         .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 24px; }
-        .card { background: rgba(255, 255, 255, 0.95); border-radius: 4px; padding: 20px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05); }
+        .card { background: rgba(255, 255, 255, 0.95); border-radius: 2px; padding: 20px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05); }
         .stat-card { display: flex; align-items: center; justify-content: space-between; }
         .stat-info p { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
         .stat-info h3 { font-size: 24px; }
@@ -118,8 +118,8 @@
         .icon-green { background: #ebfcf6; color: #05cd99; }
         .icon-red { background: #fce8e8; color: #ee5d50; }
 
-        .input-wrapper { background: #fff; padding: 24px; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .form-control { width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 4px; margin-top: 5px; outline: none; }
+        .input-wrapper { background: #fff; padding: 24px; border-radius: 2px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 2px; margin-top: 5px; outline: none; }
         .form-control:focus { border-color: #4318ff; }
         .form-control:disabled { background-color: #f8fafc; color: #a3aed1; cursor: not-allowed; }
 
@@ -128,7 +128,7 @@
         .card-gradient p { color: #e0e5ff; font-size: 13px; }
         .card-gradient h3 { font-size: 28px; margin-top: 4px; }
         .badge-container { display: flex; gap: 8px; margin-top: 16px; }
-        .badge { background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 11px; backdrop-filter: blur(4px); }
+        .badge { background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 2px; font-size: 11px; backdrop-filter: blur(4px); }
         .circle-decor { position: absolute; right: -24px; bottom: -24px; width: 96px; height: 96px; background: rgba(255,255,255,0.1); border-radius: 50%; }
 
         .grid-main { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
@@ -139,9 +139,9 @@
         .chart-line { border-bottom: 1px solid #f0f0f0; width: 100%; height: 0; }
         .chart-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-        .inventory-box { background: #f4f7fe; border-radius: 4px; padding: 16px; border: 1px solid #f0f0f0; margin-bottom: 24px; }
+        .inventory-box { background: #f4f7fe; border-radius: 2px; padding: 16px; border: 1px solid #f0f0f0; margin-bottom: 24px; }
         .inv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .inv-tag { background: #4318ff; color: #fff; font-size: 10px; padding: 4px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; }
+        .inv-tag { background: #4318ff; color: #fff; font-size: 10px; padding: 4px 8px; border-radius: 2px; font-weight: 700; text-transform: uppercase; }
         .inv-stock { font-size: 14px; font-weight: 700; }
         .inv-title { font-size: 14px; font-weight: 700; line-height: 1.4; margin-bottom: 4px; }
         .inv-subtitle { font-size: 12px; color: #8f9bba; font-weight: 600; }
@@ -158,7 +158,7 @@
         /* --- TABLE STYLES --- */
         .table-container { 
             background: #fff; 
-            border-radius: 4px; 
+            border-radius: 2px; 
             box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05); 
             overflow-x: auto; 
             overflow-y: auto; 
@@ -208,11 +208,11 @@
         }
         .table-thin thead tr.header-group th:last-child { border-right: none; }
         .table-thin tbody tr:hover { background-color: #f4f7fe; }
-        .btn-modern { background: #4318ff; color: #fff; border: none; border-radius: 4px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.3s; }
+        .btn-modern { background: #4318ff; color: #fff; border: none; border-radius: 2px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.3s; }
         .btn-modern:hover { background: #3311db; }
 
         .operator-tile { 
-            padding: 8px 12px; border-radius: 4px; border: 1px solid #e0e5f2; 
+            padding: 8px 12px; border-radius: 2px; border: 1px solid #e0e5f2; 
             cursor: pointer; background: #fff; transition: 0.3s; margin-bottom: 5px;
         }
         .operator-tile.selected { background: #4318ff; color: #fff; border-color: #4318ff; }
@@ -230,23 +230,23 @@
         .login-wrapper-split { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1000px; padding: 40px; gap: 60px; }
         .login-left-illustration { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #ffffff; position: relative; min-height: 400px; }
         .staircase-container { position: relative; width: 260px; height: 260px; display: flex; align-items: flex-end; justify-content: center; }
-        .stair-step { position: absolute; background: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 6px; backdrop-filter: blur(4px); transition: all 0.3s ease; }
+        .stair-step { position: absolute; background: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 2px; backdrop-filter: blur(4px); transition: all 0.3s ease; }
         .stair-1 { width: 60px; height: 60px; bottom: 0px; left: 0px; }
         .stair-2 { width: 60px; height: 110px; bottom: 0px; left: 65px; }
         .stair-3 { width: 60px; height: 160px; bottom: 0px; left: 130px; }
         .stair-4 { width: 60px; height: 210px; bottom: 0px; left: 195px; background: rgba(255, 255, 255, 0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .illustration-caption { margin-top: 24px; text-align: center; color: #e0e5ff; font-size: 15px; font-weight: 600; letter-spacing: 0.5px; }
         
-        .login-box { background-color: #ffffff; padding: 44px; border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.25); width: 100%; max-width: 420px; text-align: center; position: relative; z-index: 10; border: 1px solid rgba(255,255,255,0.2); }
-        .login-box { background-color: #ffffff; padding: 40px; border-radius: 4px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
+        .login-box { background-color: #ffffff; padding: 44px; border-radius: 2px; box-shadow: 0 25px 60px rgba(0,0,0,0.25); width: 100%; max-width: 420px; text-align: center; position: relative; z-index: 10; border: 1px solid rgba(255,255,255,0.2); }
+        .login-box { background-color: #ffffff; padding: 40px; border-radius: 2px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
         .login-logo { font-size: 28px; margin-bottom: 24px; }
         .login-title { font-size: 20px; color: #2b3674; font-weight: 700; margin-bottom: 8px; }
         .login-subtitle { font-size: 14px; color: #8f9bba; margin-bottom: 32px; }
         .form-group { margin-bottom: 20px; text-align: left; }
         .form-group label { display: block; font-size: 12px; font-weight: 700; color: #2b3674; margin-bottom: 8px; }
-        .form-group input { width: 100%; padding: 12px 16px; border: 1px solid #e0e5f2; border-radius: 4px; font-size: 14px; outline: none; transition: border-color 0.3s; }
+        .form-group input { width: 100%; padding: 12px 16px; border: 1px solid #e0e5f2; border-radius: 2px; font-size: 14px; outline: none; transition: border-color 0.3s; }
         .form-group input:focus { border-color: #4318ff; }
-        .login-btn { width: 100%; padding: 14px; background-color: #4318ff; color: #ffffff; border: none; border-radius: 4px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background-color 0.3s; margin-top: 10px; }
+        .login-btn { width: 100%; padding: 14px; background-color: #4318ff; color: #ffffff; border: none; border-radius: 2px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background-color 0.3s; margin-top: 10px; }
         .login-btn:hover { background-color: #3311db; }
 
         .footer-ticker { 
@@ -278,7 +278,7 @@
             .footer-ticker { left: 0; z-index: 10; } 
             
             .header { padding: 16px 20px; flex-direction: column; align-items: flex-start; justify-content: center; height: auto; gap: 12px; margin-bottom: 10px; }
-            .header-title { width: 100%; padding: 8px 12px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); } 
+            .header-title { width: 100%; padding: 8px 12px; background: #fff; border-radius: 2px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); } 
             .header-title h2 { font-size: 16px !important; line-height: 1.3; margin-bottom: 2px; }
             .header-title h1 { font-size: 12px !important; }
             
@@ -374,7 +374,7 @@
         animation: ticker 50s linear infinite; 
         }
         .search-input { 
-            padding: 8px 16px; border: 1px solid #e0e5f2; border-radius: 4px; font-size: 13px; width: 300px; outline: none; 
+            padding: 8px 16px; border: 1px solid #e0e5f2; border-radius: 2px; font-size: 13px; width: 300px; outline: none; 
         }
         .sort-icon { cursor: pointer; margin-left: 5px; font-size: 10px; color: #8f9bba; }
         @keyframes ticker { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
@@ -415,7 +415,7 @@
             position: relative; 
             display: inline-block; 
             background: #ffffff; 
-            border-radius: 6px; 
+            border-radius: 2px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.02);
             border: 1px solid #e0e5f2;
             transition: all 0.3s ease;
@@ -438,7 +438,7 @@
             padding-right: 42px !important;
             cursor: pointer;
             border: 1px solid #e0e5f2;
-            border-radius: 6px;
+            border-radius: 2px;
             font-weight: 600;
             color: #2b3674;
             transition: all 0.3s ease;
@@ -458,7 +458,7 @@
             background: #fff; padding: 32px; border-radius: 2px; width: 100%; max-width: 400px;
             text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
         }
-        button, .btn-modern { border-radius: 4px !important; } /* Standarisasi Seluruh Button */
+        button, .btn-modern { border-radius: 2px !important; } /* Standarisasi Seluruh Button */
         .dialog-icon { margin-bottom: 16px; }
         .dialog-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; color: #2b3674; }
         .dialog-message { font-size: 14px; color: #8f9bba; margin-bottom: 24px; line-height: 1.5; }
@@ -739,7 +739,7 @@
 
                 <!-- Icon Tiket Aduan / Bantuan Login -->
                 <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #e0e5f2; display: flex; justify-content: center; align-items: center;">
-                    <button type="button" onclick="bukaTiketAduan()" style="background: none; border: none; color: #4318ff; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 4px; transition: 0.2s;" onmouseover="this.style.background='#f4f7fe'" onmouseout="this.style.background='none'">
+                    <button type="button" onclick="bukaTiketAduan()" style="background: none; border: none; color: #4318ff; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 2px; transition: 0.2s;" onmouseover="this.style.background='#f4f7fe'" onmouseout="this.style.background='none'">
                         <svg style="width: 18px; height: 18px; color: #4318ff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         Kendala Login / Tiket Aduan
                     </button>
@@ -984,7 +984,7 @@
                     <div class="card">
                         <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                             <h3 class="text-secondary font-bold" style="margin-bottom:0;">Tren Produksi</h3>
-                            <div id="chart-period-container" style="display: flex; gap: 4px; background: #f8fafc; padding: 4px; border-radius: 6px; border: 1px solid #e0e5f2;">
+                            <div id="chart-period-container" style="display: flex; gap: 4px; background: #f8fafc; padding: 4px; border-radius: 2px; border: 1px solid #e0e5f2;">
                                 <button class="btn-period" data-period="3days" onclick="setChartPeriod('3days', this)" style="border:none; background:transparent; color:#8f9bba; padding:6px 12px; border-radius:2px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">3 Hari</button>
                                 <button class="btn-period active" data-period="1week" onclick="setChartPeriod('1week', this)" style="border:none; background:#4318ff; color:#fff; padding:6px 12px; border-radius:2px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">1 Minggu</button>
                                 <button class="btn-period" data-period="1month" onclick="setChartPeriod('1month', this)" style="border:none; background:transparent; color:#8f9bba; padding:6px 12px; border-radius:2px; font-size:12px; font-weight:700; cursor:pointer; transition:0.3s;">1 Bulan</button>
@@ -1008,7 +1008,7 @@
                         </div>
                         <p style="font-size: 11px; color:#8f9bba; margin-bottom: 12px;">Berikut adalah daftar dokumen yang telah di-submit ke pusat, namun masih menunggu approve.</p>
                         
-                        <div class="table-container" style="flex: 1; padding: 0; box-shadow: none; border: 1px solid #e0e5f2; border-radius: 6px; overflow-y: auto;">
+                        <div class="table-container" style="flex: 1; padding: 0; box-shadow: none; border: 1px solid #e0e5f2; border-radius: 2px; overflow-y: auto;">
                             <table class="table-thin" style="width: 100%; font-size: 11px; border-collapse: collapse;">
                                 <thead style="position: sticky; top: 0; background: #f8fafc; z-index: 10;">
                                     <tr>
@@ -1099,7 +1099,7 @@
                                 <span style="font-size: 9.5px; color: #8f9bba;" id="op-stat-hk-label">0 Hari Kerja</span>
                             </div>
                         </div>
-                        <div style="margin-top: 14px; background: #ebfcf6; border: 1px dashed #05cd99; padding: 8px 12px; border-radius: 4px; text-align: center;">
+                        <div style="margin-top: 14px; background: #ebfcf6; border: 1px dashed #05cd99; padding: 8px 12px; border-radius: 2px; text-align: center;">
                             <span style="font-size: 11px; color: #065f46; font-weight: 700;">Grade Produktivitas: </span>
                             <b id="op-dashboard-grade" style="font-size: 15px; color: #05cd99;">-</b>
                         </div>
@@ -1113,7 +1113,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
                             <h3 class="text-secondary font-bold" style="font-size: 16px; margin: 0;">Riwayat Input Produksi Terkini</h3>
                             <div style="display: flex; align-items: center; gap: 6px;">
-                                <input type="date" id="op-history-filter-date" class="search-input" style="height: 30px; padding: 2px 8px; font-size: 11.5px; width: 130px; border-radius: 4px;" onchange="filterOperatorRecentHistory()">
+                                <input type="date" id="op-history-filter-date" class="search-input" style="height: 30px; padding: 2px 8px; font-size: 11.5px; width: 130px; border-radius: 2px;" onchange="filterOperatorRecentHistory()">
                                 <button class="btn-modern" style="height: 30px; padding: 0 10px; font-size: 11px; background: #f4f7fe; color: #4318ff; border: 1px solid #4318ff;" onclick="resetOperatorHistoryFilter()">Semua</button>
                             </div>
                         </div>
@@ -1298,11 +1298,11 @@
                             <div class="bbk-row-item" style="display: grid; grid-template-columns: 3fr 1fr 2fr 40px; gap: 8px; align-items: start; margin-bottom: 5px;">
                                 <div class="form-group" style="position: relative; margin-bottom:0;">
                                     <input type="text" class="form-control bbk-barang-search" placeholder="Ketik kode / nama barang..." autocomplete="off" onfocus="handleBbkInput(this, true)" onclick="handleBbkInput(this, true)" oninput="debouncedHandleBbkInput(this)" onkeydown="navigateSuggestions(event, this)" style="margin-top:0; padding:10px;">
-                                    <div class="bbk-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 4px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
+                                    <div class="bbk-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
                                 </div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" inputmode="numeric" class="form-control bbk-qty-val" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="0" style="margin-top:0; padding:10px;"></div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" class="form-control bbk-ket-val" oninput="this.value = this.value.toUpperCase()" placeholder="KONDISI BAIK / SESUAI..." style="margin-top:0; padding:10px;"></div>
-                                <button type="button" onclick="removeBbkRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 4px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Hapus Baris">
+                                <button type="button" onclick="removeBbkRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 2px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Hapus Baris">
                                     <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                 </button>
                             </div>
@@ -1343,7 +1343,7 @@
                     </div>
 
                     <!-- BOX KARU & OPERATOR -->
-                    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px dashed #e0e5f2; margin-bottom: 20px;">
+                    <div style="background: #f8fafc; padding: 16px; border-radius: 2px; border: 1px dashed #e0e5f2; margin-bottom: 20px;">
                         <div class="form-group" style="max-width: 300px; margin-bottom: 15px;">
                             <label>Pilih Karu <span class="text-danger">*</span></label>
                             <select id="select-karu" class="form-control" onchange="updateOperatorList()">
@@ -1356,7 +1356,7 @@
                                 <label style="font-weight: 700; color: #2b3674; margin-bottom:0;">Pengaturan Operator <span class="text-danger">*</span></label>
                                 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                                     <div id="wrapper-filter-op-input" style="position: relative;">
-                                        <input type="text" id="filter-input-operator" placeholder="Cari nama operator..." class="search-input" style="width: 170px; height: 32px; padding: 4px 10px 4px 28px; font-size: 12px; border-radius: 4px;" oninput="filterInputBaruOperators()">
+                                        <input type="text" id="filter-input-operator" placeholder="Cari nama operator..." class="search-input" style="width: 170px; height: 32px; padding: 4px 10px 4px 28px; font-size: 12px; border-radius: 2px;" oninput="filterInputBaruOperators()">
                                         <svg style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: #8f9bba;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                     </div>
                                     <label style="cursor:pointer; font-weight:700; color:#4318ff; font-size:12px; display:flex; align-items:center; gap:4px;">
@@ -1392,12 +1392,12 @@
                             <div class="barang-row-item" style="display: grid; grid-template-columns: 3fr 1fr 1fr 2fr 40px; gap: 8px; align-items: start; margin-bottom: 5px;">
                                 <div class="form-group" style="position: relative; margin-bottom:0;">
                                     <input type="text" class="form-control input-barang-search" placeholder="Pilih / ketik kode barang..." autocomplete="off" onfocus="handleBarangInput(this, true)" onclick="handleBarangInput(this, true)" oninput="debouncedHandleBarangInput(this)" onkeydown="navigateSuggestions(event, this)" style="margin-top:0; padding:10px;">
-                                    <div class="barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 4px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
+                                    <div class="barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
                                 </div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" value="0" class="form-control input-qty-stok text-secondary font-bold" disabled style="margin-top:0; padding:10px; background:#f8fafc;"></div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" inputmode="numeric" class="form-control input-qty-val" oninput="this.value = this.value.replace(/[^0-9]/g, ''); recalculateAllStok();" onkeydown="if(['ArrowUp','ArrowDown','e','E','+','-','.'].includes(event.key)) event.preventDefault();" placeholder="0" style="margin-top:0; padding:10px;"></div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" class="form-control input-ket-val" oninput="this.value = this.value.toUpperCase()" style="margin-top:0; padding:10px;"></div>
-                                <button type="button" onclick="removeBarangRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 4px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
+                                <button type="button" onclick="removeBarangRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 2px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
                                     <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                 </button>
                             </div>
@@ -1460,11 +1460,11 @@
                             <div class="bs-row-item" style="display: grid; grid-template-columns: 3fr 1fr 2fr 40px; gap: 8px; align-items: start; margin-bottom: 5px;">
                                 <div class="form-group" style="position: relative; margin-bottom:0;">
                                     <input type="text" class="form-control bs-barang-search" placeholder="Ketik kode atau nama..." autocomplete="off" onfocus="handleBsInput(this, true)" onclick="handleBsInput(this, true)" oninput="debouncedHandleBsInput(this)" onkeydown="navigateSuggestions(event, this)" style="margin-top:0; padding:10px;">
-                                    <div class="bs-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
+                                    <div class="bs-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
                                 </div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" inputmode="numeric" class="form-control bs-qty-val" oninput="this.value = this.value.replace(/[^0-9]/g, '');" onkeydown="if(['ArrowUp','ArrowDown','e','E','+','-','.'].includes(event.key)) event.preventDefault();" placeholder="0" style="margin-top:0; padding:10px;"></div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" class="form-control bs-ket-val" oninput="this.value = this.value.toUpperCase()" placeholder="BS NODA/CACAT..." style="margin-top:0; padding:10px;"></div>
-                                <button type="button" onclick="removeBsRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 4px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
+                                <button type="button" onclick="removeBsRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 2px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
                                     <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                 </button>
                             </div>
@@ -1766,29 +1766,29 @@
                                             
                                             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                                                 <!-- Box UMR (Tinggi Presisi 38px) -->
-                                                <div style="background: #f8fafc; height: 38px; padding: 0 12px; border-radius: 4px; border: 1px solid #e0e5f2; display: flex; flex-direction: column; justify-content: center; text-align:center; box-sizing: border-box;">
+                                                <div style="background: #f8fafc; height: 38px; padding: 0 12px; border-radius: 2px; border: 1px solid #e0e5f2; display: flex; flex-direction: column; justify-content: center; text-align:center; box-sizing: border-box;">
                                                     <span style="font-size:9px; color:#8f9bba; font-weight:700; line-height: 1.1;">UMR</span>
                                                     <span style="font-size:12.5px; color:#2b3674; font-weight:800; line-height: 1.2;">Rp 2.774.000</span>
                                                 </div>
                                                 <!-- Box Target (Tinggi Presisi 38px) -->
-                                                <div style="background: #ebfcf6; height: 38px; padding: 0 12px; border-radius: 4px; border: 1px solid #05cd99; display: flex; flex-direction: column; justify-content: center; text-align:center; box-sizing: border-box;">
+                                                <div style="background: #ebfcf6; height: 38px; padding: 0 12px; border-radius: 2px; border: 1px solid #05cd99; display: flex; flex-direction: column; justify-content: center; text-align:center; box-sizing: border-box;">
                                                     <span style="font-size:9px; color:#065f46; font-weight:700; line-height: 1.1;">Target / Hari</span>
                                                     <span style="font-size:12.5px; color:#05cd99; font-weight:800; line-height: 1.2;" id="perf-target-val">Rp 110.960</span>
                                                 </div>
                                                 <!-- Search Operator -->
                                                 <div style="position: relative;">
-                                                    <input type="text" id="perf-search-op" class="search-input" placeholder="Nama Operator..." style="width: 170px; height: 38px; padding: 0 12px 0 30px; border-radius: 4px; box-sizing: border-box;" oninput="filterPerformaOperatorTiles()">
+                                                    <input type="text" id="perf-search-op" class="search-input" placeholder="Nama Operator..." style="width: 170px; height: 38px; padding: 0 12px 0 30px; border-radius: 2px; box-sizing: border-box;" oninput="filterPerformaOperatorTiles()">
                                                     <svg style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: #8f9bba;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                                 </div>
                                                 <!-- Date Filter -->
-                                                <div style="display: flex; align-items: center; gap: 4px; background: #fff; height: 38px; padding: 0 8px; border-radius: 4px; border: 1px solid #e0e5f2; box-sizing: border-box;">
+                                                <div style="display: flex; align-items: center; gap: 4px; background: #fff; height: 38px; padding: 0 8px; border-radius: 2px; border: 1px solid #e0e5f2; box-sizing: border-box;">
                                                     <input type="date" id="perf-start-date" class="search-input" style="border: none; width: 115px; padding: 0; font-size:12px;">
                                                     <span style="color: #8f9bba; font-weight: bold;">-</span>
                                                     <input type="date" id="perf-end-date" class="search-input" style="border: none; width: 115px; padding: 0; font-size:12px;">
                                                 </div>
                                                 <!-- Buttons -->
-                                                <button class="btn-modern" style="height: 38px; padding: 0 16px; border-radius: 4px;" onclick="renderPerformaModule()">Filter</button>
-                                                <button class="btn-modern" style="height: 38px; padding: 0 14px; background: #f4f7fe; color: #4318ff; border: 1px solid #4318ff; border-radius: 4px;">Compare Data</button>
+                                                <button class="btn-modern" style="height: 38px; padding: 0 16px; border-radius: 2px;" onclick="renderPerformaModule()">Filter</button>
+                                                <button class="btn-modern" style="height: 38px; padding: 0 14px; background: #f4f7fe; color: #4318ff; border: 1px solid #4318ff; border-radius: 2px;">Compare Data</button>
                                             </div>
                                         </div>
 
@@ -1802,7 +1802,7 @@
                                         <div style="display: grid; grid-template-columns: 1.8fr 1fr; gap: 24px; margin-bottom: 24px;">
                                             
                                             <!-- Box 1: Grafik Pencapaian (Double Bar) -->
-                                            <div style="background: #fff; border: 1px solid #e0e5f2; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                                            <div style="background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
                                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:8px;">
                                                     <h4 class="text-secondary font-bold" style="font-size:16px; margin:0;">Grafik Pencapaian</h4>
                                                     <div style="display: flex; gap: 12px; align-items: center;">
@@ -1816,8 +1816,8 @@
                                                 </div>
                                                 <!-- Legend Pastel -->
                                                 <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 11px; font-weight: 700; color: #8f9bba;">
-                                                    <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; background: #7e92f5; border-radius: 3px;"></span> Qty (Pcs)</div>
-                                                    <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; background: #52cbb3; border-radius: 3px;"></span> Rupiah (Rp)</div>
+                                                    <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; background: #7e92f5; border-radius: 2px;"></span> Qty (Pcs)</div>
+                                                    <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; background: #52cbb3; border-radius: 2px;"></span> Rupiah (Rp)</div>
                                                 </div>
                                                 <div id="perf-bar-container" style="position: relative; height: 220px; width: 100%;">
                                                     <!-- Grid Lines Injected by JS -->
@@ -1830,7 +1830,7 @@
                                             </div>
 
                                             <!-- Box 2: Rata-Rata Pencapaian (Donut) -->
-                                            <div style="background: #fff; border: 1px solid #e0e5f2; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;">
+                                            <div style="background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;">
                                                 <h4 class="text-secondary font-bold" style="font-size:16px; width:100%; margin-bottom: 16px;">Rata-Rata Pencapaian</h4>
                                                 
                                                 <div style="position: relative; width: 160px; height: 160px; margin-bottom: 20px;">
@@ -1846,7 +1846,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div style="width: 100%; text-align: center; background: #ebfcf6; border: 1px dashed #05cd99; padding: 12px; border-radius: 8px;">
+                                                <div style="width: 100%; text-align: center; background: #ebfcf6; border: 1px dashed #05cd99; padding: 12px; border-radius: 2px;">
                                                     <span style="font-size: 11px; color: #065f46; font-weight: 700; display: block; margin-bottom: 4px;">Rata-rata Pendapatan / Hari</span>
                                                     <h3 id="perf-avg-rp" style="font-size: 18px; color: #05cd99; font-weight: 900; margin: 0;">Rp 0</h3>
                                                 </div>
@@ -1858,13 +1858,13 @@
                                         <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px;">
                                             
                                             <!-- Box 3: Grafik Pendapatan Bulanan 1 Tahun (3D & Lebih Lebar) -->
-                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 4px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 2px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
                                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                                     <div>
                                                         <h4 class="text-secondary font-bold" style="font-size:15px; margin:0;">Grafik Pendapatan Bulanan (1 Tahun)</h4>
                                                         <span style="font-size:11px; color:#8f9bba;">Benchmark UMR: Rp 2.774.000 / Bulan</span>
                                                     </div>
-                                                    <select id="perf-year-select" class="search-input" style="width: 85px; height: 32px; padding: 2px 6px; font-size: 12px; border-radius: 4px;" onchange="renderPerformaModule()">
+                                                    <select id="perf-year-select" class="search-input" style="width: 85px; height: 32px; padding: 2px 6px; font-size: 12px; border-radius: 2px;" onchange="renderPerformaModule()">
                                                         <option value="2026" selected>2026</option>
                                                         <option value="2025">2025</option>
                                                         <option value="2024">2024</option>
@@ -1878,7 +1878,7 @@
                                             </div>
 
                                             <!-- Box 4: Insentif Per Tanggal -->
-                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 4px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 2px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
                                                 <h4 class="text-secondary font-bold" style="font-size:15px; margin-bottom: 12px;">Insentif per Tanggal</h4>
                                                 <div class="table-container" style="padding: 0; box-shadow: none; max-height: 210px; overflow-y: auto;">
                                                     <table class="table-thin" style="width: 100%; text-align: center;">
@@ -1903,7 +1903,7 @@
 
                                 <!-- DUMMY VIEW INSENTIF (BARU) -->
                                 <div id="view-insentif" class="view-section">
-                                    <div class="card" style="margin-bottom: 24px; min-height: 85vh; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px;">
+                                    <div class="card" style="margin-bottom: 24px; min-height: 85vh; border-radius: 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px;">
                                         <div style="width: 64px; height: 64px; background: #e0e5ff; color: #4318ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
                                             <svg style="width: 32px; height: 32px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                         </div>
@@ -1953,7 +1953,7 @@
 
                                 <!-- 8.6 VIEW SUMMARY (RAPOR OPERATOR) -->
                                 <div id="view-summary" class="view-section">
-                                    <div class="card" style="margin-bottom: 24px; min-height: 85vh; border-radius: 4px;">
+                                    <div class="card" style="margin-bottom: 24px; min-height: 85vh; border-radius: 2px;">
                                         
                                         <!-- 1. BARIS HEADER & FILTER PENCARIAN (TEMA DEFAULT) -->
                                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:16px; border-bottom: 1px solid #f0f0f0; padding-bottom: 16px;">
@@ -1965,17 +1965,17 @@
                                             <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
                                                 <!-- Search Bar -->
                                                 <div style="position: relative;">
-                                                    <input type="text" id="summary-operator-search" class="search-input" placeholder="Nama Operator..." style="width: 180px; padding-left: 32px; border-radius: 4px;" oninput="filterSummaryOperatorChips()">
+                                                    <input type="text" id="summary-operator-search" class="search-input" placeholder="Nama Operator..." style="width: 180px; padding-left: 32px; border-radius: 2px;" oninput="filterSummaryOperatorChips()">
                                                     <svg style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: #8f9bba;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                                 </div>
                                                 <!-- Rentang Tanggal -->
-                                                <div style="display: flex; align-items: center; gap: 4px; background: #fff; padding: 2px 8px; border-radius: 4px; border: 1px solid #e0e5f2;">
+                                                <div style="display: flex; align-items: center; gap: 4px; background: #fff; padding: 2px 8px; border-radius: 2px; border: 1px solid #e0e5f2;">
                                                     <input type="date" id="summary-start-date" class="search-input" style="border: none; width: 120px; padding: 4px; font-size:12px;">
                                                     <span style="color: #8f9bba; font-weight: bold;">-</span>
                                                     <input type="date" id="summary-end-date" class="search-input" style="border: none; width: 120px; padding: 4px; font-size:12px;">
                                                 </div>
                                                 <!-- Tombol Terapkan -->
-                                                <button class="btn-modern" style="padding: 8px 16px; border-radius: 4px;" onclick="renderSummaryView(true)">Terapkan</button>
+                                                <button class="btn-modern" style="padding: 8px 16px; border-radius: 2px;" onclick="renderSummaryView(true)">Terapkan</button>
                                             </div>
                                         </div>
 
@@ -1990,8 +1990,8 @@
                                         <!-- 3. BARIS KEDUA: 4 BOX STAT (RESPONSIF MOBILE DENGAN CLASS) -->
                                         <div class="summary-stats-grid" style="display: grid; grid-template-columns: 2fr 1.2fr 1.2fr 130px; gap: 16px; margin-bottom: 24px;">
                                             <!-- a. Profil Operator (Ukuran 2 Box jadi 1) -->
-                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 4px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 16px;">
-                                                <div id="sum-op-initial" style="width: 48px; height: 48px; background: #f3e8ff; color: #a855f7; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: 800; flex-shrink: 0;">-</div>
+                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 2px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 16px;">
+                                                <div id="sum-op-initial" style="width: 48px; height: 48px; background: #f3e8ff; color: #a855f7; border-radius: 2px; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: 800; flex-shrink: 0;">-</div>
                                                 <div style="overflow: hidden;">
                                                     <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Profil Operator</span>
                                                     <h3 id="sum-op-name" style="color: #2b3674; font-size: 16px; font-weight: 800; margin: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</h3>
@@ -2000,21 +2000,21 @@
                                             </div>
 
                                             <!-- b. Pencapaian Rata-Rata -->
-                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 4px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 2px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center; text-align: center;">
                                                 <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Pencapaian Rata-Rata</span>
                                                 <h3 id="sum-rata" style="color: #2b3674; font-size: 18px; font-weight: 800; margin: 0;">Rp 0</h3>
                                                 <span id="sum-working-days" style="font-size: 11px; color: #05cd99; font-weight: 700; margin-top: 4px;">0 Hari Kerja</span>
                                             </div>
 
                                             <!-- c. % Rata-Rata Pencapaian -->
-                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 4px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 2px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center; text-align: center;">
                                                 <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">% Rata-Rata Pencapaian</span>
                                                 <h3 id="sum-pencapaian" style="color: #05cd99; font-size: 20px; font-weight: 800; margin: 0;">0%</h3>
                                                 <span style="font-size: 10px; color: #8f9bba; font-weight: 600; margin-top: 4px;">vs Target UMR Harian</span>
                                             </div>
 
                                             <!-- d. Grade (Anti Menabrak Layar di HP) -->
-                                            <div class="sum-grade-box" style="background: #fff; border: 1px solid #f0f0f0; border-radius: 4px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; box-sizing: border-box;">
+                                            <div class="sum-grade-box" style="background: #fff; border: 1px solid #f0f0f0; border-radius: 2px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; box-sizing: border-box;">
                                                 <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Grade</span>
                                                 <h1 id="sum-grade" style="font-size: 38px; font-weight: 900; margin: 2px 0; line-height: 1; color: #ee5d50;">-</h1>
                                             </div>
@@ -2024,14 +2024,14 @@
                                         <div id="report-content" style="display: grid; grid-template-columns: 1.8fr 1fr; gap: 24px;">
                                             
                                             <!-- LEFT: Grafik Histori (Interaktif & Smooth) -->
-                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 4px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); position: relative;">
+                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 2px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); position: relative;">
                                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
                                                     <h4 style="color: #2b3674; font-size: 16px; font-weight: 700; margin:0;">Grafik Histori Pencapaian</h4>
                                                     <div style="display: flex; gap: 8px;">
-                                                        <label style="cursor:pointer; padding: 4px 10px; border-radius: 4px; border: 1px solid #38bdf8; background:#f0f9ff; color: #0284c7; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px;">
+                                                        <label style="cursor:pointer; padding: 4px 10px; border-radius: 2px; border: 1px solid #38bdf8; background:#f0f9ff; color: #0284c7; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px;">
                                                             <input type="checkbox" id="sum-chk-qty" onchange="renderSummaryChart()" checked> Qty (Pcs)
                                                         </label>
-                                                        <label style="cursor:pointer; padding: 4px 10px; border-radius: 4px; border: 1px solid #d946ef; background:#fdf4ff; color: #a21caf; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px;">
+                                                        <label style="cursor:pointer; padding: 4px 10px; border-radius: 2px; border: 1px solid #d946ef; background:#fdf4ff; color: #a21caf; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px;">
                                                             <input type="checkbox" id="sum-chk-rp" onchange="renderSummaryChart()" checked> Rp (Insentif)
                                                         </label>
                                                     </div>
@@ -2050,7 +2050,7 @@
                                             </div>
 
                                             <!-- RIGHT: Kalender Absensi (Scrollable Multi-Bulan) -->
-                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 4px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column;">
+                                            <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 2px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column;">
                                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px;">
                                                     <h4 style="color: #2b3674; font-size: 16px; font-weight: 700; margin: 0;">Riwayat Absensi</h4>
                                                     <span style="font-size: 11px; color: #8f9bba; font-weight: 600;">(Scroll jika &gt;1 bulan)</span>
@@ -2142,7 +2142,7 @@
                                             </select>
                                         </div>
                         
-                                        <div style="margin-bottom:15px; background: #f8fafc; padding: 12px; border-radius: 4px; border: 1px solid #e0e5f2; display: flex; align-items: center; justify-content: space-between;">
+                                        <div style="margin-bottom:15px; background: #f8fafc; padding: 12px; border-radius: 2px; border: 1px solid #e0e5f2; display: flex; align-items: center; justify-content: space-between;">
                                             <span style="font-size: 13px; font-weight: 700; color: #2b3674;">Aksi Massal:</span>
                                             <!-- Tombol Dibatasi Berdasarkan Role Level (Admin/Finance/Author) -->
                                             <div style="display: flex; gap: 12px;">
@@ -4623,11 +4623,11 @@
                             <div class="bs-row-item" style="display: grid; grid-template-columns: 3fr 1fr 2fr 40px; gap: 8px; align-items: start; margin-bottom: 5px;">
                                 <div class="form-group" style="position: relative; margin-bottom:0;">
                                     <input type="text" class="form-control bs-barang-search" value="${d[8]} - ${d[9]} - ${d[12] || '-'}" autocomplete="off" style="margin-top:0; padding:10px;">
-                                    <div class="bs-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
+                                    <div class="bs-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
                                 </div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" inputmode="numeric" class="form-control bs-qty-val" value="${d[13]}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" onkeydown="if(['ArrowUp','ArrowDown','e','E','+','-','.'].includes(event.key)) event.preventDefault();" style="margin-top:0; padding:10px;"></div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" class="form-control bs-ket-val" value="${d[14] || ''}" oninput="this.value = this.value.toUpperCase()" style="margin-top:0; padding:10px;"></div>
-                                <button type="button" onclick="removeBsRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 4px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
+                                <button type="button" onclick="removeBsRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 2px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
                                     <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                 </button>
                             </div>
@@ -4640,11 +4640,11 @@
                         <div class="bs-row-item" style="display: grid; grid-template-columns: 3fr 1fr 2fr 40px; gap: 8px; align-items: start; margin-bottom: 5px;">
                             <div class="form-group" style="position: relative; margin-bottom:0;">
                                 <input type="text" class="form-control bs-barang-search" placeholder="Ketik kode atau nama..." autocomplete="off" style="margin-top:0; padding:10px;">
-                                <div class="bs-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
+                                <div class="bs-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
                             </div>
                             <div class="form-group" style="margin-bottom:0;"><input type="text" inputmode="numeric" class="form-control bs-qty-val" oninput="this.value = this.value.replace(/[^0-9]/g, '');" onkeydown="if(['ArrowUp','ArrowDown','e','E','+','-','.'].includes(event.key)) event.preventDefault();" placeholder="0" style="margin-top:0; padding:10px;"></div>
                             <div class="form-group" style="margin-bottom:0;"><input type="text" class="form-control bs-ket-val" oninput="this.value = this.value.toUpperCase()" placeholder="BS NODA/CACAT..." style="margin-top:0; padding:10px;"></div>
-                            <button type="button" onclick="removeBsRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 4px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
+                            <button type="button" onclick="removeBsRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 2px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
                                 <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
@@ -4730,12 +4730,12 @@
                             <div class="barang-row-item" style="display: grid; grid-template-columns: 3fr 1fr 1fr 2fr 40px; gap: 8px; align-items: start; margin-bottom: 5px;">
                                 <div class="form-group" style="position: relative; margin-bottom:0;">
                                     <input type="text" class="form-control input-barang-search" value="${d[8]} - ${d[9]} - ${d[12] || '-'}" autocomplete="off" style="margin-top:0; padding:10px;">
-                                    <div class="barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
+                                    <div class="barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
                                 </div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" value="0" class="form-control input-qty-stok text-secondary font-bold" disabled data-saldo="0" style="margin-top:0; padding:10px; background:#f8fafc;"></div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" inputmode="numeric" class="form-control input-qty-val" value="${d[13]}" oninput="this.value = this.value.replace(/[^0-9]/g, ''); recalculateAllStok();" onkeydown="if(['ArrowUp','ArrowDown','e','E','+','-','.'].includes(event.key)) event.preventDefault();" style="margin-top:0; padding:10px;"></div>
                                 <div class="form-group" style="margin-bottom:0;"><input type="text" class="form-control input-ket-val" value="${d[14] || ''}" oninput="this.value = this.value.toUpperCase()" style="margin-top:0; padding:10px;"></div>
-                                <button type="button" onclick="removeBarangRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 4px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
+                                <button type="button" onclick="removeBarangRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 2px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
                                     <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                 </button>
                             </div>
@@ -4748,12 +4748,12 @@
                         <div class="barang-row-item" style="display: grid; grid-template-columns: 3fr 1fr 1fr 2fr 40px; gap: 8px; align-items: start; margin-bottom: 5px;">
                             <div class="form-group" style="position: relative; margin-bottom:0;">
                                 <input type="text" class="form-control input-barang-search" placeholder="Pilih / ketik kode barang..." autocomplete="off" style="margin-top:0; padding:10px;">
-                                <div class="barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 4px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
+                                <div class="barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
                             </div>
                             <div class="form-group" style="margin-bottom:0;"><input type="text" value="0" class="form-control input-qty-stok text-secondary font-bold" disabled style="margin-top:0; padding:10px; background:#f8fafc;"></div>
                             <div class="form-group" style="margin-bottom:0;"><input type="text" inputmode="numeric" class="form-control input-qty-val" oninput="this.value = this.value.replace(/[^0-9]/g, ''); recalculateAllStok();" onkeydown="if(['ArrowUp','ArrowDown','e','E','+','-','.'].includes(event.key)) event.preventDefault();" placeholder="0" style="margin-top:0; padding:10px;"></div>
                             <div class="form-group" style="margin-bottom:0;"><input type="text" class="form-control input-ket-val" oninput="this.value = this.value.toUpperCase()" style="margin-top:0; padding:10px;"></div>
-                            <button type="button" onclick="removeBarangRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 4px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
+                            <button type="button" onclick="removeBarangRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 2px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
                                 <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
@@ -4831,12 +4831,12 @@
                     <div class="barang-row-item" style="display: grid; grid-template-columns: 3fr 1fr 1fr 2fr 40px; gap: 8px; align-items: start; margin-bottom: 5px;">
                         <div class="form-group" style="position: relative; margin-bottom:0;">
                             <input type="text" class="form-control input-barang-search" placeholder="Pilih / ketik kode barang..." autocomplete="off" onfocus="handleBarangInput(this, true)" onclick="handleBarangInput(this, true)" oninput="debouncedHandleBarangInput(this)" onkeydown="navigateSuggestions(event, this)" style="margin-top:0; padding:10px;">
-                            <div class="barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 4px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
+                            <div class="barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
                         </div>
                         <div class="form-group" style="margin-bottom:0;"><input type="text" value="0" class="form-control input-qty-stok text-secondary font-bold" disabled style="margin-top:0; padding:10px; background:#f8fafc;"></div>
                         <div class="form-group" style="margin-bottom:0;"><input type="text" inputmode="numeric" class="form-control input-qty-val" oninput="this.value = this.value.replace(/[^0-9]/g, '');" onkeydown="if(['ArrowUp','ArrowDown','e','E','+','-','.'].includes(event.key)) event.preventDefault();" placeholder="0" style="margin-top:0; padding:10px;"></div>
                         <div class="form-group" style="margin-bottom:0;"><input type="text" class="form-control input-ket-val" oninput="this.value = this.value.toUpperCase()" style="margin-top:0; padding:10px;"></div>
-                        <button type="button" onclick="removeBarangRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 4px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
+                        <button type="button" onclick="removeBarangRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 2px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
                             <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
                     </div>
@@ -4876,11 +4876,11 @@
                     <div class="bs-row-item" style="display: grid; grid-template-columns: 3fr 1fr 2fr 40px; gap: 8px; align-items: start; margin-bottom: 5px;">
                         <div class="form-group" style="position: relative; margin-bottom:0;">
                             <input type="text" class="form-control bs-barang-search" placeholder="Ketik kode atau nama..." autocomplete="off" onfocus="handleBsInput(this, true)" onclick="handleBsInput(this, true)" oninput="debouncedHandleBsInput(this)" onkeydown="navigateSuggestions(event, this)" style="margin-top:0; padding:10px;">
-                            <div class="bs-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
+                            <div class="bs-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
                         </div>
                         <div class="form-group" style="margin-bottom:0;"><input type="text" inputmode="numeric" class="form-control bs-qty-val" oninput="this.value = this.value.replace(/[^0-9]/g, '');" onkeydown="if(['ArrowUp','ArrowDown','e','E','+','-','.'].includes(event.key)) event.preventDefault();" placeholder="0" style="margin-top:0; padding:10px;"></div>
                         <div class="form-group" style="margin-bottom:0;"><input type="text" class="form-control bs-ket-val" oninput="this.value = this.value.toUpperCase()" placeholder="BS NODA/CACAT..." style="margin-top:0; padding:10px;"></div>
-                        <button type="button" onclick="removeBsRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 4px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
+                        <button type="button" onclick="removeBsRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 2px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" title="Hapus Baris">
                             <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
                     </div>
@@ -4943,11 +4943,11 @@
                     <div class="bbk-row-item" style="display: grid; grid-template-columns: 3fr 1fr 2fr 40px; gap: 8px; align-items: start; margin-bottom: 5px;">
                         <div class="form-group" style="position: relative; margin-bottom:0;">
                             <input type="text" class="form-control bbk-barang-search" placeholder="Ketik kode / nama barang..." autocomplete="off" onfocus="handleBbkInput(this, true)" onclick="handleBbkInput(this, true)" oninput="debouncedHandleBbkInput(this)" onkeydown="navigateSuggestions(event, this)" style="margin-top:0; padding:10px;">
-                            <div class="bbk-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 4px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
+                            <div class="bbk-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
                         </div>
                         <div class="form-group" style="margin-bottom:0;"><input type="text" inputmode="numeric" class="form-control bbk-qty-val" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="0" style="margin-top:0; padding:10px;"></div>
                         <div class="form-group" style="margin-bottom:0;"><input type="text" class="form-control bbk-ket-val" oninput="this.value = this.value.toUpperCase()" placeholder="KONDISI BAIK / SESUAI..." style="margin-top:0; padding:10px;"></div>
-                        <button type="button" onclick="removeBbkRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 4px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Hapus Baris">
+                        <button type="button" onclick="removeBbkRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 2px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Hapus Baris">
                             <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
                     </div>
@@ -5396,7 +5396,7 @@
                         <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-bottom: 15px;">
                             ${legendHtml}
                         </div>
-                        <div style="background: #ebfcf6; border: 1px solid #05cd99; color: #05cd99; padding: 10px 20px; border-radius: 8px; font-size: 15px; font-weight: 800; text-align: center; width: 80%;">
+                        <div style="background: #ebfcf6; border: 1px solid #05cd99; color: #05cd99; padding: 10px 20px; border-radius: 2px; font-size: 15px; font-weight: 800; text-align: center; width: 80%;">
                             Pendapatan: Rp ${totalRp.toLocaleString('id-ID')}
                         </div>
                     </div>`;
@@ -5606,7 +5606,7 @@
                 let totColor = '#ee5d50';
 
                 html += `
-                <div style="background: #fff; border: 1px solid #e0e5f2; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.2s; cursor:pointer; display: flex; flex-direction: column; align-items: center;" onclick="renderPerformaBarChart('${name}')" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 20px rgba(67,24,255,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.02)';">
+                <div style="background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.2s; cursor:pointer; display: flex; flex-direction: column; align-items: center;" onclick="renderPerformaBarChart('${name}')" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 20px rgba(67,24,255,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.02)';">
                     
                     <div style="display:flex; align-items:center; width: 100%; margin-bottom: 16px;">
                         <div class="operator-avatar" style="width:40px; height:40px; font-size:14px; background:#e0e5ff; color:#4318ff; font-weight:800; border-radius:50%; display:flex; align-items:center; justify-content:center;">${initial}</div>
@@ -8540,7 +8540,7 @@
                   <td style="padding: 10px; font-weight: 700; color: #2b3674;">${d.noDoc}</td>
                   <td style="padding: 10px; font-size:12px;">${d.operatorNames}</td>
                   <td style="padding: 10px;">
-                      <span style="background: #ffedd5; color: #f97316; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform:uppercase;">${d.status}</span>
+                      <span style="background: #ffedd5; color: #f97316; padding: 4px 8px; border-radius: 2px; font-size: 10px; font-weight: 700; text-transform:uppercase;">${d.status}</span>
                   </td>
                   <td style="padding: 10px; text-align: center;">
                       <button title="Intip Dokumen" class="btn-modern" style="padding: 6px; background: #f4f7fe; color: #4318ff;" onclick="alert('Buka ID Laporan: ${d.noDoc} dari tabel Laporan Utama.')">
@@ -8575,7 +8575,7 @@
                   <td style="padding: 10px; text-align: center; font-size:13px;">${Math.round(data.qty).toLocaleString('id-ID')}</td>
                   <td style="padding: 10px; text-align: center; font-weight:700; color: #05cd99;">Rp ${Math.round(data.rp).toLocaleString('id-ID')}</td>
                   <td style="padding: 10px; text-align: center;">
-                      <span style="background: ${badgeBg}; color: ${pctColor}; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">${pct}%</span>
+                      <span style="background: ${badgeBg}; color: ${pctColor}; padding: 4px 8px; border-radius: 2px; font-size: 11px; font-weight: 700;">${pct}%</span>
                   </td>
               </tr>`;
           });
@@ -8727,7 +8727,7 @@
                   <td style="padding: 8px 6px; font-weight: 700; color: #2b3674; font-size:10px;">${d[1]}</td>
                   <td style="padding: 8px 6px;">${d[2] || '-'}</td>
                   <td style="padding: 8px 6px; text-align: center;">
-                      <span style="background:${bge}; color:${col}; padding: 2px 6px; border-radius: 4px; font-weight: 700;">${tipe}</span>
+                      <span style="background:${bge}; color:${col}; padding: 2px 6px; border-radius: 2px; font-weight: 700;">${tipe}</span>
                   </td>
                   <td style="padding: 8px 6px; font-weight: 600;">${d[4] || '-'}</td>
                   <td style="padding: 8px 6px; font-size: 10px;">${opDisplay}</td>
