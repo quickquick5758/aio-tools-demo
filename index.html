@@ -2127,15 +2127,19 @@
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
         const GAS_URL = "https://script.google.com/macros/s/AKfycbzc0Y56gmL2pxQ_Y60My_Zpoyu3Kk_-lr2ZYPU4oeRS5zWUBj7F0limHRFW2r5tPx9KGA/exec"; 
         
-        // 2. Mesin Panggil Backend Tahan Banting (Anti-CORS & Anti-Crash)
-        async function panggilBackend(actionName, payloadData) {
+        // 2. Mesin Panggil Backend Tahan Banting (Dengan Auto-Retry & Anti-Throttling)
+        async function panggilBackend(actionName, payloadData, attempt = 1) {
+          const maxAttempts = 3; // Otomatis mencoba ulang sampai 3 kali jika server Google sibuk
           try {
-            console.log(`📡 Menghubungi server: ${actionName}...`);
+            console.log(`📡 [Percobaan ${attempt}] Menghubungi server: ${actionName}...`);
             
             const response = await fetch(GAS_URL, {
               method: "POST",
               redirect: "follow",
               cache: "no-cache",
+              headers: {
+                "Content-Type": "text/plain;charset=utf-8" // Menghindari preflight CORS yang memicu 404
+              },
               body: JSON.stringify({ 
                 action: actionName, 
                 payload: payloadData 
@@ -2148,10 +2152,9 @@
             
             const responseText = await response.text();
             
-            // Jika Google mengembalikan HTML halaman login / error
+            // Tangani jika Google mengembalikan halaman HTML login / throttling
             if (responseText.trim().startsWith("<")) {
-              console.error("🛑 Server memblokir! Response HTML:", responseText.substring(0, 100));
-              throw new Error("Akses ditolak server Google. Pastikan setelan Deploy adalah 'Anyone'.");
+              throw new Error("Server Google sedang sibuk atau URL deployment tidak aktif.");
             }
             
             const result = JSON.parse(responseText);
@@ -2159,10 +2162,16 @@
             if (result.status === 'success') {
               return result.data; 
             } else {
-              throw new Error(result.message || "Terdapat masalah internal pada server Google.");
+              throw new Error(result.message || "Terdapat kendala pada server Google.");
             }
           } catch (error) {
-            console.error(`💥 Gagal di ${actionName}:`, error);
+            // Jika gagal dan masih ada jatah retry, tunggu sebentar lalu coba lagi
+            if (attempt < maxAttempts) {
+              console.warn(`⚠️ Koneksi ${actionName} gagal. Mencoba ulang dalam 1 detik... (${attempt}/${maxAttempts})`);
+              await new Promise(res => setTimeout(res, 1200 * attempt));
+              return panggilBackend(actionName, payloadData, attempt + 1);
+            }
+            console.error(`💥 Gagal permanen di ${actionName}:`, error);
             throw error;
           }
         }
@@ -6447,25 +6456,20 @@
             clearBsForm();
             switchView('data-laporan');
 
-            // 3. Simpan ke Google Sheets di LATAR BELAKANG
+            // 3. Simpan ke Google Sheets di LATAR BELAKANG secara tenang
             panggilBackend('saveProduksiToSheet', payload)
                 .then(res => {
                     if (res && res.success) {
-                        // Refresh data laporan & dashboard secara halus tanpa mengganggu user
-                        panggilBackend('getDataLaporanLatest', {}).then(data => {
-                            window.rawLaporanData = data || [];
-                            filterLaporanData();
-                        });
-                        loadDashboardStats();
-                        panggilBackend('getSaldoMutasiData', {}).then(mutasiRes => {
-                            if (mutasiRes && mutasiRes.success) window.allMutasiData = mutasiRes.data || [];
-                        });
+                        // Beri jeda 1 detik agar Google Spreadsheet selesai menulis sebelum membaca data baru
+                        setTimeout(() => {
+                            loadLaporanData();
+                        }, 1000);
                     } else {
-                        showDialog("Peringatan: Gagal menyimpan data ke server (" + (res ? res.message : 'Error') + "). Mohon periksa koneksi!", "warning");
+                        showDialog("Peringatan: Gagal menyimpan data (" + (res ? res.message : 'Error') + "). Cek kembali data Anda.", "warning");
                     }
                 })
                 .catch(err => {
-                    showDialog("Peringatan: Terjadi kendala koneksi ke server saat menyimpan di latar belakang (" + err.message + ").", "warning");
+                    showDialog("Gagal menyimpan ke server: " + err.message + ". Silakan cek jaringan Anda.", "warning");
                 });
         }
 
