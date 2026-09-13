@@ -4166,6 +4166,7 @@
             const role = roleStr.toLowerCase();
             
             // Definisikan DOM Elements
+            const menuDashboard = document.getElementById('menu-dashboard');
             const menuMaster = document.getElementById('menu-master');
             const menuPlanning = document.getElementById('menu-group-planning');
             const menuProduksi = document.getElementById('menu-group-produksi');
@@ -4812,7 +4813,6 @@
                 }
             }
 
-            const roleLower = (window.currentUserRole || "").toLowerCase();
             const isOperatorRole = (roleLower === 'operator produksi' || roleLower === 'operator');
 
             const checkPerbantuan = document.getElementById('check-perbantuan');
