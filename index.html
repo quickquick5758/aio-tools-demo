@@ -4260,9 +4260,13 @@
                 if(btnInputBaruLaporan) btnInputBaruLaporan.style.display = 'inline-block';
                 if(btnInputBsLaporan) btnInputBsLaporan.style.display = 'inline-block';
             }
-            else if (role === 'helper') {
+            else if (role === 'helper' || role === 'helper produksi') {
                 if(menuProduksi) menuProduksi.style.display = 'block';
                 if(subInputBbk) subInputBbk.style.display = 'block';
+                if(subInputBaru) subInputBaru.style.display = 'block';
+                if(subInputBs) subInputBs.style.display = 'block';
+                if(btnInputBaruLaporan) btnInputBaruLaporan.style.display = 'inline-block';
+                if(btnInputBsLaporan) btnInputBsLaporan.style.display = 'inline-block';
             }
             else if (role === 'operator produksi' || role === 'operator') {
                 // LOGIKA KHUSUS LEVEL OPERATOR PRODUKSI:
@@ -7123,12 +7127,29 @@
             return _stokLookupCache.map;
         }
 
-        // Fungsi Hitung Saldo Gudang Berdasarkan DATA_MUTASI dan Motif
+        // Fungsi Hitung Saldo Gudang Berdasarkan DATA_MUTASI dan Motif + Pewarnaan Transparan Dinamis
         function updateQtyStokDisplay(inputEl) {
             const rowItem = inputEl.closest('.barang-row-item');
             if (!rowItem) return;
             const qtyStokEl = rowItem.querySelector('.input-qty-stok');
             if (!qtyStokEl) return;
+
+            // Helper untuk menerapkan warna visual transparan
+            function applyQtyStokColor(elem, stokVal) {
+                if (stokVal === '-' || stokVal === 999999999) {
+                    elem.style.backgroundColor = '#f8fafc';
+                    elem.style.color = '#8f9bba';
+                    elem.style.borderColor = '#e0e5f2';
+                } else if (Number(stokVal) > 0) {
+                    elem.style.backgroundColor = 'rgba(5, 205, 153, 0.12)';
+                    elem.style.color = '#05cd99';
+                    elem.style.borderColor = 'rgba(5, 205, 153, 0.4)';
+                } else {
+                    elem.style.backgroundColor = 'rgba(238, 93, 80, 0.12)';
+                    elem.style.color = '#ee5d50';
+                    elem.style.borderColor = 'rgba(238, 93, 80, 0.4)';
+                }
+            }
 
             const selectedUnit = (document.getElementById('input-unit')?.value || window.currentUserUnit || '').trim().toLowerCase();
             const selectedPek = (document.getElementById('select-pek')?.value || '').trim().toLowerCase();
@@ -7136,6 +7157,7 @@
             if (selectedPek === "tutup besi" || selectedPek === "jahit bulatan") {
                 qtyStokEl.value = "-"; 
                 qtyStokEl.setAttribute('data-saldo', 999999999); 
+                applyQtyStokColor(qtyStokEl, '-');
                 return;
             }
 
@@ -7147,6 +7169,7 @@
             if (targetColIdx === undefined || !window.allMutasiData || window.allMutasiData.length === 0) {
                 qtyStokEl.value = "0";
                 qtyStokEl.setAttribute('data-saldo', 0);
+                applyQtyStokColor(qtyStokEl, 0);
                 return;
             }
 
@@ -7208,6 +7231,7 @@
             const sisaStok = baseSaldo - usedInOtherRows;
             qtyStokEl.value = Number(sisaStok).toLocaleString('id-ID');
             qtyStokEl.setAttribute('data-saldo', sisaStok);
+            applyQtyStokColor(qtyStokEl, sisaStok);
         }
 
         // --- TAMBAHAN: Fungsi Bantuan Cek Sisa Saldo untuk Badge Dropdown ---
@@ -7420,6 +7444,9 @@
                     if(inp.classList.contains('input-qty-stok')) {
                         inp.value = '0';
                         inp.setAttribute('data-saldo', '0');
+                        inp.style.backgroundColor = 'rgba(238, 93, 80, 0.12)';
+                        inp.style.color = '#ee5d50';
+                        inp.style.borderColor = 'rgba(238, 93, 80, 0.4)';
                     }
                 });
                 
