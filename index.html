@@ -1164,7 +1164,7 @@
                                 <th colspan="1" class="col-admin">Supplier</th>
                                 <th colspan="4">Gramasi (Gr)</th>
                                 <th colspan="1" class="col-harga">Harga Jual Jasa (Rp)</th>
-                                <th colspan="7" class="col-harga">Harga Per Pcs (Rp)</th>
+                                <th colspan="8" class="col-harga">Harga Per Pcs (Rp)</th>
                             </tr>
                             <tr>
                                 <th>Kode</th>
@@ -1179,6 +1179,7 @@
                                 <th>Badan</th>
                                 <th class="col-harga" style="text-align:center;">HJJ</th>
                                 <th class="col-harga" style="text-align:center;">Tutup Besi</th>
+                                <th class="col-harga" style="text-align:center;">Garuk Dakron</th>
                                 <th class="col-harga" style="text-align:center;">Jahit Bulatan</th>
                                 <th class="col-harga" style="text-align:center;">Pengisian</th>
                                 <th class="col-harga" style="text-align:center;">Jahit Tutup</th>
@@ -1189,7 +1190,7 @@
                         </thead>
                         <tbody id="tbody-master">
                             <tr>
-                                <td colspan="18" style="text-align:center; padding: 30px; color:#8f9bba;">Klik 'Muat Ulang Data' untuk mengambil data dari server.</td>
+                                <td colspan="19" style="text-align:center; padding: 30px; color:#8f9bba;">Klik 'Muat Ulang Data' untuk mengambil data dari server.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -2259,7 +2260,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbzc0Y56gmL2pxQ_Y60My_Zpoyu3Kk_-lr2ZYPU4oeRS5zWUBj7F0limHRFW2r5tPx9KGA/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyXqnLq2Kgz4Y8LRfPRR50ECtQcejHCOLd8wWCdgpDeiWPzcg6jMA0Oinus_S1wq7o69g/exec"; 
         
         // 2. Mesin Panggil Backend Tahan Banting (Dengan Auto-Retry & Anti-Throttling)
         async function panggilBackend(actionName, payloadData, attempt = 1) {
@@ -3052,7 +3053,7 @@
             tbody.innerHTML = '';
             
             if (tableStates.master.data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="18" style="text-align:center;">Data Master Barang Kosong</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="19" style="text-align:center;">Data Master Barang Kosong</td></tr>';
                 renderPaginationButtons('master', 'pagination-master', renderMasterTable);
                 return;
             }
@@ -4461,11 +4462,18 @@
 
                         const inputQtyNum = parseFloat(qty);
                         
-                        // Validasi: Cek apakah Qty melebihi Saldo Gudang
-                        if (qtyStokEl && qtyStokEl.hasAttribute('data-saldo')) {
-                            const maxSaldo = parseFloat(qtyStokEl.getAttribute('data-saldo')) || 0;
-                            if (inputQtyNum > maxSaldo && !exceedSaldoMsg) {
-                                exceedSaldoMsg = `Qty Produksi pada baris ke-${idx + 1} (${inputQtyNum.toLocaleString('id-ID')}) melebihi Saldo Gudang (${maxSaldo.toLocaleString('id-ID')})!`;
+                        // Validasi: Kunci Plafon Bahan Baku Masuk (BBK) & Toleransi Fast-Track
+                        if (qtyStokEl && qtyStokEl.hasAttribute('data-max-bbk')) {
+                            const maxBBK = parseFloat(qtyStokEl.getAttribute('data-max-bbk')) || 0;
+                            const saldoStasiun = parseFloat(qtyStokEl.getAttribute('data-saldo')) || 0;
+
+                            // 1. KUNCI MATI: Tidak boleh melebihi Total Bahan Baku yang masuk ke pabrik
+                            if (inputQtyNum > maxBBK) {
+                                exceedSaldoMsg = `Qty pada baris ke-${idx + 1} (${inputQtyNum.toLocaleString('id-ID')}) <b>melebihi Plafon Bahan Baku Masuk (${maxBBK.toLocaleString('id-ID')})</b>!<br><br>Fisik bahan baku tidak mencukupi di pabrik.`;
+                            }
+                            // 2. TOLERANSI: Jika mendahului stasiun sebelumnya tetapi masih dalam kuota BBK, loloskan input
+                            else if (inputQtyNum > saldoStasiun && saldoStasiun <= 0) {
+                                console.info(`[Fast-Track Buffer] Baris ${idx + 1} mendahului proses sebelumnya. Lolos validasi kuota BBK.`);
                             }
                         }
 
@@ -6551,8 +6559,33 @@
         }
 
             function approveDokumenLaporan(idLaporan) {
-            // Perhatikan penambahan kata 'async' di sini 👇
-            showDialog(`Apakah Anda yakin ingin menyetujui dokumen laporan ${idLaporan}?`, "confirm", async () => {
+            // Deteksi apakah dokumen ini mendahului proses sebelumnya (Fast-Track)
+            let isFastTrackNotice = false;
+            if (window.currentEditingDetails && window.currentEditingDetails.length > 0) {
+                // Periksa apakah ada barang yang saldonya minus di mutasi
+                window.currentEditingDetails.forEach(d => {
+                    const kode = d[8];
+                    const selectedUnit = (window.currentEditingReport ? window.currentEditingReport[0] : '').toLowerCase();
+                    const pek = (window.currentEditingReport ? window.currentEditingReport[6] : '').toLowerCase();
+                    const mapKolomPek = { "pengisian": 8, "jahit tutup": 9, "penyarungan": 10, "packing/press": 11, "ikat/ball": 12 };
+                    const colIdx = mapKolomPek[pek];
+                    if (colIdx && window.allMutasiData) {
+                        const mutasiRow = window.allMutasiData.find(r => 
+                            String(r[0] || '').toLowerCase() === selectedUnit && 
+                            String(r[1] || '').toUpperCase() === String(kode || '').toUpperCase()
+                        );
+                        if (mutasiRow && (parseFloat(mutasiRow[colIdx]) || 0) < 0) {
+                            isFastTrackNotice = true;
+                        }
+                    }
+                });
+            }
+
+            const promptMsg = isFastTrackNotice
+                ? `⚠️ <b>Peringatan:</b> Terdapat proses sebelumnya yang belum menginput hasil untuk dokumen ini.<br><br>Pastikan proses sebelumnya segera diinput sebelum akhir shift. Tetap setujui laporan ${idLaporan}?`
+                : `Apakah Anda yakin ingin menyetujui dokumen laporan ${idLaporan}?`;
+
+            showDialog(promptMsg, "confirm", async () => {
                 
                 const btnApprove = document.getElementById('btn-approve-action');
                 if (btnApprove) { 
@@ -7127,7 +7160,7 @@
             return _stokLookupCache.map;
         }
 
-        // Fungsi Hitung Saldo Gudang Berdasarkan DATA_MUTASI dan Motif + Pewarnaan Transparan Dinamis
+        // Fungsi Hitung Saldo Gudang & Plafon Maksimal Bahan Baku Masuk (Fast-Track Buffer)
         function updateQtyStokDisplay(inputEl) {
             const rowItem = inputEl.closest('.barang-row-item');
             if (!rowItem) return;
@@ -7135,11 +7168,16 @@
             if (!qtyStokEl) return;
 
             // Helper untuk menerapkan warna visual transparan
-            function applyQtyStokColor(elem, stokVal) {
+            function applyQtyStokColor(elem, stokVal, isWarning = false) {
                 if (stokVal === '-' || stokVal === 999999999) {
                     elem.style.backgroundColor = '#f8fafc';
                     elem.style.color = '#8f9bba';
                     elem.style.borderColor = '#e0e5f2';
+                } else if (isWarning) {
+                    // Warna Amber/Kuning jika proses sebelumnya belum input tetapi masih dalam plafon BBK
+                    elem.style.backgroundColor = 'rgba(245, 158, 11, 0.15)';
+                    elem.style.color = '#d97706';
+                    elem.style.borderColor = 'rgba(245, 158, 11, 0.5)';
                 } else if (Number(stokVal) > 0) {
                     elem.style.backgroundColor = 'rgba(5, 205, 153, 0.12)';
                     elem.style.color = '#05cd99';
@@ -7157,6 +7195,7 @@
             if (selectedPek === "tutup besi" || selectedPek === "jahit bulatan") {
                 qtyStokEl.value = "-"; 
                 qtyStokEl.setAttribute('data-saldo', 999999999); 
+                qtyStokEl.setAttribute('data-max-bbk', 999999999);
                 applyQtyStokColor(qtyStokEl, '-');
                 return;
             }
@@ -7165,10 +7204,14 @@
                 "pengisian": 8, "jahit tutup": 9, "penyarungan": 10, "packing/press": 11, "ikat/ball": 12
             };
 
+            // Kolom Bahan Baku Masuk / Siap Isi di DATA_MUTASI berada di Indeks 7
+            const KOLOM_BBK_MASUK = 7;
+
             const targetColIdx = mapKolomPek[selectedPek];
             if (targetColIdx === undefined || !window.allMutasiData || window.allMutasiData.length === 0) {
                 qtyStokEl.value = "0";
                 qtyStokEl.setAttribute('data-saldo', 0);
+                qtyStokEl.setAttribute('data-max-bbk', 0);
                 applyQtyStokColor(qtyStokEl, 0);
                 return;
             }
@@ -7193,9 +7236,10 @@
                 }
             }
 
-            let baseSaldo = foundMutasi ? (parseFloat(foundMutasi[targetColIdx]) || 0) : 0;
+            let baseSaldoStasiun = foundMutasi ? (parseFloat(foundMutasi[targetColIdx]) || 0) : 0;
+            let maxPlafonBBK = foundMutasi ? (parseFloat(foundMutasi[KOLOM_BBK_MASUK]) || 0) : 0;
 
-            // --- TAMBAHAN FIX: Refund saldo khusus di Mode Edit ---
+            // Mode Edit: kembalikan qty lama ke saldo pembanding
             if (window.currentEditingReport && window.currentEditingDetails) {
                 window.currentEditingDetails.forEach(d => {
                     const dKode = String(d[8] || '').trim().toUpperCase();
@@ -7203,7 +7247,8 @@
                     if (dMotif === '') dMotif = '-';
                     
                     if (dKode === kodeBarang && dMotif === motifBarang) {
-                        baseSaldo += (parseFloat(d[13]) || 0); // Kembalikan stok lama ke baseSaldo
+                        baseSaldoStasiun += (parseFloat(d[13]) || 0);
+                        maxPlafonBBK += (parseFloat(d[13]) || 0);
                     }
                 });
             }
@@ -7220,7 +7265,6 @@
                         let rMotif = rParts.length > 2 ? rParts[rParts.length - 1].trim().toUpperCase() : '-';
                         if (rMotif === '') rMotif = '-';
                         
-                        // Jika baris lain menggunakan Kode + Motif yang SAMA persis
                         if (rKode === kodeBarang && rMotif === motifBarang) {
                             usedInOtherRows += (parseFloat(rowQty.value) || 0);
                         }
@@ -7228,10 +7272,21 @@
                 }
             });
 
-            const sisaStok = baseSaldo - usedInOtherRows;
-            qtyStokEl.value = Number(sisaStok).toLocaleString('id-ID');
-            qtyStokEl.setAttribute('data-saldo', sisaStok);
-            applyQtyStokColor(qtyStokEl, sisaStok);
+            const sisaStokStasiun = baseSaldoStasiun - usedInOtherRows;
+            const sisaPlafonBBK = maxPlafonBBK - usedInOtherRows;
+
+            qtyStokEl.value = Number(sisaStokStasiun).toLocaleString('id-ID');
+            qtyStokEl.setAttribute('data-saldo', sisaStokStasiun);
+            qtyStokEl.setAttribute('data-max-bbk', sisaPlafonBBK);
+
+            // Jika stok stasiun <= 0 tetapi plafon bahan baku masih ada, aktifkan Mode Fast-Track (Kuning)
+            if (sisaStokStasiun <= 0 && sisaPlafonBBK > 0) {
+                applyQtyStokColor(qtyStokEl, sisaStokStasiun, true);
+                qtyStokEl.title = `Proses sebelumnya belum input (Fast-Track). Plafon kuota BBK tersedia: ${sisaPlafonBBK.toLocaleString('id-ID')}`;
+            } else {
+                applyQtyStokColor(qtyStokEl, sisaStokStasiun, false);
+                qtyStokEl.title = "";
+            }
         }
 
         // --- TAMBAHAN: Fungsi Bantuan Cek Sisa Saldo untuk Badge Dropdown ---
