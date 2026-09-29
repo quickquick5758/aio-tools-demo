@@ -171,7 +171,7 @@
             z-index: 20;
         }
         .table-thin th, .table-thin td { 
-            padding: 4px 6px; /* Padding di perkecil agar tinggi baris menyusut */
+            padding: 8px 10px; /* Padding di perkecil agar tinggi baris menyusut */
             text-align: left; 
             border-bottom: 1px solid #f0f0f0; 
             font-weight: 350; 
@@ -1164,7 +1164,7 @@
                                 <th colspan="1" class="col-admin">Supplier</th>
                                 <th colspan="4">Gramasi (Gr)</th>
                                 <th colspan="1" class="col-harga">Harga Jual Jasa (Rp)</th>
-                                <th colspan="8" class="col-harga">Harga Per Pcs (Rp)</th>
+                                <th colspan="7" class="col-harga">Harga Per Pcs (Rp)</th>
                             </tr>
                             <tr>
                                 <th>Kode</th>
@@ -1179,7 +1179,6 @@
                                 <th>Badan</th>
                                 <th class="col-harga" style="text-align:center;">HJJ</th>
                                 <th class="col-harga" style="text-align:center;">Tutup Besi</th>
-                                <th class="col-harga" style="text-align:center;">Garuk Dakron</th>
                                 <th class="col-harga" style="text-align:center;">Jahit Bulatan</th>
                                 <th class="col-harga" style="text-align:center;">Pengisian</th>
                                 <th class="col-harga" style="text-align:center;">Jahit Tutup</th>
@@ -1190,7 +1189,7 @@
                         </thead>
                         <tbody id="tbody-master">
                             <tr>
-                                <td colspan="19" style="text-align:center; padding: 30px; color:#8f9bba;">Klik 'Muat Ulang Data' untuk mengambil data dari server.</td>
+                                <td colspan="18" style="text-align:center; padding: 30px; color:#8f9bba;">Klik 'Muat Ulang Data' untuk mengambil data dari server.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1236,12 +1235,12 @@
                         </div>
                         <div class="form-group">
                             <label>Pekerjaan / Bagian <span class="text-danger">*</span></label>
-                            <select id="bbk-pek" class="form-control">
-                                <option value="">-- Pilih Pekerjaan --</option>
-                                <option value="Bahan Baku Masuk">Bahan Baku Masuk</option>
-                                <option value="Pengembalian Retur">Pengembalian Retur</option>
-                                <option value="Lain-Lain">Lain-Lain</option>
-                            </select>
+                            <input type="text" id="bbk-pek" list="list-bbk-pek" class="form-control" placeholder="Ketik / pilih pekerjaan..." onclick="this.select()">
+                            <datalist id="list-bbk-pek">
+                                <option value="Bahan Baku Masuk"></option>
+                                <option value="Pengembalian Retur"></option>
+                                <option value="Lain-Lain"></option>
+                            </datalist>
                         </div>
                         <div class="form-group">
                             <label>Nama Operator / Pemeriksa <span class="text-danger">*</span></label>
@@ -1259,9 +1258,8 @@
                         </div>
                         <div class="form-group">
                             <label>Supplier <span class="text-danger">*</span></label>
-                            <select id="bbk-supplier" class="form-control">
-                                <option value="">-- Pilih Supplier --</option>
-                            </select>
+                            <input type="text" id="bbk-supplier" list="list-bbk-supplier" class="form-control" placeholder="Ketik / pilih supplier..." onclick="this.select()">
+                            <datalist id="list-bbk-supplier"></datalist>
                         </div>
                         <div class="form-group">
                             <label>Referensi Dokumen / No. SJ <span class="text-danger">*</span></label>
@@ -1340,7 +1338,11 @@
                         </div>
                         <div class="form-group"><label>Tanggal <span class="text-danger">*</span></label><input type="date" id="input-date" class="form-control"></div>
                         <div class="form-group"><label>Shift <span class="text-danger">*</span></label><select id="select-shift" class="form-control"><option value="">-- Pilih Shift --</option><option>Shift 1</option><option>Shift 2</option><option>Shift 3</option><option>Non-Shift</option></select></div>
-                        <div class="form-group"><label>Pekerjaan <span class="text-danger">*</span></label><select id="select-pek" class="form-control" onchange="refreshAllQtyStokDisplay()"><option value="">-- Pilih Pekerjaan --</option></select></div>
+                        <div class="form-group">
+                            <label>Pekerjaan <span class="text-danger">*</span></label>
+                            <input type="text" id="select-pek" list="list-select-pek" class="form-control" placeholder="Ketik / pilih pekerjaan..." onclick="this.select()" oninput="refreshAllQtyStokDisplay()" onchange="refreshAllQtyStokDisplay()">
+                            <datalist id="list-select-pek"></datalist>
+                        </div>
                     </div>
 
                     <!-- BOX KARU & OPERATOR -->
@@ -2260,7 +2262,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyXqnLq2Kgz4Y8LRfPRR50ECtQcejHCOLd8wWCdgpDeiWPzcg6jMA0Oinus_S1wq7o69g/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbw-QWUHGGHbzFFlcQLpBhcdq17c-LKTJrFGw6htPu1uwfZdWJGtfp0X4nD8xiUcUKFNag/exec"; 
         
         // 2. Mesin Panggil Backend Tahan Banting (Dengan Auto-Retry & Anti-Throttling)
         async function panggilBackend(actionName, payloadData, attempt = 1) {
@@ -2532,21 +2534,16 @@
               if(typeof renderPerformaOperatorTiles === 'function') renderPerformaOperatorTiles();
           } catch (err) { console.error("Gagal muat operator:", err); }
 
-            // 2. Muat Master Barang
-          try {
-              let res = await panggilBackend('getMasterBarangData', {});
-              window.allMasterBarang = (res && res.success) ? res.data : [];
-          } catch (err) { console.error("Gagal muat master barang:", err);
+            // Cek Cache Lokal Browser: jika sudah pernah dimuat, tidak perlu download lagi (Instan 0 detik)
+            const cachedMaster = sessionStorage.getItem('CACHE_MASTER_BARANG');
+            if (cachedMaster) {
+                try {
+                    window.allMasterBarang = JSON.parse(cachedMaster);
+                } catch(e) { window.allMasterBarang = []; }
+            } else {
                 window.allMasterBarang = [];
             }
-
-            // 3. Muat Saldo Mutasi
-          try {
-              let res = await panggilBackend('getSaldoMutasiData', {});
-              window.allMutasiData = (res && res.success) ? res.data : [];
-          } catch (err) { console.error("Gagal muat saldo mutasi:", err);
-              window.allMutasiData = [];
-          }
+            window.allMutasiData = [];
 
             // Set Default Filter Tanggal
             const now = new Date();
@@ -2889,6 +2886,29 @@
             }
         });
 
+        // Fungsi Penarik Kilat: Hanya load master barang jika halaman tersebut memang butuh
+        async function ensureMasterBarangLoaded() {
+            if (window.allMasterBarang && window.allMasterBarang.length > 0) return window.allMasterBarang;
+            const cached = sessionStorage.getItem('CACHE_MASTER_BARANG');
+            if (cached) {
+                try {
+                    window.allMasterBarang = JSON.parse(cached);
+                    return window.allMasterBarang;
+                } catch(e) {}
+            }
+            try {
+                let res = await panggilBackend('getMasterBarangData', {});
+                if (res && res.success) {
+                    window.allMasterBarang = res.data || [];
+                    sessionStorage.setItem('CACHE_MASTER_BARANG', JSON.stringify(window.allMasterBarang));
+                    return window.allMasterBarang;
+                }
+            } catch (err) {
+                console.error("Gagal load master barang on-demand:", err);
+            }
+            return [];
+        }
+
         async function switchView(viewName, element) {
             // Tutup sidebar otomatis di mobile setelah klik menu
             if (window.innerWidth <= 768) {
@@ -2951,7 +2971,17 @@
                 
                 if(viewName === 'dashboard') loadDashboardStats();
                 if(viewName === 'dashboard-operator') loadOperatorDashboard();
-                if(viewName === 'input-baru') clearForm();
+                if(viewName === 'input-baru') {
+                    ensureMasterBarangLoaded().then(() => {
+                        recalculateAllStok();
+                    });
+                    clearForm();
+                }
+                if(viewName === 'input-bbk') {
+                    ensureMasterBarangLoaded().then(() => {
+                        populateBbkSupplierDropdown();
+                    });
+                }
                 if(viewName === 'input-bs') clearBsForm();
                 
                 if(viewName === 'master') {
@@ -3053,7 +3083,7 @@
             tbody.innerHTML = '';
             
             if (tableStates.master.data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="19" style="text-align:center;">Data Master Barang Kosong</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="18" style="text-align:center;">Data Master Barang Kosong</td></tr>';
                 renderPaginationButtons('master', 'pagination-master', renderMasterTable);
                 return;
             }
@@ -4462,18 +4492,11 @@
 
                         const inputQtyNum = parseFloat(qty);
                         
-                        // Validasi: Kunci Plafon Bahan Baku Masuk (BBK) & Toleransi Fast-Track
-                        if (qtyStokEl && qtyStokEl.hasAttribute('data-max-bbk')) {
-                            const maxBBK = parseFloat(qtyStokEl.getAttribute('data-max-bbk')) || 0;
-                            const saldoStasiun = parseFloat(qtyStokEl.getAttribute('data-saldo')) || 0;
-
-                            // 1. KUNCI MATI: Tidak boleh melebihi Total Bahan Baku yang masuk ke pabrik
-                            if (inputQtyNum > maxBBK) {
-                                exceedSaldoMsg = `Qty pada baris ke-${idx + 1} (${inputQtyNum.toLocaleString('id-ID')}) <b>melebihi Plafon Bahan Baku Masuk (${maxBBK.toLocaleString('id-ID')})</b>!<br><br>Fisik bahan baku tidak mencukupi di pabrik.`;
-                            }
-                            // 2. TOLERANSI: Jika mendahului stasiun sebelumnya tetapi masih dalam kuota BBK, loloskan input
-                            else if (inputQtyNum > saldoStasiun && saldoStasiun <= 0) {
-                                console.info(`[Fast-Track Buffer] Baris ${idx + 1} mendahului proses sebelumnya. Lolos validasi kuota BBK.`);
+                        // Validasi: Cek apakah Qty melebihi Saldo Gudang
+                        if (qtyStokEl && qtyStokEl.hasAttribute('data-saldo')) {
+                            const maxSaldo = parseFloat(qtyStokEl.getAttribute('data-saldo')) || 0;
+                            if (inputQtyNum > maxSaldo && !exceedSaldoMsg) {
+                                exceedSaldoMsg = `Qty Produksi pada baris ke-${idx + 1} (${inputQtyNum.toLocaleString('id-ID')}) melebihi Saldo Gudang (${maxSaldo.toLocaleString('id-ID')})!`;
                             }
                         }
 
@@ -4908,17 +4931,19 @@
         }
 
         // --- LOGIKA FORM INPUT BBK (PENGECEKAN BAHAN BAKU) ---
-        function populateBbkSupplierDropdown() {
-            const sel = document.getElementById('bbk-supplier');
-            if (!sel) return;
-            const current = sel.value;
+        async function populateBbkSupplierDropdown() {
+            const datalist = document.getElementById('list-bbk-supplier');
+            if (!datalist) return;
+
+            // Muat master barang hanya jika belum ada
+            await ensureMasterBarangLoaded();
+
             const suppliers = (window.allMasterBarang || [])
                 .map(row => String(row[5] || '').trim())
                 .filter(Boolean);
             const unique = [...new Set(suppliers)].sort();
-            sel.innerHTML = '<option value="">-- Pilih Supplier --</option>' +
-                unique.map(s => `<option value="${s}">${s}</option>`).join('');
-            if (current && unique.includes(current)) sel.value = current;
+            
+            datalist.innerHTML = unique.map(s => `<option value="${s}"></option>`).join('');
         }
 
         function clearBbkForm() {
@@ -4989,35 +5014,49 @@
             debounceBbkTimer = setTimeout(() => handleBbkInput(input, false), 200);
         }
 
-        function handleBbkInput(input, showAll = false) {
+        async function handleBbkInput(input, showAll = false) {
             const container = input.nextElementSibling;
             if(!container) return;
-            container.innerHTML = '';
+
+            // Blok seluruh teks otomatis saat diklik ulang agar jika user mengetik langsung mengganti
+            if (showAll && input.value) {
+                input.select();
+            }
 
             const supplierEl = document.getElementById('bbk-supplier');
             const selectedSupplier = supplierEl ? supplierEl.value.trim().toLowerCase() : '';
 
-            // Wajib pilih supplier dulu sebelum cari barang
             if (!selectedSupplier) {
                 showDialog("Silakan pilih Supplier terlebih dahulu!", "warning");
                 input.value = '';
                 container.style.display = 'none';
                 return;
             }
+
+            // Jika belum ada master barang, muat kilat
+            if (!window.allMasterBarang || window.allMasterBarang.length === 0) {
+                container.innerHTML = '<div style="padding:10px; font-size:12px; color:#8f9bba;">Memuat daftar kode...</div>';
+                container.style.display = 'block';
+                await ensureMasterBarangLoaded();
+            }
+
+            container.innerHTML = '';
             
-            const keyword = input.value.trim().toLowerCase();
-            if (!keyword && !showAll) { container.style.display = 'none'; return; }
-            if (!window.allMasterBarang) { container.style.display = 'none'; return; }
+            let keyword = input.value.trim().toLowerCase();
             
-            let keywords = keyword.split(/\s+/);
-            const filtered = window.allMasterBarang.filter(row => {
+            // Jika showAll aktif (klik/fokus lagi), reset pencarian sementara agar semua list muncul kembali
+            if (showAll) {
+                keyword = '';
+            }
+
+            let keywords = keyword.split(/\s+/).filter(Boolean);
+            const filtered = (window.allMasterBarang || []).filter(row => {
                 if(!Array.isArray(row)) return false;
                 
-                // Filter berdasarkan Supplier (Kolom ke-6 / index 5)
                 const itemSupplier = String(row[5] || '').trim().toLowerCase();
                 if (itemSupplier !== selectedSupplier) return false;
 
-                if (!keyword && showAll) return true;
+                if (keywords.length === 0) return true;
                 const combined = (row[0] || '').toLowerCase() + " " + (row[1] || '').toLowerCase();
                 return keywords.every(kw => combined.includes(kw));
             });
@@ -6559,33 +6598,8 @@
         }
 
             function approveDokumenLaporan(idLaporan) {
-            // Deteksi apakah dokumen ini mendahului proses sebelumnya (Fast-Track)
-            let isFastTrackNotice = false;
-            if (window.currentEditingDetails && window.currentEditingDetails.length > 0) {
-                // Periksa apakah ada barang yang saldonya minus di mutasi
-                window.currentEditingDetails.forEach(d => {
-                    const kode = d[8];
-                    const selectedUnit = (window.currentEditingReport ? window.currentEditingReport[0] : '').toLowerCase();
-                    const pek = (window.currentEditingReport ? window.currentEditingReport[6] : '').toLowerCase();
-                    const mapKolomPek = { "pengisian": 8, "jahit tutup": 9, "penyarungan": 10, "packing/press": 11, "ikat/ball": 12 };
-                    const colIdx = mapKolomPek[pek];
-                    if (colIdx && window.allMutasiData) {
-                        const mutasiRow = window.allMutasiData.find(r => 
-                            String(r[0] || '').toLowerCase() === selectedUnit && 
-                            String(r[1] || '').toUpperCase() === String(kode || '').toUpperCase()
-                        );
-                        if (mutasiRow && (parseFloat(mutasiRow[colIdx]) || 0) < 0) {
-                            isFastTrackNotice = true;
-                        }
-                    }
-                });
-            }
-
-            const promptMsg = isFastTrackNotice
-                ? `⚠️ <b>Peringatan:</b> Terdapat proses sebelumnya yang belum menginput hasil untuk dokumen ini.<br><br>Pastikan proses sebelumnya segera diinput sebelum akhir shift. Tetap setujui laporan ${idLaporan}?`
-                : `Apakah Anda yakin ingin menyetujui dokumen laporan ${idLaporan}?`;
-
-            showDialog(promptMsg, "confirm", async () => {
+            // Perhatikan penambahan kata 'async' di sini 👇
+            showDialog(`Apakah Anda yakin ingin menyetujui dokumen laporan ${idLaporan}?`, "confirm", async () => {
                 
                 const btnApprove = document.getElementById('btn-approve-action');
                 if (btnApprove) { 
@@ -7059,44 +7073,42 @@
             debounceBsTimer = setTimeout(() => handleBsInput(input, false), 250);
         }
 
-        function handleBarangInput(input, showAll = false) {
+        async function handleBarangInput(input, showAll = false) {
             const container = input.nextElementSibling;
             if(!container) return;
-            container.innerHTML = '';
             
-            const keyword = input.value.trim().toLowerCase();
-            if (!keyword && !showAll) {
-                container.style.display = 'none';
-                return;
+            // Blok seluruh teks otomatis saat diklik ulang
+            if (showAll && input.value) {
+                input.select();
             }
-            
-            // Jika data master belum siap, tampilkan pesan memuat dan fetch kembali
+
             if (!window.allMasterBarang || window.allMasterBarang.length === 0) {
                 container.innerHTML = '<div style="padding:10px; font-size:12px; color:#8f9bba; text-align:center;">Memuat master barang...</div>';
                 container.style.display = 'block';
-                panggilBackend('getMasterBarangData', {}).then(res => {
-                    if (res && res.success) {
-                        window.allMasterBarang = res.data;
-                        handleBarangInput(input, showAll);
-                    }
-                }).catch(() => {});
-                return;
+                await ensureMasterBarangLoaded();
             }
+
+            container.innerHTML = '';
             
-            let keywords = keyword.split(/\s+/);
+            let keyword = input.value.trim().toLowerCase();
+            // Jika showAll aktif (klik/fokus lagi), munculkan seluruh list opsi kembali
+            if (showAll) {
+                keyword = '';
+            }
+
+            let keywords = keyword.split(/\s+/).filter(Boolean);
             
-            // --- TAMBAHAN: Logika Filter Pekerjaan vs Proses (Isi / Non Isi) ---
             const selectedPekerjaan = (document.getElementById('select-pek')?.value || '').toLowerCase().trim();
             const blockedJobsForNonIsi = ['jahit bulatan', 'pengisian', 'jahit tutup', 'penyarungan'];
             const hideNonIsi = blockedJobsForNonIsi.includes(selectedPekerjaan);
             
-            const filtered = window.allMasterBarang.filter(row => {
+            const filtered = (window.allMasterBarang || []).filter(row => {
                 if(!Array.isArray(row)) return false;
                 
-                const proses = (row[4] || '').toUpperCase().trim(); // Index 4 adalah Kolom E (Proses) di Master Barang
+                const proses = (row[4] || '').toUpperCase().trim();
                 if (hideNonIsi && proses === 'NON ISI') return false; 
                 
-                if (!keyword && showAll) return true;
+                if (keywords.length === 0) return true;
 
                 const kode = (row[0] || '').toLowerCase();
                 const nama = (row[1] || '').toLowerCase();
@@ -7160,7 +7172,7 @@
             return _stokLookupCache.map;
         }
 
-        // Fungsi Hitung Saldo Gudang & Plafon Maksimal Bahan Baku Masuk (Fast-Track Buffer)
+        // Fungsi Hitung Saldo Gudang Berdasarkan DATA_MUTASI dan Motif + Pewarnaan Transparan Dinamis
         function updateQtyStokDisplay(inputEl) {
             const rowItem = inputEl.closest('.barang-row-item');
             if (!rowItem) return;
@@ -7168,16 +7180,11 @@
             if (!qtyStokEl) return;
 
             // Helper untuk menerapkan warna visual transparan
-            function applyQtyStokColor(elem, stokVal, isWarning = false) {
+            function applyQtyStokColor(elem, stokVal) {
                 if (stokVal === '-' || stokVal === 999999999) {
                     elem.style.backgroundColor = '#f8fafc';
                     elem.style.color = '#8f9bba';
                     elem.style.borderColor = '#e0e5f2';
-                } else if (isWarning) {
-                    // Warna Amber/Kuning jika proses sebelumnya belum input tetapi masih dalam plafon BBK
-                    elem.style.backgroundColor = 'rgba(245, 158, 11, 0.15)';
-                    elem.style.color = '#d97706';
-                    elem.style.borderColor = 'rgba(245, 158, 11, 0.5)';
                 } else if (Number(stokVal) > 0) {
                     elem.style.backgroundColor = 'rgba(5, 205, 153, 0.12)';
                     elem.style.color = '#05cd99';
@@ -7195,7 +7202,6 @@
             if (selectedPek === "tutup besi" || selectedPek === "jahit bulatan") {
                 qtyStokEl.value = "-"; 
                 qtyStokEl.setAttribute('data-saldo', 999999999); 
-                qtyStokEl.setAttribute('data-max-bbk', 999999999);
                 applyQtyStokColor(qtyStokEl, '-');
                 return;
             }
@@ -7204,14 +7210,10 @@
                 "pengisian": 8, "jahit tutup": 9, "penyarungan": 10, "packing/press": 11, "ikat/ball": 12
             };
 
-            // Kolom Bahan Baku Masuk / Siap Isi di DATA_MUTASI berada di Indeks 7
-            const KOLOM_BBK_MASUK = 7;
-
             const targetColIdx = mapKolomPek[selectedPek];
             if (targetColIdx === undefined || !window.allMutasiData || window.allMutasiData.length === 0) {
                 qtyStokEl.value = "0";
                 qtyStokEl.setAttribute('data-saldo', 0);
-                qtyStokEl.setAttribute('data-max-bbk', 0);
                 applyQtyStokColor(qtyStokEl, 0);
                 return;
             }
@@ -7236,10 +7238,9 @@
                 }
             }
 
-            let baseSaldoStasiun = foundMutasi ? (parseFloat(foundMutasi[targetColIdx]) || 0) : 0;
-            let maxPlafonBBK = foundMutasi ? (parseFloat(foundMutasi[KOLOM_BBK_MASUK]) || 0) : 0;
+            let baseSaldo = foundMutasi ? (parseFloat(foundMutasi[targetColIdx]) || 0) : 0;
 
-            // Mode Edit: kembalikan qty lama ke saldo pembanding
+            // --- TAMBAHAN FIX: Refund saldo khusus di Mode Edit ---
             if (window.currentEditingReport && window.currentEditingDetails) {
                 window.currentEditingDetails.forEach(d => {
                     const dKode = String(d[8] || '').trim().toUpperCase();
@@ -7247,8 +7248,7 @@
                     if (dMotif === '') dMotif = '-';
                     
                     if (dKode === kodeBarang && dMotif === motifBarang) {
-                        baseSaldoStasiun += (parseFloat(d[13]) || 0);
-                        maxPlafonBBK += (parseFloat(d[13]) || 0);
+                        baseSaldo += (parseFloat(d[13]) || 0); // Kembalikan stok lama ke baseSaldo
                     }
                 });
             }
@@ -7265,6 +7265,7 @@
                         let rMotif = rParts.length > 2 ? rParts[rParts.length - 1].trim().toUpperCase() : '-';
                         if (rMotif === '') rMotif = '-';
                         
+                        // Jika baris lain menggunakan Kode + Motif yang SAMA persis
                         if (rKode === kodeBarang && rMotif === motifBarang) {
                             usedInOtherRows += (parseFloat(rowQty.value) || 0);
                         }
@@ -7272,21 +7273,10 @@
                 }
             });
 
-            const sisaStokStasiun = baseSaldoStasiun - usedInOtherRows;
-            const sisaPlafonBBK = maxPlafonBBK - usedInOtherRows;
-
-            qtyStokEl.value = Number(sisaStokStasiun).toLocaleString('id-ID');
-            qtyStokEl.setAttribute('data-saldo', sisaStokStasiun);
-            qtyStokEl.setAttribute('data-max-bbk', sisaPlafonBBK);
-
-            // Jika stok stasiun <= 0 tetapi plafon bahan baku masih ada, aktifkan Mode Fast-Track (Kuning)
-            if (sisaStokStasiun <= 0 && sisaPlafonBBK > 0) {
-                applyQtyStokColor(qtyStokEl, sisaStokStasiun, true);
-                qtyStokEl.title = `Proses sebelumnya belum input (Fast-Track). Plafon kuota BBK tersedia: ${sisaPlafonBBK.toLocaleString('id-ID')}`;
-            } else {
-                applyQtyStokColor(qtyStokEl, sisaStokStasiun, false);
-                qtyStokEl.title = "";
-            }
+            const sisaStok = baseSaldo - usedInOtherRows;
+            qtyStokEl.value = Number(sisaStok).toLocaleString('id-ID');
+            qtyStokEl.setAttribute('data-saldo', sisaStok);
+            applyQtyStokColor(qtyStokEl, sisaStok);
         }
 
         // --- TAMBAHAN: Fungsi Bantuan Cek Sisa Saldo untuk Badge Dropdown ---
