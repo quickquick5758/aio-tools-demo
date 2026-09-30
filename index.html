@@ -2269,7 +2269,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxVHYTvxSeL0JuiFcGccTPac7UBsxBc0kAhrwmuTNqY8UxR68H4B4ssvoCo2qo5iR5zSQ/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwQQVhuEi2tYJTOen8zuK7Pf7L0Fpk_5J_fYBoIcUZBGqU2e0eQkDkQsGpKxPqebBPAvg/exec"; 
         
         // 2. Mesin Panggil Backend Tahan Banting (Dengan Auto-Retry & Anti-Throttling)
         async function panggilBackend(actionName, payloadData, attempt = 1) {
@@ -2433,12 +2433,47 @@
         }
 
         // Cek Local Storage (Memory Login Browser)
+        // Fungsi Mandiri: Mengunci & Mengatur Default Unit Kerja Berdasarkan Level Akun
+        function applyUnitAccess(roleStr, userUnit) {
+            const roleLower = (roleStr || "").toLowerCase().trim();
+            const privilegedAreaRoles = ['author', 'supervisor', 'ppic'];
+            const isPrivileged = privilegedAreaRoles.includes(roleLower);
+
+            // 1. Header Dropdown Unit: Author Default ke "Semua Unit"
+            const headerUnit = document.getElementById('headerUnitSelect');
+            if (headerUnit) {
+                headerUnit.value = isPrivileged ? "Semua Unit" : (userUnit || "Semua Unit");
+                headerUnit.disabled = !isPrivileged;
+            }
+
+            // 2. Dropdown Filter Tabel: Author Default Kosong ("Semua Unit")
+            const filterSelects = ['filter-laporan-unit', 'filter-sisaom-unit', 'filter-view-unit', 'filter-bpc-unit', 'filter-trackingsj-unit'];
+            filterSelects.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.value = isPrivileged ? "" : (userUnit || "");
+                    el.disabled = !isPrivileged;
+                }
+            });
+
+            // 3. Dropdown Form Input: Terkunci Sesuai Unit Akun Selain Author
+            const inputSelects = ['input-unit', 'bs-unit', 'bbk-unit'];
+            inputSelects.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.value = isPrivileged ? (userUnit || "CV JHB 1") : (userUnit || "CV JHB 1");
+                    el.disabled = !isPrivileged;
+                }
+            });
+        }
+
         function checkSession() {
             const session = sessionStorage.getItem('authSession');
             if (session) {
                 try {
                     const data = JSON.parse(session);
                     window.currentUserName = data.user;
+                    window.currentUserId = data.userId || data.user;
                     window.currentUserRole = data.role;
                     window.currentUserUnit = data.unit;
 
@@ -2454,10 +2489,13 @@
                         roleSelect.disabled = ((window.currentUserRole || "").toLowerCase() !== 'author');
                     }
                     
+                    // Pastikan Unit Tetap Terkunci Setelah Refresh
+                    applyUnitAccess(window.currentUserRole, window.currentUserUnit);
+
                     try { loadDashboardStats(); } catch(e){}
                     try { applyRoleAccess(window.currentUserRole); } catch(e){}
                 } catch (e) {
-                    localStorage.removeItem('authSession');
+                    sessionStorage.removeItem('authSession');
                 }
             }
         }
@@ -2508,12 +2546,6 @@
                     } else if (e.target.classList.contains('bbk-barang-search')) {
                         handleBbkInput(e.target, true);
                     }
-                }
-            });
-
-            document.body.addEventListener('keydown', function(e) {
-                if (e.target.classList.contains('input-barang-search') || e.target.classList.contains('bs-barang-search') || e.target.classList.contains('bbk-barang-search')) {
-                    navigateSuggestions(e, e.target);
                 }
             });
 
@@ -3784,7 +3816,7 @@
                         let rincianIntipTr = '';
                         
                         if (window.rawBbkDetailData && window.rawBbkDetailData.length > 0) {
-                            const details = window.rawBbkDetailData.filter(r => r[3] === idLaporan);
+                            const details = window.rawBbkDetailData.filter(r => String(r[3] || '').trim() === String(idLaporan || '').trim());
                             if (details.length > 0) {
                                 rincianIntipTr = details.map(d => `<tr><td style="padding:4px; border-bottom:1px solid #f0f0f0;">${d[9]} - ${d[10]}<br><span style="font-size:10px; color:#8f9bba;">Kondisi: ${d[14]}</span></td><td style="padding:4px; border-bottom:1px solid #f0f0f0; text-align:right; font-weight:bold;">${d[13]}</td></tr>`).join('');
                             } else {
@@ -3932,11 +3964,25 @@
                                     </table>
                                 </div>
                             </div>                            
-                            <div style="margin-top:15px; padding:10px; background:#d1fae5; color:#065f46; border-radius:2px; font-weight:bold; text-align:center; font-size:12px;">Hanya Lihat. Dokumen BBK saat ini tidak dapat diubah setelah di-submit.</div>
-                        `;
+                            `;
                         
-                        // Sembunyikan Action Buttons untuk BBK (karena read-only untuk saat ini)
-                        document.getElementById('doc-open-actions').style.display = 'none';
+                        // Simpan data dokumen BBK aktif
+                        window.currentEditingBbk = row;
+                        window.currentEditingBbkDetails = (window.rawBbkDetailData || []).filter(r => String(r[3] || '').trim() === String(idLaporan || '').trim());
+
+                        const statusBbkLower = String(row[10] || '').toLowerCase();
+                        const canEditBbk = (statusBbkLower !== 'batal');
+
+                        if (canEditBbk) {
+                            document.getElementById('doc-open-actions').innerHTML = `
+                                <button type="button" class="btn-modern" style="background:#ef4444; color:#ffffff; padding:8px 24px; font-weight:600;" onclick="batalDokumenBbk('${row[3]}')">Batal</button>
+                                <button type="button" class="btn-modern" style="background:#f59e0b; color:#ffffff; padding:8px 24px; font-weight:600;" onclick="editDokumenBbk()">Edit</button>
+                            `;
+                            document.getElementById('doc-open-actions').style.display = 'flex';
+                            document.getElementById('doc-open-actions').style.gap = '20px';
+                        } else {
+                            document.getElementById('doc-open-actions').style.display = 'none';
+                        }
                     };
                     tdAksi.appendChild(btnOpen);
 
@@ -4066,24 +4112,7 @@
                     }
 
                     // --- 3. LOGIKA OTORITAS AREA KERJA (PENGUNCIAN UNIT) ---
-                    const roleLower = (response.role || "").toLowerCase();
-                    const privilegedAreaRoles = ['author', 'supervisor', 'ppic']; 
-                    
-                    const unitSelects = [
-                        'headerUnitSelect', 'filter-laporan-unit', 'filter-sisaom-unit', 
-                        'input-unit', 'bs-unit', 'filter-view-unit'
-                    ];
-
-                    const isPrivileged = privilegedAreaRoles.includes(roleLower);
-
-                    unitSelects.forEach(id => {
-                        const el = document.getElementById(id);
-                        if (el) {
-                            // Khusus Admin Elite/Pengawas default UI nya menjadi kosong ("Semua Unit")
-                            el.value = isPrivileged ? "" : (response.unit || "");
-                            el.disabled = !isPrivileged;
-                        }
-                    });
+                    applyUnitAccess(response.role, response.unit);
 
                     // --- 4. LOGIKA KHUSUS KARU ---
                     const isKaru = (roleLower === 'karu');
@@ -4382,7 +4411,7 @@
             }
 
             const modalIntip = document.getElementById('modal-intip');
-            if (modalIntip && modalIntip.style.display === 'flex' && !event.target.closest('#modal-intip') && !event.target.closest('button[title="Intip Dokumen"]')) {
+            if (modalIntip && modalIntip.style.display === 'flex' && !event.target.closest('#modal-intip') && !event.target.closest('button[title*="Intip Dokumen"]')) {
                 modalIntip.style.display = 'none';
             }
 
@@ -4955,6 +4984,9 @@
         }
 
         function clearBbkForm() {
+            window.currentEditingBbkNo = null;
+            window.currentEditingBbk = null;
+            window.currentEditingBbkDetails = null;
             document.querySelectorAll('#view-input-bbk input, #view-input-bbk select').forEach(el => {
                 if(el.type !== 'date') el.value = '';
             });
@@ -5150,6 +5182,7 @@
             }
 
             const payload = { 
+                noDokumen: window.currentEditingBbkNo || null,
                 unit, tanggal, pekerjaan, operator, shift, supplier, refDokumen, refOm, ketHeader, items,
                 userId: window.currentUserId || "",
                 userName: window.currentUserName || ""
@@ -6566,6 +6599,74 @@
                 showDialog("Apakah Anda yakin ingin keluar?", "confirm", executeLogout);
             }
         }
+        // Fungsi Edit Dokumen BBK
+        function editDokumenBbk() {
+            const report = window.currentEditingBbk;
+            const details = window.currentEditingBbkDetails;
+            if (!report) return;
+
+            goBackFromDocument();
+            switchView('input-bbk');
+
+            // Simpan ID yang sedang diedit
+            window.currentEditingBbkNo = report[3];
+
+            // Isi Header
+            if(document.getElementById('bbk-unit')) document.getElementById('bbk-unit').value = report[0] || '';
+            if(document.getElementById('bbk-date')) document.getElementById('bbk-date').value = report[1] || '';
+            if(document.getElementById('bbk-pek')) document.getElementById('bbk-pek').value = report[2] || '';
+            if(document.getElementById('bbk-operator')) document.getElementById('bbk-operator').value = report[4] || '';
+            if(document.getElementById('bbk-shift')) document.getElementById('bbk-shift').value = report[5] || '';
+            if(document.getElementById('bbk-supplier')) document.getElementById('bbk-supplier').value = report[6] || '';
+            if(document.getElementById('bbk-ref')) document.getElementById('bbk-ref').value = report[7] || '';
+            if(document.getElementById('bbk-ref-om')) document.getElementById('bbk-ref-om').value = report[8] || '';
+            if(document.getElementById('bbk-ket-header')) document.getElementById('bbk-ket-header').value = report[9] || '';
+
+            // Isi Rincian Barang
+            const container = document.getElementById('dynamic-bbk-rows-container');
+            if (container && details && details.length > 0) {
+                container.innerHTML = '';
+                details.forEach(d => {
+                    const rowHtml = `
+                        <div class="bbk-row-item" style="display: grid; grid-template-columns: 3fr 1fr 2fr 40px; gap: 8px; align-items: start; margin-bottom: 5px;">
+                            <div class="form-group" style="position: relative; margin-bottom:0;">
+                                <input type="text" class="form-control bbk-barang-search" value="${d[9]} - ${d[10]} - ${d[12] || '-'}" autocomplete="off" onfocus="handleBbkInput(this, true)" onclick="handleBbkInput(this, true)" oninput="debouncedHandleBbkInput(this)" onkeydown="navigateSuggestions(event, this)" style="margin-top:0; padding:10px;">
+                                <div class="bbk-barang-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e5f2; border-radius: 2px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 4px;"></div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;"><input type="text" inputmode="numeric" class="form-control bbk-qty-val" value="${d[13]}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="0" style="margin-top:0; padding:10px;"></div>
+                            <div class="form-group" style="margin-bottom:0;"><input type="text" class="form-control bbk-ket-val" value="${d[14] || ''}" oninput="this.value = this.value.toUpperCase()" style="margin-top:0; padding:10px;"></div>
+                            <button type="button" onclick="removeBbkRow(this)" style="background: #fce8e8; color: #ee5d50; border: none; border-radius: 2px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Hapus Baris">
+                                <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', rowHtml);
+                });
+                forceAddRow('bbk'); // Tambah 1 baris kosong di bawah
+            }
+        }
+
+        // Fungsi Batal Dokumen BBK
+        function batalDokumenBbk(noDokumen) {
+            showDialog("Apakah Anda yakin ingin membatalkan dokumen BBK ini? Status akan menjadi Batal dan Qty menjadi 0.", "confirm", () => {
+                panggilBackend('updateStatusBatalBbk', {
+                    noDokumen: noDokumen,
+                    userId: window.currentUserId || "",
+                    userName: window.currentUserName || ""
+                }).then(res => {
+                    if (res && res.success) {
+                        goBackFromDocument();
+                        showDialog("Dokumen BBK berhasil dibatalkan.", "warning");
+                        loadBbkGlobalData();
+                    } else {
+                        showDialog("Gagal batalkan BBK: " + (res ? res.message : "Error"), "warning");
+                    }
+                }).catch(err => {
+                    showDialog("Koneksi gagal: " + err.message, "warning");
+                });
+            });
+        }
+
         function batalDokumen() {
             showDialog("Apakah Anda yakin ingin membatalkan dokumen ini? Qty akan diubah menjadi 0 dan saldo akan kembali ke gudang.", "confirm", () => {
                 const report = window.currentEditingReport;
