@@ -778,7 +778,6 @@
                       <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                   </div>
                   <div class="submenu">
-                      <a href="#" class="submenu-item">Forecast</a>
                       <div class="menu-item has-submenu" onclick="toggleSubmenu(this)" style="padding-left:16px;">
                           <div class="menu-item-content">Schedule</div>
                           <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
@@ -1164,7 +1163,7 @@
                                 <th colspan="1" class="col-admin">Supplier</th>
                                 <th colspan="4">Gramasi (Gr)</th>
                                 <th colspan="1" class="col-harga">Harga Jual Jasa (Rp)</th>
-                                <th colspan="7" class="col-harga">Harga Per Pcs (Rp)</th>
+                                <th colspan="8" class="col-harga">Harga Per Pcs (Rp)</th>
                             </tr>
                             <tr>
                                 <th>Kode</th>
@@ -1179,6 +1178,7 @@
                                 <th>Badan</th>
                                 <th class="col-harga" style="text-align:center;">HJJ</th>
                                 <th class="col-harga" style="text-align:center;">Tutup Besi</th>
+                                <th class="col-harga" style="text-align:center;">Garuk Dakron</th>
                                 <th class="col-harga" style="text-align:center;">Jahit Bulatan</th>
                                 <th class="col-harga" style="text-align:center;">Pengisian</th>
                                 <th class="col-harga" style="text-align:center;">Jahit Tutup</th>
@@ -1189,7 +1189,7 @@
                         </thead>
                         <tbody id="tbody-master">
                             <tr>
-                                <td colspan="18" style="text-align:center; padding: 30px; color:#8f9bba;">Klik 'Muat Ulang Data' untuk mengambil data dari server.</td>
+                                <td colspan="19" style="text-align:center; padding: 30px; color:#8f9bba;">Klik 'Muat Ulang Data' untuk mengambil data dari server.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1340,8 +1340,9 @@
                         <div class="form-group"><label>Shift <span class="text-danger">*</span></label><select id="select-shift" class="form-control"><option value="">-- Pilih Shift --</option><option>Shift 1</option><option>Shift 2</option><option>Shift 3</option><option>Non-Shift</option></select></div>
                         <div class="form-group">
                             <label>Pekerjaan <span class="text-danger">*</span></label>
-                            <input type="text" id="select-pek" list="list-select-pek" class="form-control" placeholder="Ketik / pilih pekerjaan..." onclick="this.select()" oninput="refreshAllQtyStokDisplay()" onchange="refreshAllQtyStokDisplay()">
-                            <datalist id="list-select-pek"></datalist>
+                            <select id="select-pek" class="form-control" onchange="refreshAllQtyStokDisplay()">
+                                <option value="">-- Pilih Pekerjaan --</option>
+                            </select>
                         </div>
                     </div>
 
@@ -1640,14 +1641,20 @@
                             <button class="btn-modern" onclick="loadSisaOmData()">Muat Ulang Data</button>
                         </div>
                     </div>
-                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; align-items:center;">
                         <select id="filter-sisaom-unit" class="search-input" onchange="filterSisaOmData()">
                             <option value="">Semua Unit</option>
                             <option value="CV JHB 1">CV JHB 1</option>
                             <option value="CV JHB 2">CV JHB 2</option>
                             <option value="CV JHB 5">CV JHB 5</option>
                         </select>
-                        <input type="month" id="filter-sisaom-month" class="search-input" style="width: 150px;" onchange="filterSisaOmData()">
+                        <!-- Filter Rentang Bulan -->
+                        <div style="display:flex; align-items:center; gap:6px; background:#fff; padding:2px 10px; border:1px solid #e0e5f2; border-radius:2px;">
+                            <span style="font-size:11px; font-weight:700; color:#8f9bba;">Bulan:</span>
+                            <input type="month" id="filter-sisaom-start-month" class="search-input" style="width: 140px; border:none; padding:4px;" onchange="filterSisaOmData()">
+                            <span style="color:#8f9bba; font-weight:bold;">-</span>
+                            <input type="month" id="filter-sisaom-end-month" class="search-input" style="width: 140px; border:none; padding:4px;" onchange="filterSisaOmData()">
+                        </div>
                         <input type="text" id="filter-sisaom-search" class="search-input" placeholder="Cari Kode Barang / Nama / Kategori..." style="flex: 1;" oninput="filterSisaOmData()">
                     </div>
                     <div class="table-container">
@@ -2262,7 +2269,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbw-QWUHGGHbzFFlcQLpBhcdq17c-LKTJrFGw6htPu1uwfZdWJGtfp0X4nD8xiUcUKFNag/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxVHYTvxSeL0JuiFcGccTPac7UBsxBc0kAhrwmuTNqY8UxR68H4B4ssvoCo2qo5iR5zSQ/exec"; 
         
         // 2. Mesin Panggil Backend Tahan Banting (Dengan Auto-Retry & Anti-Throttling)
         async function panggilBackend(actionName, payloadData, attempt = 1) {
@@ -2560,7 +2567,8 @@
             if(document.getElementById('bs-date')) document.getElementById('bs-date').value = today;
             if(document.getElementById('filter-trackingsj-start')) document.getElementById('filter-trackingsj-start').value = firstDay;
             if(document.getElementById('filter-trackingsj-end')) document.getElementById('filter-trackingsj-end').value = today;
-            if(document.getElementById('filter-sisaom-month')) document.getElementById('filter-sisaom-month').value = `${year}-${month}`;
+            if(document.getElementById('filter-sisaom-start-month')) document.getElementById('filter-sisaom-start-month').value = `${year}-${month}`;
+            if(document.getElementById('filter-sisaom-end-month')) document.getElementById('filter-sisaom-end-month').value = `${year}-${month}`;
             
             // Tambahan Khusus Buku Pengecekan
             if(document.getElementById('filter-bpc-start')) document.getElementById('filter-bpc-start').value = firstDay;
@@ -3083,7 +3091,7 @@
             tbody.innerHTML = '';
             
             if (tableStates.master.data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="18" style="text-align:center;">Data Master Barang Kosong</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="19" style="text-align:center;">Data Master Barang Kosong</td></tr>';
                 renderPaginationButtons('master', 'pagination-master', renderMasterTable);
                 return;
             }
@@ -7509,22 +7517,39 @@
         function filterSisaOmData() {
             if (!window.rawSisaOmData) return;
             const unitEl = document.getElementById('filter-sisaom-unit');
-            const monthEl = document.getElementById('filter-sisaom-month');
+            const startMonthEl = document.getElementById('filter-sisaom-start-month');
+            const endMonthEl = document.getElementById('filter-sisaom-end-month');
             const searchEl = document.getElementById('filter-sisaom-search');
             
             const unit = unitEl ? unitEl.value.toLowerCase() : '';
-            const monthVal = monthEl ? monthEl.value : '';
+            const startMonth = startMonthEl ? startMonthEl.value : '';
+            const endMonth = endMonthEl ? endMonthEl.value : '';
             const searchVal = searchEl ? searchEl.value.toLowerCase().trim() : '';
             let keywords = searchVal.split(/\s+/);
 
             const actualData = window.rawSisaOmData.length > 1 ? window.rawSisaOmData.slice(1) : window.rawSisaOmData;
 
-            // --- UPDATE: SORTIR TERBARU DI ATAS ---
             const filtered = actualData.filter(row => {
                 if(!Array.isArray(row)) return false;
                 const matchUnit = unit === '' || row.some(cell => String(cell).toLowerCase().includes(unit));
                 const matchSearch = searchVal === '' || keywords.every(kw => row.some(cell => String(cell).toLowerCase().includes(kw)));
-                const matchMonth = monthVal === '' || row.some(cell => String(cell).includes(monthVal));
+                
+                // Filter rentang bulan (Start Month sampai End Month)
+                let matchMonth = true;
+                if (startMonth || endMonth) {
+                    matchMonth = row.some(cell => {
+                        const cellStr = String(cell || '');
+                        // Cocokkan pola YYYY-MM di dalam cell (contoh: 2026-08-15 atau 2026-08)
+                        const match = cellStr.match(/\b(\d{4}-\d{2})\b/);
+                        if (match) {
+                            const ym = match[1];
+                            if (startMonth && endMonth) return ym >= startMonth && ym <= endMonth;
+                            if (startMonth) return ym >= startMonth;
+                            if (endMonth) return ym <= endMonth;
+                        }
+                        return false;
+                    });
+                }
                 
                 return matchUnit && matchSearch && matchMonth;
             }).reverse();
