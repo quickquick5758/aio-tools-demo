@@ -208,6 +208,10 @@
         }
         .table-thin thead tr.header-group th:last-child { border-right: none; }
         .table-thin tbody tr:hover { background-color: #f4f7fe; }
+        #table-laporan-elem th, 
+        #table-laporan-elem td {
+        padding: 8px 10px !important; /* Ubah 10px jika ingin lebih tinggi/rendah */
+        }
         .btn-modern { background: #4318ff; color: #fff; border: none; border-radius: 2px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.3s; }
         .btn-modern:hover { background: #3311db; }
 
@@ -2269,9 +2273,29 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwQQVhuEi2tYJTOen8zuK7Pf7L0Fpk_5J_fYBoIcUZBGqU2e0eQkDkQsGpKxPqebBPAvg/exec"; 
-        
-        // 2. Mesin Panggil Backend Tahan Banting (Dengan Auto-Retry & Anti-Throttling)
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzwvV3z6LGjk2bpanc4rfUgh2fdyzHGf9KSrybw60OriXLUWmxQveuNf4TLjQazl5kgPA/exec";         
+
+        // 2. HELPER: Parser Nominal Desimal Aman (Cegah Nilai Berubah Jadi Triliunan)
+        function parseNominalFrontend(val) {
+            if (val === null || val === undefined || val === '') return 0;
+            if (typeof val === 'number') return isNaN(val) ? 0 : val;
+            let str = String(val).replace(/Rp\s*|\s+/gi, '').trim();
+            if (!str) return 0;
+            if (str.includes('.') && str.includes(',')) {
+                str = str.replace(/\./g, '').replace(',', '.');
+            } else if (str.includes(',')) {
+                str = str.replace(',', '.');
+            } else if (str.includes('.')) {
+                let parts = str.split('.');
+                if (parts.length > 2 || (parts.length === 2 && parts[1].length === 3 && parts[0].length <= 3)) {
+                    str = str.replace(/\./g, '');
+                }
+            }
+            const num = parseFloat(str);
+            return isNaN(num) ? 0 : num;
+        }
+
+        // 3. Mesin Panggil Backend Tahan Banting (Dengan Auto-Retry & Anti-Throttling)
         async function panggilBackend(actionName, payloadData, attempt = 1) {
           const maxAttempts = 3; // Otomatis mencoba ulang sampai 3 kali jika server Google sibuk
           try {
@@ -6917,8 +6941,7 @@
                 tableStates.view.data.forEach(r => {
                     totalDataQty += parseFloat(r[13]) || 0;
                     if(canViewPrice) {
-                        let rawIns = String(r[16] || '0').split(',')[0].replace(/[^\d]/g, '');
-                        totalDataInsentif += parseFloat(rawIns) || 0;
+                        totalDataInsentif += parseNominalFrontend(r[16]);
                     }
                 });
 
@@ -7245,7 +7268,26 @@
                 
                 const rawBarangText = `${kode} - ${nama} - ${warna}`;
                 const highlightedBadgeText = highlightSearchBadge(rawBarangText, keyword);
-                div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%; font-size:13px; color:#2b3674;"><span>${highlightedBadgeText}</span></div>`;
+
+                // ADJUSTMENT: Kembalikan tampilan saldo stok real-time pada opsi dropdown
+                const stockAvail = getAvailableStock(rawBarangText);
+                const stockDisplay = (stockAvail === '-' || stockAvail === 99999) ? '-' : Number(stockAvail).toLocaleString('id-ID');
+                
+                let badgeStyle = 'background: rgba(5, 205, 153, 0.12); color: #05cd99; border: 1px solid rgba(5, 205, 153, 0.3);';
+                if (stockAvail !== '-' && stockAvail !== 99999 && stockAvail <= 0) {
+                    badgeStyle = 'background: rgba(238, 93, 80, 0.12); color: #ee5d50; border: 1px solid rgba(238, 93, 80, 0.3);';
+                } else if (stockAvail === '-' || stockAvail === 99999) {
+                    badgeStyle = 'background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1;';
+                }
+
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:8px;">
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#2b3674;">${highlightedBadgeText}</span>
+                        <span style="font-size:11px; font-weight:700; padding:2px 8px; border-radius:3px; white-space:nowrap; ${badgeStyle}">
+                            Stok: ${stockDisplay}
+                        </span>
+                    </div>
+                `;
                 
                 div.onmouseover = () => div.style.backgroundColor = '#f4f7fe';
                 div.onmouseout = () => div.style.backgroundColor = '#fff';
@@ -7308,9 +7350,11 @@
             const selectedUnit = (document.getElementById('input-unit')?.value || window.currentUserUnit || '').trim().toLowerCase();
             const selectedPek = (document.getElementById('select-pek')?.value || '').trim().toLowerCase();
             
-            if (selectedPek === "tutup besi" || selectedPek === "jahit bulatan") {
+            // PERBAIKAN: Masukkan pasang hipseat dan pasang besi agar bebas limit saldo gudang
+            const isBypassJob = ["tutup besi", "pasang besi", "jahit bulatan", "pasang hipseat"].includes(selectedPek);
+            if (isBypassJob) {
                 qtyStokEl.value = "-"; 
-                qtyStokEl.setAttribute('data-saldo', 999999999); 
+                qtyStokEl.setAttribute('data-saldo', 99999); 
                 applyQtyStokColor(qtyStokEl, '-');
                 return;
             }
@@ -7393,7 +7437,8 @@
             const selectedUnit = (document.getElementById('input-unit')?.value || window.currentUserUnit || '').trim().toLowerCase();
             const selectedPek = (document.getElementById('select-pek')?.value || '').trim().toLowerCase();
 
-            if (selectedPek === "tutup besi" || selectedPek === "jahit bulatan") return 999999999;
+            const isBypassJob = ["tutup besi", "pasang besi", "jahit bulatan", "pasang hipseat"].includes(selectedPek);
+            if (isBypassJob) return 99999;
 
             const mapKolomPek = {
                 "pengisian": 8, "jahit tutup": 9, "penyarungan": 10, "packing/press": 11, "ikat/ball": 12
@@ -7480,19 +7525,26 @@
             recalculateAllStok();
         }
 
-        function handleBsInput(input, showAll = false) {
+        async function handleBsInput(input, showAll = false) {
             const container = input.nextElementSibling;
             if(!container) return;
-            container.innerHTML = '';
-            
-            const keyword = input.value.trim().toLowerCase();
-            if (!keyword && !showAll) {
-                container.style.display = 'none';
-                return;
+
+            // Blok seluruh teks saat diklik agar mudah diganti
+            if (showAll && input.value) {
+                input.select();
             }
-            if (!window.allMasterBarang) {
-                container.style.display = 'none';
-                return;
+
+            // PERBAIKAN: Muat otomatis master barang jika belum pernah dibuka
+            if (!window.allMasterBarang || window.allMasterBarang.length === 0) {
+                container.innerHTML = '<div style="padding:10px; font-size:12px; color:#8f9bba; text-align:center;">Memuat master barang...</div>';
+                container.style.display = 'block';
+                await ensureMasterBarangLoaded();
+            }
+
+            container.innerHTML = '';
+            let keyword = input.value.trim().toLowerCase();
+            if (showAll) {
+                keyword = '';
             }
             
             let keywords = keyword.split(/\s+/);
