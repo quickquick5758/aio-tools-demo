@@ -2273,7 +2273,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbzwvV3z6LGjk2bpanc4rfUgh2fdyzHGf9KSrybw60OriXLUWmxQveuNf4TLjQazl5kgPA/exec";         
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbz6QvTEOok1ePQDkHqDQ6-VTxalhkzQSzhXenMxGPR7MbCelktJZdSdVjMZdxA4SOPfWA/exec";         
 
         // 2. HELPER: Parser Nominal Desimal Aman (Cegah Nilai Berubah Jadi Triliunan)
         function parseNominalFrontend(val) {
@@ -2579,21 +2579,32 @@
           try {
               let data = await panggilBackend('getMasterOperatorData', {});
               allOperators = data || [];
-              const karus = [...new Set(allOperators.map(i => i.karu))];
-              const peks = [...new Set(allOperators.map(i => i.pekerjaan))];
+              const karus = [...new Set(allOperators.map(i => i.karu))].filter(Boolean);
+              
+              // PERBAIKAN: Standarisasi Master Pekerjaan agar list tidak hilang jika operator kosong
+              const standardPekerjaan = [
+                  "Garuk Dakron", "Pengisian", "Jahit Tutup", "Penyarungan", 
+                  "Packing", "Ikat/Ball", "Tutup Besi", "Jahit Bulatan", 
+                  "Pasang Hipseat", "Pasang Besi"
+              ];
+              const peksFromOp = allOperators.map(i => i.pekerjaan).filter(Boolean);
+              const peks = [...new Set([...standardPekerjaan, ...peksFromOp])];
+
               const kSelect = document.getElementById('select-karu');
               const bsKaruSelect = document.getElementById('bs-karu');
               const pSelect = document.getElementById('select-pek');
               
               karus.forEach(k => {
-                  if(k) {
-                      if(kSelect) kSelect.innerHTML += `<option value="${k}">${k}</option>`;
-                      if(bsKaruSelect) bsKaruSelect.innerHTML += `<option value="${k}">${k}</option>`;
-                  }
+                  if(kSelect) kSelect.innerHTML += `<option value="${k}">${k}</option>`;
+                  if(bsKaruSelect) bsKaruSelect.innerHTML += `<option value="${k}">${k}</option>`;
               });
-              peks.forEach(p => {
-                  if(p && pSelect) pSelect.innerHTML += `<option value="${p}">${p}</option>`;
-              });
+              
+              if(pSelect) {
+                  pSelect.innerHTML = `<option value="">-- Pilih Pekerjaan --</option>`;
+                  peks.forEach(p => {
+                      pSelect.innerHTML += `<option value="${p}">${p}</option>`;
+                  });
+              }
               if(typeof renderPerformaOperatorTiles === 'function') renderPerformaOperatorTiles();
           } catch (err) { console.error("Gagal muat operator:", err); }
 
@@ -6692,11 +6703,56 @@
         }
 
         function batalDokumen() {
-            showDialog("Apakah Anda yakin ingin membatalkan dokumen ini? Qty akan diubah menjadi 0 dan saldo akan kembali ke gudang.", "confirm", () => {
-                const report = window.currentEditingReport;
-                if (!report) return;
-                const idLaporan = report[1];
-                
+            const report = window.currentEditingReport;
+            if (!report) return;
+            const idLaporan = report[1];
+
+            // MODAL PROMPT: Wajib Mengisi Alasan Pembatalan
+            const dialog = document.getElementById('custom-dialog');
+            const title = document.getElementById('dialog-title');
+            const msg = document.getElementById('dialog-message');
+            const actions = document.getElementById('dialog-actions');
+            const icon = document.getElementById('dialog-icon');
+
+            title.textContent = 'Alasan Pembatalan Dokumen';
+            title.style.color = '#ee5d50';
+            icon.innerHTML = `<svg style="width:48px;height:48px;color:#ee5d50;margin:0 auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+
+            msg.innerHTML = `
+                <div style="text-align:left;">
+                    <p style="margin-bottom:8px; font-size:13px; color:#2b3674;">Dokumen <b>${idLaporan}</b> akan dibatalkan. Qty diubah menjadi 0 dan saldo dikembalikan ke gudang.</p>
+                    <label style="display:block; font-size:12px; font-weight:700; color:#2b3674; margin-bottom:4px;">Alasan Pembatalan <span style="color:#ee5d50;">*</span></label>
+                    <textarea id="input-alasan-batal" class="form-control" rows="3" placeholder="Contoh: Double input / Salah Qty / Salah Barang..." style="resize:none; font-size:13px;" required></textarea>
+                    <span id="err-alasan-batal" style="display:none; color:#ee5d50; font-size:11.5px; font-weight:700; margin-top:4px;">Alasan pembatalan wajib diisi!</span>
+                </div>
+            `;
+
+            actions.innerHTML = '';
+
+            const btnCancel = document.createElement('button');
+            btnCancel.className = 'btn-modern';
+            btnCancel.style.background = '#f1f5f9';
+            btnCancel.style.color = '#64748b';
+            btnCancel.textContent = 'Kembali';
+            btnCancel.onclick = () => { dialog.style.display = 'none'; };
+
+            const btnProses = document.createElement('button');
+            btnProses.className = 'btn-modern';
+            btnProses.style.background = '#ee5d50';
+            btnProses.textContent = 'Proses Batal';
+            btnProses.onclick = () => {
+                const alasanInput = document.getElementById('input-alasan-batal');
+                const errText = document.getElementById('err-alasan-batal');
+                const alasanVal = alasanInput ? alasanInput.value.trim() : '';
+
+                if (!alasanVal) {
+                    if (errText) errText.style.display = 'block';
+                    if (alasanInput) { alasanInput.focus(); alasanInput.style.borderColor = '#ee5d50'; }
+                    return;
+                }
+
+                dialog.style.display = 'none';
+
                 const actionsContainer = document.getElementById('doc-open-actions');
                 if(actionsContainer) {
                     actionsContainer.innerHTML = '<span style="color:#2b3674; font-weight:bold;">Memproses pembatalan...</span>';
@@ -6705,29 +6761,32 @@
                 panggilBackend('updateStatusBatal', { 
                     idLaporan: idLaporan,
                     userId: window.currentUserId || "",
-                    userName: window.currentUserName || ""
+                    userName: window.currentUserName || "",
+                    alasan: alasanVal
                 })
-                    .then(res => {
-                        if (res && res.success) {
-                            document.getElementById('doc-open-badge').innerHTML = '<span style="background:#fce8e8; color:#ee5d50; padding:4px 8px; border-radius:2px; font-size:12px; font-weight:bold; vertical-align:middle; margin-left:10px;">BATAL</span>';
-                            if(actionsContainer) actionsContainer.style.display = 'none';
-                            
-                            if (window.currentEditingReport) window.currentEditingReport[9] = 'Batal';
-                            loadLaporanData(); 
+                .then(res => {
+                    if (res && res.success) {
+                        if (window.currentEditingReport) window.currentEditingReport[9] = 'Batal';
+                        loadLaporanData(); 
+                        goBackFromDocument();
+                        showDialog(`Dokumen <b>${idLaporan}</b> berhasil dibatalkan.<br>Alasan tersimpan: <i>${alasanVal}</i>`, "warning");
+                    } else {
+                        showDialog("Gagal membatalkan dokumen: " + (res ? res.message : "Kesalahan internal"), "warning");
+                    }
+                })
+                .catch(err => {
+                    showDialog("Gagal koneksi ke server: " + err.message, "warning");
+                });
+            };
 
-                            // Tutup modal dokumen otomatis setelah dibatalkan
-                            goBackFromDocument();
-                            showDialog("Dokumen berhasil dibatalkan. Saldo telah dikembalikan.", "warning");
-                        } else {
-                            showDialog("Gagal membatalkan dokumen: " + (res ? res.message : "Kesalahan internal"), "warning");
-                            if(actionsContainer) actionsContainer.style.display = 'none';
-                        }
-                    })
-                    .catch(err => {
-                        showDialog("Gagal koneksi ke server.", "warning");
-                        if(actionsContainer) actionsContainer.style.display = 'none';
-                    });
-            });
+            actions.appendChild(btnCancel);
+            actions.appendChild(btnProses);
+            dialog.style.display = 'flex';
+
+            setTimeout(() => {
+                const inp = document.getElementById('input-alasan-batal');
+                if (inp) inp.focus();
+            }, 100);
         }
 
             function approveDokumenLaporan(idLaporan) {
@@ -7312,11 +7371,17 @@
                 const map = new Map();
                 (window.allMutasiData || []).forEach(row => {
                     if (!Array.isArray(row)) return;
-                    const unit = String(row[0] || '').trim().toLowerCase();
+                    // Normalisasi unit (menghapus awalan 'cv ' agar 'CV JHB 1' cocok dengan 'JHB 1')
+                    const rawUnit = String(row[0] || '').trim().toLowerCase().replace(/^cv\s*/i, '');
                     const kode = String(row[1] || '').trim().toUpperCase();
-                    const motif = String(row[4] || '').trim().toUpperCase(); // Index 4 = Motif di DATA_MUTASI
-                    const key = unit + '|' + kode + '|' + motif;
-                    if (!map.has(key)) map.set(key, row); 
+                    const motif = String(row[4] || '-').trim().toUpperCase();
+                    
+                    const key = rawUnit + '|' + kode + '|' + motif;
+                    if (!map.has(key)) map.set(key, row);
+
+                    // Fallback key tanpa motif untuk pencarian fleksibel
+                    const keyNoMotif = rawUnit + '|' + kode;
+                    if (!map.has(keyNoMotif)) map.set(keyNoMotif, row);
                 });
                 _stokLookupCache = { source: window.allMutasiData, map: map };
             }
@@ -7347,7 +7412,7 @@
                 }
             }
 
-            const selectedUnit = (document.getElementById('input-unit')?.value || window.currentUserUnit || '').trim().toLowerCase();
+            const selectedUnit = (document.getElementById('input-unit')?.value || window.currentUserUnit || '').trim().toLowerCase().replace(/^cv\s*/i, '');
             const selectedPek = (document.getElementById('select-pek')?.value || '').trim().toLowerCase();
             
             // PERBAIKAN: Masukkan pasang hipseat dan pasang besi agar bebas limit saldo gudang
@@ -7360,7 +7425,11 @@
             }
 
             const mapKolomPek = {
-                "pengisian": 8, "jahit tutup": 9, "penyarungan": 10, "packing/press": 11, "ikat/ball": 12
+                "pengisian": 8, "pe": 8,
+                "jahit tutup": 9, "jt": 9,
+                "penyarungan": 10, "py": 10,
+                "packing": 11, "packing/press": 11, "pp": 11, "press": 11,
+                "ikat/ball": 12, "ikat": 12, "ball": 12
             };
 
             const targetColIdx = mapKolomPek[selectedPek];
@@ -7434,14 +7503,19 @@
 
         // --- TAMBAHAN: Fungsi Bantuan Cek Sisa Saldo untuk Badge Dropdown ---
         function getAvailableStock(rawBarangString) {
-            const selectedUnit = (document.getElementById('input-unit')?.value || window.currentUserUnit || '').trim().toLowerCase();
+            const selectedUnit = (document.getElementById('input-unit')?.value || window.currentUserUnit || '').trim().toLowerCase().replace(/^cv\s*/i, '');
             const selectedPek = (document.getElementById('select-pek')?.value || '').trim().toLowerCase();
 
             const isBypassJob = ["tutup besi", "pasang besi", "jahit bulatan", "pasang hipseat"].includes(selectedPek);
             if (isBypassJob) return 99999;
 
+            // PERBAIKAN: Alias lengkap pekerjaan untuk pengecekan saldo badge
             const mapKolomPek = {
-                "pengisian": 8, "jahit tutup": 9, "penyarungan": 10, "packing/press": 11, "ikat/ball": 12
+                "pengisian": 8, "pe": 8,
+                "jahit tutup": 9, "jt": 9,
+                "penyarungan": 10, "py": 10,
+                "packing": 11, "packing/press": 11, "pp": 11, "press": 11,
+                "ikat/ball": 12, "ikat": 12, "ball": 12
             };
             const targetColIdx = mapKolomPek[selectedPek];
             if (targetColIdx === undefined || !window.allMutasiData || window.allMutasiData.length === 0) return 0;
