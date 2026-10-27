@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AiO Tools - All in One Production</title>
-    <link href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <title>AiO Demo - All in One Production</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- Pustaka html2canvas untuk fitur Download Foto -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Pustaka SheetJS untuk fitur Import Data Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         /* CSS Reset & Global Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Asta Sans', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Gothic A1', sans-serif; }
         body { background-color: #f4f7fe; color: #2b3674; display: flex; height: 100vh; overflow: hidden; position: relative; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -22,7 +24,7 @@
         .text-muted { color: #8f9bba; }
         .text-success { color: #05cd99; }
         .text-danger { color: #ee5d50; }
-        .font-bold { font-weight: 300; }
+        .font-bold { font-weight: 400; }
         .font-extrabold { font-weight: 700; }
 
         /* Sidebar Layout */
@@ -1187,7 +1189,7 @@
                                 <th class="col-harga" style="text-align:center;">Pengisian</th>
                                 <th class="col-harga" style="text-align:center;">Jahit Tutup</th>
                                 <th class="col-harga" style="text-align:center;">Penyarungan</th>
-                                <th class="col-harga" style="text-align:center;">Packing/Press</th>
+                                <th class="col-harga" style="text-align:center;">Packing</th>
                                 <th class="col-harga" style="text-align:center;">Ikat/Ball</th>
                             </tr>
                         </thead>
@@ -1588,16 +1590,25 @@
 
                   <!-- FILTER & PENCARIAN KODE BARANG -->
                   <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; align-items:center;">
-                      <select id="filter-posisi-unit" class="search-input" style="width: 170px;" onchange="filterPosisiBarang()">
+                      <select id="filter-posisi-unit" class="search-input" style="width: 150px;" onchange="filterPosisiBarang()">
                           <option value="">Semua Unit</option>
                           <option value="CV JHB 1">CV JHB 1</option>
                           <option value="CV JHB 2">CV JHB 2</option>
                           <option value="CV JHB 5">CV JHB 5</option>
                       </select>
-                      <div style="position:relative; flex:1; min-width:240px;">
+                      <!-- DROPDOWN FILTER SUPPLIER -->
+                      <select id="filter-posisi-supplier" class="search-input" style="width: 220px;" onchange="filterPosisiBarang()">
+                          <option value="">Semua Supplier</option>
+                      </select>
+                      <div style="position:relative; flex:1; min-width:200px;">
                           <input type="text" id="filter-posisi-search" class="search-input" placeholder="Ketik Kode / Nama Barang / Motif..." style="width:100%; padding-left:36px;" oninput="filterPosisiBarang()">
                           <svg style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:#8f9bba;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                       </div>
+                      <!-- CHECKBOX FILTER HANYA YANG ADA SALDO -->
+                      <label style="cursor:pointer; font-size:12.5px; font-weight:700; color:#2b3674; display:flex; align-items:center; gap:6px; background:#f8fafc; padding:8px 12px; border-radius:2px; border:1px solid #e0e5f2;">
+                          <input type="checkbox" id="chk-posisi-ada-saldo" onchange="filterPosisiBarang()">
+                          Hanya yang ada saldo
+                      </label>
                   </div>
 
                   <div class="table-container">
@@ -1709,57 +1720,162 @@
               </div>
           </div>
 
-            <!-- 7. VIEW SISA OM -->
-            <div id="view-sisa-om" class="view-section">
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                        <h3 class="text-secondary font-bold" style="margin-bottom: 0;">Rincian Sisa OM</h3>
-                        <div>
-                            <!-- Tombol Download Foto -->
-                            <button class="btn-modern" style="background:#4318ff; color:#fff; display:inline-flex; align-items:center; gap:8px; margin-right: 8px;" onclick="downloadSisaOmAsImage(event)">
-                                <svg style="width:16px; height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                Download Foto
+            <!-- 7. VIEW SISA OM (HALAMAN DASHBOARD STATISTIK OM: GROUP A, B, C) -->
+            <div id="view-sisa-om" class="view-section" style="padding-bottom: 100px;">
+                <div id="capture-area-sisa-om">
+                <!-- GROUP A: 4 BOX STATISTIK UTAMA -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                    <div class="card" style="padding: 16px; border-left: 4px solid #4318ff;">
+                        <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Total Dokumen OM</span>
+                        <h3 id="stat-om-total" style="font-size: 24px; color: #2b3674; font-weight: 800; margin-top: 4px;">0</h3>
+                        <span style="font-size: 11px; color: #8f9bba;">Jumlah No. OM Terdaftar</span>
+                    </div>
+                    <div class="card" style="padding: 16px; border-left: 4px solid #05cd99;">
+                        <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">OM Terselesaikan</span>
+                        <h3 id="stat-om-selesai" style="font-size: 24px; color: #05cd99; font-weight: 800; margin-top: 4px;">0</h3>
+                        <span id="stat-om-selesai-pct" style="font-size: 11px; color: #05cd99; font-weight: 700;">0% Selesai</span>
+                    </div>
+                    <div class="card" style="padding: 16px; border-left: 4px solid #ee5d50;">
+                        <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Sisa OM (Belum Selesai)</span>
+                        <h3 id="stat-om-sisa" style="font-size: 22px; color: #ee5d50; font-weight: 800; margin-top: 4px;">0</h3>
+                        <span style="font-size: 11px; color: #ee5d50; font-weight: 700;">Outstanding Order</span>
+                    </div>
+                    <div class="card" style="padding: 16px; border-left: 4px solid #f59e0b;">
+                        <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Total Qty Sisa (Pcs)</span>
+                        <h3 id="stat-om-sisa-pcs" style="font-size: 22px; color: #f59e0b; font-weight: 800; margin-top: 4px;">0</h3>
+                        <span style="font-size: 11px; color: #8f9bba;">Fisik Barang Tertunggak</span>
+                    </div>
+                </div>
+
+                <!-- GROUP B: CONTROLS & FILTER (DILENGKAPI TOMBOL KE HALAMAN RINCIAN OM) -->
+                <div class="card" style="padding: 16px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; flex: 1;">
+                            <select id="filter-sisaom-unit" class="search-input" style="width: 150px;" onchange="filterSisaOmData()">
+                                <option value="">Semua Unit</option>
+                                <option value="CV JHB 1">CV JHB 1</option>
+                                <option value="CV JHB 2">CV JHB 2</option>
+                                <option value="CV JHB 5">CV JHB 5</option>
+                            </select>
+                            <div style="display: flex; align-items: center; gap: 6px; background: #fff; padding: 2px 10px; border: 1px solid #e0e5f2; border-radius: 2px;">
+                                <span style="font-size: 11px; font-weight: 700; color: #8f9bba;">Periode Tgl OM:</span>
+                                <input type="date" id="filter-sisaom-start" class="search-input" style="width: 120px; border: none; padding: 4px;" onchange="filterSisaOmData()">
+                                <span style="color: #8f9bba; font-weight: bold;">-</span>
+                                <input type="date" id="filter-sisaom-end" class="search-input" style="width: 120px; border: none; padding: 4px;" onchange="filterSisaOmData()">
+                            </div>
+                            <div style="position: relative; flex: 1; min-width: 200px;">
+                                <input type="text" id="filter-sisaom-search" class="search-input" placeholder="Cari Supplier..." style="width: 100%; padding-left: 36px;" oninput="filterSisaOmData()">
+                                <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #8f9bba;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <!-- TOMBOL PINDAH KE HALAMAN TABEL RINCIAN OM -->
+                            <button class="btn-modern" style="background:#4318ff; color:#fff;" onclick="switchView('rincian-om')">
+                                <svg style="width:14px; height:14px; margin-right:4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg> Rincian OM
                             </button>
-                            <button class="btn-modern" onclick="loadSisaOmData()">Muat Ulang Data</button>
+                            <button class="btn-modern" style="background:#fff; color:#4318ff; border: 1px solid #e0e5f2;" onclick="downloadSisaOmAsImage(event)">
+                                <svg style="width:14px; height:14px; margin-right:4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> Foto
+                            </button>
+                            <button class="btn-modern" style="background:#f4f7fe; color:#4318ff; border: 1px solid #4318ff;" onclick="loadSisaOmData()">
+                                <svg style="width:14px; height:14px; margin-right:4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Refresh
+                            </button>
                         </div>
                     </div>
-                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; align-items:center;">
-                        <select id="filter-sisaom-unit" class="search-input" onchange="filterSisaOmData()">
+                </div>
+
+                <!-- GROUP C: BOX-BOX KECIL RINCIAN PER SUPPLIER (PIVOT KARTU SUPPLIER) -->
+                <div>
+                    <span style="font-size: 12px; font-weight: 800; color: #2b3674; text-transform: uppercase; margin-bottom: 10px; display: block;">Rincian Pivot Per Supplier (Berdasarkan Filter Aktif):</span>
+                    <div id="supplier-pivot-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px;">
+                        <!-- Diisi otomatis oleh JavaScript -->
+                    </div>
+                </div>
+                </div> <!-- End capture-area-sisa-om -->
+            </div>
+
+            <!-- 7b. VIEW RINCIAN OM (HALAMAN KHUSUS TABEL DETAIL DENGAN TOMBOL KEMBALI) -->
+            <div id="view-rincian-om" class="view-section" style="padding-bottom: 100px;">
+                <div class="card">
+                    <!-- HEADER HALAMAN RINCIAN OM DENGAN TOMBOL KEMBALI DI POJOK KANAN ATAS -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h3 class="text-primary font-bold" style="font-size: 22px; margin-bottom: 2px;">Rincian OM</h3>
+                            <p style="font-size: 12px; color: #8f9bba;">Daftar lengkap transaksi fisik Order Makloon per No. OM dan Kode Barang</p>
+                        </div>
+                        <!-- TOMBOL KEMBALI DI POJOK KANAN ATAS -->
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-modern" style="background:#f4f7fe; color:#4318ff; border: 1px solid #4318ff; padding: 8px 18px;" onclick="switchView('sisa-om')">
+                                <svg style="width:14px; height:14px; margin-right:4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg> Kembali
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- DROPDOWN & FILTER LENGKAP: UNIT, SUPPLIER, RENTANG TANGGAL, SEARCH BAR & CHECKBOX -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
+                        <select id="filter-rincianom-unit" class="search-input" style="width: 140px;" onchange="filterRincianOmData()">
                             <option value="">Semua Unit</option>
                             <option value="CV JHB 1">CV JHB 1</option>
                             <option value="CV JHB 2">CV JHB 2</option>
                             <option value="CV JHB 5">CV JHB 5</option>
                         </select>
-                        <!-- Filter Rentang Bulan -->
-                        <div style="display:flex; align-items:center; gap:6px; background:#fff; padding:2px 10px; border:1px solid #e0e5f2; border-radius:2px;">
-                            <span style="font-size:11px; font-weight:700; color:#8f9bba;">Bulan:</span>
-                            <input type="month" id="filter-sisaom-start-month" class="search-input" style="width: 140px; border:none; padding:4px;" onchange="filterSisaOmData()">
-                            <span style="color:#8f9bba; font-weight:bold;">-</span>
-                            <input type="month" id="filter-sisaom-end-month" class="search-input" style="width: 140px; border:none; padding:4px;" onchange="filterSisaOmData()">
+                        <select id="filter-rincianom-supplier" class="search-input" style="width: 200px;" onchange="filterRincianOmData()">
+                            <option value="">Semua Supplier</option>
+                        </select>
+                        <div style="display: flex; align-items: center; gap: 6px; background: #fff; padding: 2px 10px; border: 1px solid #e0e5f2; border-radius: 2px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #8f9bba;">Tgl OM:</span>
+                            <input type="date" id="filter-rincianom-start" class="search-input" style="width: 115px; border: none; padding: 4px;" onchange="filterRincianOmData()">
+                            <span style="color: #8f9bba; font-weight: bold;">-</span>
+                            <input type="date" id="filter-rincianom-end" class="search-input" style="width: 115px; border: none; padding: 4px;" onchange="filterRincianOmData()">
                         </div>
-                        <input type="text" id="filter-sisaom-search" class="search-input" placeholder="Cari Kode Barang / Nama / Kategori..." style="flex: 1;" oninput="filterSisaOmData()">
+                        <div style="position: relative; flex: 1; min-width: 180px;">
+                            <input type="text" id="filter-rincianom-search" class="search-input" placeholder="Ketik No OM / Kode / Nama Barang..." style="width: 100%; padding-left: 36px;" oninput="filterRincianOmData()">
+                            <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #8f9bba;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <!-- CHECKBOX BELUM TERSELESAIKAN -->
+                        <label style="cursor: pointer; font-size: 12.5px; font-weight: 700; color: #ee5d50; display: flex; align-items: center; gap: 6px; background: #fff; padding: 8px 12px; border-radius: 2px; border: 1px solid #fecaca; white-space: nowrap;">
+                            <input type="checkbox" id="filter-rincianom-unfinish" onchange="filterRincianOmData()">
+                            Belum Terselesaikan
+                        </label>
                     </div>
+
+                    <!-- TABEL DETAIL GROUP D (13 KOLOM) -->
                     <div class="table-container">
-                        <table class="table-thin" id="table-sisa-om">
+                        <table class="table-thin" id="table-rincian-om">
                             <thead>
-                                <tr id="thead-sisa-om-row">
-                                    <th>Loading Data...</th>
+                                <tr>
+                                    <th>Unit</th>
+                                    <th>No OM</th>
+                                    <th>Tgl OM</th>
+                                    <th>Kode</th>
+                                    <th>Nama Barang</th>
+                                    <th>Kategori</th>
+                                    <th>Motif</th>
+                                    <th>Supplier</th>
+                                    <th style="text-align: right;">QTY Pesanan</th>
+                                    <th style="text-align: right;">QTY Realisasi</th>
+                                    <th style="text-align: right;">QTY Retur</th>
+                                    <th style="text-align: right;">QTY Sisa</th>
+                                    <th style="text-align: center;">Status</th>
                                 </tr>
                             </thead>
-                            <tbody id="tbody-sisa-om"></tbody>
+                            <tbody id="tbody-rincian-om">
+                                <tr><td colspan="13" style="text-align:center; padding:25px; color:#8f9bba;">Memuat data Rincian OM...</td></tr>
+                            </tbody>
                         </table>
                     </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 15px;">
-                        <div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 15px; flex-wrap:wrap; gap:10px;">
+                        <div style="display:flex; align-items:center; gap:12px;">
                             <span style="font-size:13px; color:#8f9bba; font-weight:700;">Tampilkan: </span>
-                            <select id="limit-sisaom" class="search-input" style="width:80px; padding:4px;" onchange="renderSisaOmTable(tableStates.sisaOm.data, 1)">
+                            <select id="limit-rincianom" class="search-input" style="width:90px; padding:4px;" onchange="renderRincianOmTable(tableStates.rincianOm.data, 1)">
                                 <option value="15">15</option>
                                 <option value="25">25</option>
                                 <option value="50">50</option>
-                                <option value="all">Semua</option>
+                                <option value="all" selected>Semua</option>
                             </select>
+                            <span id="label-count-rincianom" style="font-size:13px; color:#2b3674; font-weight:800; background:#f4f7fe; padding:4px 10px; border-radius:2px; border:1px solid #e0e5f2;">0 Data</span>
                         </div>
-                        <div id="pagination-sisaom" style="display:flex; gap:5px;"></div>
+                        <div id="pagination-rincianom" style="display:flex; gap:5px;"></div>
                     </div>
                 </div>
             </div>
@@ -1794,7 +1910,7 @@
                             <option value="Pengisian">Pengisian</option>
                             <option value="Jahit Tutup">Jahit Tutup</option>
                             <option value="Penyarungan">Penyarungan</option>
-                            <option value="Packing/Press">Packing/Press</option>
+                            <option value="Packing/Press">Packing</option>
                             <option value="Ikat/Ball">Ikat/Ball</option>
                             <option value="Pengembalian Retur">Pengembalian Retur</option>
                             <option value="Lain-Lain">Lain-Lain</option>
@@ -2351,23 +2467,20 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbz6QvTEOok1ePQDkHqDQ6-VTxalhkzQSzhXenMxGPR7MbCelktJZdSdVjMZdxA4SOPfWA/exec";         
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwpRvp3FpCuPiIOzOxMOb_gIre126tP6UwEUNc5D1VcGHYiG8LQJSY3V3jlerhn2aMeDg/exec";         
 
-        // 2. HELPER: Parser Nominal Desimal Aman (Cegah Nilai Berubah Jadi Triliunan)
+        // 2. HELPER: Parser Nominal Desimal Aman (Presisi Angka Murni)
         function parseNominalFrontend(val) {
             if (val === null || val === undefined || val === '') return 0;
             if (typeof val === 'number') return isNaN(val) ? 0 : val;
             let str = String(val).replace(/Rp\s*|\s+/gi, '').trim();
             if (!str) return 0;
+            // Jika format Indo (ada titik ribuan dan koma desimal contoh: 4.063,8)
             if (str.includes('.') && str.includes(',')) {
                 str = str.replace(/\./g, '').replace(',', '.');
             } else if (str.includes(',')) {
+                // contoh: 573,1 -> 573.1
                 str = str.replace(',', '.');
-            } else if (str.includes('.')) {
-                let parts = str.split('.');
-                if (parts.length > 2 || (parts.length === 2 && parts[1].length === 3 && parts[0].length <= 3)) {
-                    str = str.replace(/\./g, '');
-                }
             }
             const num = parseFloat(str);
             return isNaN(num) ? 0 : num;
@@ -2480,7 +2593,8 @@
             view: { data: [], currentPage: 1, limit: 15 },
             sisaOm: { data: [], currentPage: 1, limit: 15 },
             trackingSj: { data: [], currentPage: 1, limit: 15 },
-            posisiBarang: { data: [], currentPage: 1, limit: 15 }
+            posisiBarang: { data: [], currentPage: 1, limit: 15 },
+            rincianOm: { data: [], currentPage: 1, limit: 15 }
         };
 
         function renderPaginationButtons(stateKey, containerId, renderFunc) {
@@ -2713,8 +2827,12 @@
             if(document.getElementById('bs-date')) document.getElementById('bs-date').value = today;
             if(document.getElementById('filter-trackingsj-start')) document.getElementById('filter-trackingsj-start').value = firstDay;
             if(document.getElementById('filter-trackingsj-end')) document.getElementById('filter-trackingsj-end').value = today;
-            if(document.getElementById('filter-sisaom-start-month')) document.getElementById('filter-sisaom-start-month').value = `${year}-${month}`;
-            if(document.getElementById('filter-sisaom-end-month')) document.getElementById('filter-sisaom-end-month').value = `${year}-${month}`;
+            
+            // Set Default Tanggal 1 s/d Hari ini untuk Sisa OM & Rincian OM
+            if(document.getElementById('filter-sisaom-start')) document.getElementById('filter-sisaom-start').value = firstDay;
+            if(document.getElementById('filter-sisaom-end')) document.getElementById('filter-sisaom-end').value = today;
+            if(document.getElementById('filter-rincianom-start')) document.getElementById('filter-rincianom-start').value = firstDay;
+            if(document.getElementById('filter-rincianom-end')) document.getElementById('filter-rincianom-end').value = today;
             
             // Tambahan Khusus Buku Pengecekan
             if(document.getElementById('filter-bpc-start')) document.getElementById('filter-bpc-start').value = firstDay;
@@ -2748,6 +2866,13 @@
                     document.getElementById('stat-rp-masuk').textContent = `Rp ${Number(res.rp.masuk).toLocaleString('id-ID')}`;
                     document.getElementById('stat-rp-prod').textContent = `Rp ${Number(res.rp.prod).toLocaleString('id-ID')}`;
                     document.getElementById('stat-rp-kirim').textContent = `Rp ${Number(res.rp.kirim).toLocaleString('id-ID')}`;
+
+                    // PERBAIKAN: Pastikan Author dan level berwenang langsung melihat nominal Rupiah saat dashboard dimuat
+                    const cleanRoleCheck = String(window.currentUserRole || '').toLowerCase().trim();
+                    const isRupiahPermitted = ['author', 'supervisor', 'staff finance', 'admin finance', 'staff produksi', 'admin produksi'].includes(cleanRoleCheck);
+                    document.querySelectorAll('.stat-rupiah').forEach(el => {
+                        el.style.display = isRupiahPermitted ? 'block' : 'none';
+                    });
 
                     // Populate Active Operators (Dynamic from report)
                     document.getElementById('stat-op-total').innerHTML = `${res.operators.total} <span style="font-size:14px; font-weight:400; color:#e0e5ff;">Orang</span>`;
@@ -2950,7 +3075,7 @@
                 const labelText = val === 10000 ? '10.000' : (val === 0 ? '0' : Number(val).toLocaleString('id-ID'));
                 
                 // Teks Angka Sumbu Y di Kiri
-                yGridSvg += `<text x="${yAxisWidth - 10}" y="${yPos + 3.5}" font-size="9.5" font-family="'Asta Sans', sans-serif" font-weight="700" fill="#8f9bba" text-anchor="end">${labelText}</text>`;
+                yGridSvg += `<text x="${yAxisWidth - 10}" y="${yPos + 3.5}" font-size="9.5" font-family="'Gothic A1', sans-serif" font-weight="700" fill="#8f9bba" text-anchor="end">${labelText}</text>`;
                 // Garis Horizontal Grid Tipis
                 yGridSvg += `<line x1="${yAxisWidth}" y1="${yPos}" x2="${width - rightPadding}" y2="${yPos}" stroke="#edf2f7" stroke-width="1" />`;
             });
@@ -2995,7 +3120,7 @@
                     <g style="filter: drop-shadow(0 2px 4px rgba(43,54,116,0.15));">
                         <rect x="${badgeX - (badgeWidth / 2)}" y="${badgeY}" width="${badgeWidth}" height="${badgeHeight}" rx="11" fill="#ffffff" stroke="#e0e5f2" stroke-width="1"/>
                         <polygon points="${badgeX - 4},${badgeY + badgeHeight} ${badgeX + 4},${badgeY + badgeHeight} ${badgeX},${badgeY + badgeHeight + 4}" fill="#ffffff"/>
-                        <text x="${badgeX}" y="${badgeY + 15}" font-size="10.5" font-family="'Asta Sans', sans-serif" font-weight="800" fill="#2b3674" text-anchor="middle">${badgeText}</text>
+                        <text x="${badgeX}" y="${badgeY + 15}" font-size="10.5" font-family="'Gothic A1', sans-serif" font-weight="800" fill="#2b3674" text-anchor="middle">${badgeText}</text>
                     </g>
                 `;
             }
@@ -3074,9 +3199,16 @@
 
             // 1. UPDATE: Ganti Judul Header agar user tahu di mana dia berada
             let menuName = 'Dashboard';
-            if (element) menuName = element.textContent.trim();
+            if (element && element.textContent) menuName = element.textContent.trim();
             else if (viewName === 'document-open') menuName = 'Buka Dokumen';
             else if (viewName === 'preview') menuName = 'Preview Data';
+            else if (viewName === 'sisa-om') menuName = 'Sisa OM';
+            else if (viewName === 'rincian-om') menuName = 'Rincian OM';
+            else if (viewName === 'posisi-barang') menuName = 'Posisi Barang';
+            else if (viewName === 'buku-pengecekan') menuName = 'Buku Pengecekan';
+            else if (viewName === 'input-baru') menuName = 'Input Baru';
+            else if (viewName === 'input-bbk') menuName = 'Input Hasil Pengecekan';
+            else if (viewName === 'input-bs') menuName = 'Input BS/Reject';
             
             menuName = menuName.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim(); // Bersihkan dari spasi/icon SVG
             const headerTitle = document.querySelector('.header-title h2');
@@ -3157,8 +3289,19 @@
                     loadPosisiBarangData();
                 }
                 if(viewName === 'sisa-om') {
-                    if(document.getElementById('filter-sisaom-search')) document.getElementById('filter-sisaom-search').value = '';
-                    if(typeof loadSisaOmData === 'function') loadSisaOmData();
+                    // Pastikan filter tanggal di Sisa OM sudah terisi default
+                    const now = new Date();
+                    const todayStr = now.toISOString().slice(0, 10);
+                    const firstDayStr = todayStr.slice(0, 8) + '01';
+                    const startEl = document.getElementById('filter-sisaom-start');
+                    const endEl = document.getElementById('filter-sisaom-end');
+                    if (startEl && !startEl.value) startEl.value = firstDayStr;
+                    if (endEl && !endEl.value) endEl.value = todayStr;
+
+                    loadSisaOmData();
+                }
+                if(viewName === 'rincian-om') {
+                    openRincianOmPage();
                 }
                 if(viewName === 'tracking-sj') {
                     if(document.getElementById('filter-trackingsj-search')) document.getElementById('filter-trackingsj-search').value = '';
@@ -3650,12 +3793,14 @@
                                             <td style="padding:8px 12px; border-bottom:1px solid #f0f0f0;">${d[14] || '-'}</td>
                                         </tr>`;
                                     } else {
-                                        // FORMAT ROW UNTUK PRODUKSI PRD
-                                        let rawInsentif = String(d[16] || '0').split(',')[0];
-                                        let cleanInsentif = rawInsentif.replace(/[^\d]/g, '');
-                                        totalInsentif += parseFloat(cleanInsentif) || 0;
-                                        let formattedHarga = (!isNaN(d[15]) && d[15] !== '') ? 'Rp ' + Number(d[15]).toLocaleString('id-ID') : '-';
-                                        let formattedInsentif = (!isNaN(d[16]) && d[16] !== '') ? 'Rp ' + Number(d[16]).toLocaleString('id-ID') : '-';
+                                        // FORMAT ROW UNTUK PRODUKSI PRD (PERBAIKAN: Desimal murni tanpa menghapus koma/titik)
+                                        let numHarga = parseNominalFrontend(d[15]);
+                                        let numInsentif = parseNominalFrontend(d[16]);
+                                        
+                                        totalInsentif += numInsentif;
+
+                                        let formattedHarga = numHarga > 0 ? 'Rp ' + Number(numHarga).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) : '-';
+                                        let formattedInsentif = numInsentif > 0 ? 'Rp ' + Number(numInsentif).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) : 'Rp 0';
                                         
                                         let priceColumns = isAllowedToViewPrice ? `
                                             <td style="padding:8px 12px; border-bottom:1px solid #f0f0f0; text-align:right;">${formattedHarga}</td>
@@ -3691,7 +3836,7 @@
                                             <td style="padding:10px 12px; text-align:right; font-weight:bold; color:#4318ff; font-size:14px;">${totalQty}</td>
                                             ${isAllowedToViewPrice ? `
                                             <td style="padding:10px 12px;"></td>
-                                            <td style="padding:10px 12px; text-align:right; font-weight:bold; color:#05cd99; font-size:14px;">Rp ${Number(totalInsentif).toLocaleString('id-ID')}</td>
+                                            <td style="padding:10px 12px; text-align:right; font-weight:bold; color:#05cd99; font-size:14px;">Rp ${Number(totalInsentif).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</td>
                                             ` : ''}
                                             <td style="padding:10px 12px;"></td>
                                         </tr>`;
@@ -4205,11 +4350,11 @@
                     // Sembunyikan Overlay Login
                     document.getElementById('loginOverlay').style.display = 'none'; 
 
-                    // Simpan Data User ke Global Variable
-                    window.currentUserRole = response.role || "Operator";
-                    window.currentUserUnit = response.unit || "";
-                    window.currentUserName = response.name || user;
-                    window.currentUserId = response.userId || user; // Rekam User ID akun
+                    // Simpan Data User ke Global Variable (Dibersihkan dari spasi tak terlihat)
+                    window.currentUserRole = String(response.role || "Operator").trim();
+                    window.currentUserUnit = String(response.unit || "").trim();
+                    window.currentUserName = String(response.name || user).trim();
+                    window.currentUserId = String(response.userId || user).trim();
 
                     // STAY TO LOGIN (Simpan di memory browser)
                     sessionStorage.setItem('authSession', JSON.stringify({
@@ -4235,6 +4380,7 @@
                     applyUnitAccess(response.role, response.unit);
 
                     // --- 4. LOGIKA KHUSUS KARU ---
+                    const roleLower = String(response.role || "Operator").toLowerCase().trim();
                     const isKaru = (roleLower === 'karu');
                     const kSelect = document.getElementById('select-karu');
                     const bsKaruSelect = document.getElementById('bs-karu');
@@ -5639,7 +5785,7 @@
                     Object.keys(tableDataByPekerjaan).forEach(pek => {
                         tablesHtml += `
                         <div style="min-width: 350px; background:#fff;">
-                            <table class="table-thin" style="width:100%; border-collapse:collapse; border: 1px solid #7ea3c8; font-family: Asta Sans, sans-serif;">
+                            <table class="table-thin" style="width:100%; border-collapse:collapse; border: 1px solid #7ea3c8; font-family: Gothic A1, sans-serif;">
                                 <thead>
                                     <tr style="background:#9ebde3;">
                                         <th style="padding:6px 8px; border:1px solid #7ea3c8; color:#000; font-size:11px; text-transform:none; font-weight:bold; text-align:center;">Kategori</th>
@@ -7075,15 +7221,16 @@
                             td.style.fontWeight = 'bold';
                             td.textContent = cellVal;
                         } 
-                        // Kolom Harga & Insentif (Index 15 & 16)
+                        // Kolom Harga & Insentif (Index 15 & 16) - Dibulatkan ke bilangan bulat agar tidak ada pecahan rancu
                         else if (i === 15 || i === 16) { 
                             td.style.textAlign = 'right';
-                            if(cellVal !== '-' && !isNaN(cellVal) && cellVal !== '') {
-                                 td.textContent = 'Rp ' + Number(cellVal).toLocaleString('id-ID');
-                                 if (i === 16) td.style.color = '#05cd99'; // Highlight hijau untuk Insentif
+                            let numVal = parseNominalFrontend(cellVal);
+                            if (numVal > 0) {
+                                 td.textContent = 'Rp ' + Number(Math.round(numVal)).toLocaleString('id-ID');
+                                 if (i === 16) td.style.color = '#05cd99';
                                  td.style.fontWeight = 'bold';
                             } else {
-                                 td.textContent = cellVal;
+                                 td.textContent = 'Rp 0';
                             }
                         }
                         // Kolom Default
@@ -7139,13 +7286,14 @@
                     tdTotHarga.style.borderTop = '2px solid #e0e5f2';
                     trTot.appendChild(tdTotHarga);
 
-                    const tdTotInsentif = document.createElement('td'); // Inject Harga Penjumlahan Total
+                    const tdTotInsentif = document.createElement('td');
                     tdTotInsentif.style.textAlign = 'right';
-                    tdTotInsentif.style.fontWeight = '600';
+                    tdTotInsentif.style.fontWeight = '700';
                     tdTotInsentif.style.color = '#05cd99';
                     tdTotInsentif.style.fontSize = '14px';
                     tdTotInsentif.style.borderTop = '2px solid #e0e5f2';
-                    tdTotInsentif.textContent = 'Rp ' + Number(totalDataInsentif).toLocaleString('id-ID');
+                    // PERBAIKAN: Gunakan Math.round agar pecahan desimal seperti ,296 dibulatkan murni ke rupiah utuh
+                    tdTotInsentif.textContent = 'Rp ' + Number(Math.round(totalDataInsentif)).toLocaleString('id-ID');
                     trTot.appendChild(tdTotInsentif);
                 }
 
@@ -7846,119 +7994,444 @@
             }
         }
 
-        function filterSisaOmData() {
-            if (!window.rawSisaOmData) return;
-            const unitEl = document.getElementById('filter-sisaom-unit');
-            const startMonthEl = document.getElementById('filter-sisaom-start-month');
-            const endMonthEl = document.getElementById('filter-sisaom-end-month');
-            const searchEl = document.getElementById('filter-sisaom-search');
+        // Helper Standarisasi Tanggal ke YYYY-MM-DD yang Tahan Banting (Mendukung DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD)
+        function normalizeDateYMD(val) {
+            if (!val) return '';
+            val = String(val).trim();
+            if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val;
             
-            const unit = unitEl ? unitEl.value.toLowerCase() : '';
-            const startMonth = startMonthEl ? startMonthEl.value : '';
-            const endMonth = endMonthEl ? endMonthEl.value : '';
-            const searchVal = searchEl ? searchEl.value.toLowerCase().trim() : '';
-            let keywords = searchVal.split(/\s+/);
-
-            const actualData = window.rawSisaOmData.length > 1 ? window.rawSisaOmData.slice(1) : window.rawSisaOmData;
-
-            const filtered = actualData.filter(row => {
-                if(!Array.isArray(row)) return false;
-                const matchUnit = unit === '' || row.some(cell => String(cell).toLowerCase().includes(unit));
-                const matchSearch = searchVal === '' || keywords.every(kw => row.some(cell => String(cell).toLowerCase().includes(kw)));
-                
-                // Filter rentang bulan (Start Month sampai End Month)
-                let matchMonth = true;
-                if (startMonth || endMonth) {
-                    matchMonth = row.some(cell => {
-                        const cellStr = String(cell || '');
-                        // Cocokkan pola YYYY-MM di dalam cell (contoh: 2026-08-15 atau 2026-08)
-                        const match = cellStr.match(/\b(\d{4}-\d{2})\b/);
-                        if (match) {
-                            const ym = match[1];
-                            if (startMonth && endMonth) return ym >= startMonth && ym <= endMonth;
-                            if (startMonth) return ym >= startMonth;
-                            if (endMonth) return ym <= endMonth;
-                        }
-                        return false;
-                    });
+            let parts = val.split(/[\/\-\s]/).filter(Boolean);
+            if (parts.length === 3) {
+                // Format YYYY/MM/DD
+                if (parts[0].length === 4 && !isNaN(parts[0])) {
+                    return `${parts[0]}-${String(parts[1]).padStart(2, '0')}-${String(parts[2]).padStart(2, '0')}`;
                 }
-                
-                return matchUnit && matchSearch && matchMonth;
-            }).reverse();
-
-            renderSisaOmTable(filtered, 1);
+                // Format DD/MM/YYYY atau MM/DD/YYYY
+                if (parts[2].length === 4 && !isNaN(parts[2])) {
+                    let y = parts[2];
+                    let p0 = parseInt(parts[0], 10);
+                    let p1 = parseInt(parts[1], 10);
+                    if (p0 > 12) {
+                        return `${y}-${String(p1).padStart(2, '0')}-${String(p0).padStart(2, '0')}`;
+                    }
+                    if (p1 > 12) {
+                        return `${y}-${String(p0).padStart(2, '0')}-${String(p1).padStart(2, '0')}`;
+                    }
+                    // Default Indonesia DD/MM/YYYY
+                    return `${y}-${String(p1).padStart(2, '0')}-${String(p0).padStart(2, '0')}`;
+                }
+            }
+            let d = new Date(val);
+            if (!isNaN(d.getTime())) {
+                let y = d.getFullYear();
+                let m = String(d.getMonth() + 1).padStart(2, '0');
+                let day = String(d.getDate()).padStart(2, '0');
+                return `${y}-${m}-${day}`;
+            }
+            return val;
         }
 
+        // --- LOGIKA STATISTIK DINAMIS SISA OM (BUKU LAPORAN OM) ---
         function loadSisaOmData() {
-            const tbody = document.getElementById('tbody-sisa-om');
-            if(!tbody) return;
-            tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:20px; color:#8f9bba;">Mengambil data Sisa OM dari server...</td></tr>';
+            const pivotContainer = document.getElementById('supplier-pivot-cards');
+            if (pivotContainer) {
+                pivotContainer.innerHTML = '<p style="color:#8f9bba; font-size:13px; padding:15px;">Mengambil data Buku Laporan OM...</p>';
+            }
+            const tbodyRincian = document.getElementById('tbody-rincian-om');
+            if (tbodyRincian) {
+                tbodyRincian.innerHTML = '<tr><td colspan="13" style="text-align:center; padding:25px; color:#8f9bba;">Mengambil data Buku Laporan OM...</td></tr>';
+            }
             
             panggilBackend('getSisaOmData', {})
                 .then(function(data) {
                     window.rawSisaOmData = data || [];
                     filterSisaOmData();
+                    populateRincianOmSuppliers();
+                    filterRincianOmData();
                 })
                 .catch(err => {
-                    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:#ee5d50;">Gagal memuat data Sisa OM.</td></tr>`;
+                    console.error("Gagal getSisaOmData:", err);
+                    if (pivotContainer) {
+                        pivotContainer.innerHTML = `<p style="color:#ee5d50; font-size:13px; padding:15px;">Gagal memuat data: ${err.message}</p>`;
+                    }
+                    if (tbodyRincian) {
+                        tbodyRincian.innerHTML = `<tr><td colspan="13" style="text-align:center; color:#ee5d50; padding:25px;">Gagal memuat data: ${err.message}</td></tr>`;
+                    }
                 });
         }
 
-        function renderSisaOmTable(dataArray, page = 1) {
-            tableStates.sisaOm.data = dataArray || [];
-            tableStates.sisaOm.currentPage = page;
-            const limitEl = document.getElementById('limit-sisaom');
-            const limitVal = limitEl ? limitEl.value : 15;
-            tableStates.sisaOm.limit = limitVal === 'all' ? tableStates.sisaOm.data.length : parseInt(limitVal);
-
-            const tbody = document.getElementById('tbody-sisa-om');
-            const theadRow = document.getElementById('thead-sisa-om-row');
-            if(!tbody || !theadRow) return;
-            tbody.innerHTML = '';
-            
-            if (window.rawSisaOmData && window.rawSisaOmData.length > 0) {
-                theadRow.innerHTML = '';
-                window.rawSisaOmData[0].forEach((colName, index) => {
-                    const th = document.createElement('th');
-                    th.innerHTML = `${colName} <span class="sort-icon">▲▼</span>`;
-                    th.style.cursor = 'pointer';
-                    th.onclick = () => sortTable('table-sisa-om', index, 'sisaOm', renderSisaOmTable);
-                    theadRow.appendChild(th);
-                });
-            }
-
-            if (tableStates.sisaOm.data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="${window.rawSisaOmData && window.rawSisaOmData[0] ? window.rawSisaOmData[0].length : 10}" style="text-align:center; padding:20px; color:#8f9bba;">Tidak ada data Sisa OM.</td></tr>`;
-                renderPaginationButtons('sisaOm', 'pagination-sisaom', renderSisaOmTable);
+        function filterSisaOmData() {
+            if (!window.rawSisaOmData || window.rawSisaOmData.length <= 1) {
+                calculateDynamicOmStatsAndPivot([]);
                 return;
             }
 
-            let start = (tableStates.sisaOm.currentPage - 1) * tableStates.sisaOm.limit;
-            let end = start + tableStates.sisaOm.limit;
-            let paginatedData = tableStates.sisaOm.data.slice(start, end);
+            const unit = (document.getElementById('filter-sisaom-unit')?.value || '').toLowerCase().trim();
+            const startDate = document.getElementById('filter-sisaom-start')?.value || '';
+            const endDate = document.getElementById('filter-sisaom-end')?.value || '';
+            const searchVal = (document.getElementById('filter-sisaom-search')?.value || '').toLowerCase().trim();
+            const keywords = searchVal.split(/\s+/).filter(Boolean);
+
+            const actualRows = window.rawSisaOmData.slice(1);
+
+            const filtered = actualRows.filter(row => {
+                if (!Array.isArray(row) || !row[1]) return false;
+
+                const rowUnit = String(row[0] || '').toLowerCase();
+                const matchUnit = unit === '' || rowUnit.includes(unit.replace(/^cv\s*/i, ''));
+
+                let matchDate = true;
+                const rowDate = normalizeDateYMD(row[2]);
+                if (startDate && (!rowDate || rowDate < startDate)) matchDate = false;
+                if (endDate && (!rowDate || rowDate > endDate)) matchDate = false;
+
+                const matchSearch = keywords.length === 0 || keywords.every(kw => 
+                    row.some(cell => String(cell || '').toLowerCase().includes(kw))
+                );
+
+                return matchUnit && matchDate && matchSearch;
+            });
+
+            calculateDynamicOmStatsAndPivot(filtered);
+        }
+
+        // --- MESIN KHUSUS HALAMAN RINCIAN OM ---
+        function openRincianOmPage() {
+            // SINKRONISASI: Salin filter Unit & Tanggal dari halaman Sisa OM ke Rincian OM
+            const sisaStart = document.getElementById('filter-sisaom-start')?.value;
+            const sisaEnd = document.getElementById('filter-sisaom-end')?.value;
+            const sisaUnit = document.getElementById('filter-sisaom-unit')?.value;
+
+            if (sisaStart && document.getElementById('filter-rincianom-start')) {
+                document.getElementById('filter-rincianom-start').value = sisaStart;
+            }
+            if (sisaEnd && document.getElementById('filter-rincianom-end')) {
+                document.getElementById('filter-rincianom-end').value = sisaEnd;
+            }
+            if (sisaUnit !== undefined && document.getElementById('filter-rincianom-unit')) {
+                document.getElementById('filter-rincianom-unit').value = sisaUnit;
+            }
+
+            if (!window.rawSisaOmData || window.rawSisaOmData.length === 0) {
+                loadSisaOmData();
+                return;
+            }
+            populateRincianOmSuppliers();
+            filterRincianOmData();
+        }
+
+        function populateRincianOmSuppliers() {
+            const selectEl = document.getElementById('filter-rincianom-supplier');
+            if (!selectEl || !window.rawSisaOmData) return;
+            const curVal = selectEl.value;
+            const actualRows = window.rawSisaOmData.slice(1);
+            const suppliers = [...new Set(actualRows.map(r => String(r[7] || '').trim()).filter(Boolean))].sort();
+
+            selectEl.innerHTML = `<option value="">Semua Supplier</option>`;
+            suppliers.forEach(s => {
+                selectEl.innerHTML += `<option value="${s}">${s}</option>`;
+            });
+            selectEl.value = curVal;
+        }
+
+        function filterRincianOmData() {
+            if (!window.rawSisaOmData || window.rawSisaOmData.length <= 1) {
+                renderRincianOmTable([]);
+                return;
+            }
+
+            const unit = (document.getElementById('filter-rincianom-unit')?.value || '').toLowerCase().trim();
+            const supplier = (document.getElementById('filter-rincianom-supplier')?.value || '').toLowerCase().trim();
+            const startDate = document.getElementById('filter-rincianom-start')?.value || '';
+            const endDate = document.getElementById('filter-rincianom-end')?.value || '';
+            const searchVal = (document.getElementById('filter-rincianom-search')?.value || '').toLowerCase().trim();
+            const keywords = searchVal.split(/\s+/).filter(Boolean);
+            const onlyUnfinished = document.getElementById('filter-rincianom-unfinish')?.checked || false;
+
+            const actualRows = window.rawSisaOmData.slice(1);
+
+            const filtered = actualRows.filter(row => {
+                if (!Array.isArray(row) || !row[1]) return false;
+
+                // 1. Unit (Index 0)
+                const rowUnit = String(row[0] || '').toLowerCase();
+                const matchUnit = unit === '' || rowUnit.includes(unit.replace(/^cv\s*/i, ''));
+
+                // 2. Supplier (Index 7)
+                const rowSupplier = String(row[7] || '').toLowerCase().trim();
+                const matchSupplier = supplier === '' || rowSupplier === supplier;
+
+                // 3. Rentang Tanggal OM (Index 2)
+                let matchDate = true;
+                const rowDate = normalizeDateYMD(row[2]);
+                if (startDate && (!rowDate || rowDate < startDate)) matchDate = false;
+                if (endDate && (!rowDate || rowDate > endDate)) matchDate = false;
+
+                // 4. Pencarian Teks (No OM, Kode, Nama Barang, Motif, dll)
+                const matchSearch = keywords.length === 0 || keywords.every(kw => 
+                    row.some(cell => String(cell || '').toLowerCase().includes(kw))
+                );
+
+                // 5. Filter Checkbox Belum Terselesaikan
+                if (onlyUnfinished) {
+                    const qPesanan = parseFloat(String(row[8] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                    const qRealisasi = parseFloat(String(row[9] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                    const qSisa = parseFloat(String(row[11] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                    const statusStr = String(row[12] || '').toLowerCase().trim();
+
+                    // Dianggap Selesai jika Realisasi >= Pesanan ATAU Sisa <= 0 ATAU Status eksplisit selesai
+                    const isSelesai = (qSisa <= 0 && qPesanan > 0) || (qRealisasi >= qPesanan && qPesanan > 0) || (statusStr.includes('selesai') && !statusStr.includes('belum'));
+                    if (isSelesai) return false;
+                }
+
+                return matchUnit && matchSupplier && matchDate && matchSearch;
+            });
+
+            renderRincianOmTable(filtered, 1);
+        }
+
+        function renderRincianOmTable(dataArray, page = 1) {
+            tableStates.rincianOm.data = dataArray || [];
+            tableStates.rincianOm.currentPage = page;
+            const limitEl = document.getElementById('limit-rincianom');
+            const limitVal = limitEl ? limitEl.value : 'all';
+            tableStates.rincianOm.limit = limitVal === 'all' ? (tableStates.rincianOm.data.length || 1) : parseInt(limitVal, 10);
+
+            const countBadge = document.getElementById('label-count-rincianom');
+            if (countBadge) {
+                countBadge.textContent = `${tableStates.rincianOm.data.length.toLocaleString('id-ID')} Baris Data`;
+            }
+
+            const tbody = document.getElementById('tbody-rincian-om');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            if (tableStates.rincianOm.data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; padding:25px; color:#8f9bba;">Tidak ada data rincian Order Makloon yang cocok.</td></tr>';
+                renderPaginationButtons('rincianOm', 'pagination-rincianom', renderRincianOmTable);
+                return;
+            }
+
+            let start = (tableStates.rincianOm.currentPage - 1) * tableStates.rincianOm.limit;
+            let end = start + tableStates.rincianOm.limit;
+            let paginatedData = tableStates.rincianOm.data.slice(start, end);
 
             paginatedData.forEach(row => {
                 const tr = document.createElement('tr');
-                if(Array.isArray(row)) {
-                    row.forEach(cell => {
-                        const td = document.createElement('td');
-                        td.textContent = cell !== undefined && cell !== null ? cell : '-';
-                        // Jika isinya murni angka, ratakan ke kanan
-                        if (cell !== '' && cell !== '-' && !isNaN(cell)) {
-                            td.style.textAlign = 'right';
-                            td.style.fontWeight = 'bold';
+
+                const qPesanan = parseFloat(String(row[8] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                const qRealisasi = parseFloat(String(row[9] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                const qSisa = parseFloat(String(row[11] || '0').replace(/[^0-9.-]/g, '')) || 0;
+
+                // Status Pintar: Jika Realisasi >= Pesanan atau Sisa <= 0, otomatis Selesai
+                let isRowSelesai = (qSisa <= 0 && qPesanan > 0) || (qRealisasi >= qPesanan && qPesanan > 0);
+
+                for (let idx = 0; idx < 13; idx++) {
+                    const td = document.createElement('td');
+                    let rawVal = row[idx] !== undefined && row[idx] !== null ? String(row[idx]).trim() : '-';
+
+                    // Kolom Kuantitas -> Rata Kanan & Angka Murni
+                    if (idx >= 8 && idx <= 11) {
+                        td.style.textAlign = 'right';
+                        let num = parseFloat(rawVal.replace(/[^0-9.-]/g, '')) || 0;
+                        td.textContent = Number(num).toLocaleString('id-ID');
+
+                        if (idx === 8) td.style.fontWeight = '700';
+                        if (idx === 9) { td.style.fontWeight = '700'; td.style.color = '#05cd99'; }
+                        if (idx === 10) { td.style.color = '#8f9bba'; }
+                        if (idx === 11) {
+                            td.style.fontWeight = '800';
+                            td.style.color = num > 0 ? '#ee5d50' : '#05cd99';
                         }
-                        tr.appendChild(td);
-                    });
+                    }
+                    // Kolom Status -> Tengah & Badge Cerdas
+                    else if (idx === 12) {
+                        td.style.textAlign = 'center';
+                        const span = document.createElement('span');
+                        let statusDisplay = isRowSelesai ? 'Selesai' : (rawVal || 'Belum Selesai');
+                        span.textContent = statusDisplay;
+                        span.style.padding = '3px 8px';
+                        span.style.borderRadius = '2px';
+                        span.style.fontSize = '11px';
+                        span.style.fontWeight = '700';
+
+                        if (isRowSelesai) {
+                            span.style.background = '#ebfcf6';
+                            span.style.color = '#05cd99';
+                        } else {
+                            span.style.background = '#ffedd5';
+                            span.style.color = '#f97316';
+                        }
+                        td.appendChild(span);
+                    }
+                    // Kolom Teks
+                    else {
+                        td.style.textAlign = 'left';
+                        td.textContent = rawVal;
+
+                        if (idx === 1) {
+                            td.style.fontWeight = '700';
+                            td.style.color = '#4318ff';
+                        } else if (idx === 3) {
+                            td.style.fontWeight = '700';
+                        }
+                    }
+                    tr.appendChild(td);
                 }
                 tbody.appendChild(tr);
             });
-            renderPaginationButtons('sisaOm', 'pagination-sisaom', renderSisaOmTable);
+
+            // BARIS TOTAL KESELURUHAN PADA TABEL RINCIAN OM
+            if (tableStates.rincianOm.data.length > 0) {
+                let sumPesanan = 0, sumRealisasi = 0, sumRetur = 0, sumSisa = 0;
+                tableStates.rincianOm.data.forEach(r => {
+                    sumPesanan += parseFloat(String(r[8] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                    sumRealisasi += parseFloat(String(r[9] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                    sumRetur += parseFloat(String(r[10] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                    sumSisa += parseFloat(String(r[11] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                });
+
+                const trTotal = document.createElement('tr');
+                trTotal.style.background = '#f8fafc';
+                trTotal.style.borderTop = '2px solid #cbd5e1';
+
+                trTotal.innerHTML = `
+                    <td colspan="8" style="padding:10px 12px; text-align:right; font-weight:800; color:#2b3674; font-size:12.5px;">TOTAL KESELURUHAN :</td>
+                    <td style="padding:10px 12px; text-align:right; font-weight:800; color:#2b3674; font-size:13px;">${sumPesanan.toLocaleString('id-ID')}</td>
+                    <td style="padding:10px 12px; text-align:right; font-weight:800; color:#05cd99; font-size:13px;">${sumRealisasi.toLocaleString('id-ID')}</td>
+                    <td style="padding:10px 12px; text-align:right; font-weight:700; color:#8f9bba; font-size:13px;">${sumRetur.toLocaleString('id-ID')}</td>
+                    <td style="padding:10px 12px; text-align:right; font-weight:800; color:#ee5d50; font-size:13px;">${sumSisa.toLocaleString('id-ID')}</td>
+                    <td></td>
+                `;
+                tbody.appendChild(trTotal);
+            }
+
+            renderPaginationButtons('rincianOm', 'pagination-rincianom', renderRincianOmTable);
         }
 
+        // Kalkulasi Group A (4 Box Atas) & Group C (Pivot Kartu Per Supplier) dengan Logika Cerdas
+        function calculateDynamicOmStatsAndPivot(filteredRows) {
+            const omDocMap = new Map(); // Untuk hitung unik per No OM
+            const supplierPivot = {};
+            let grandTotalQtySisa = 0;
+
+            filteredRows.forEach(row => {
+                const noOm = String(row[1] || '').trim();
+                const supplier = String(row[7] || 'Lain-Lain').trim();
+                const qPesanan = parseFloat(String(row[8] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                const qRealisasi = parseFloat(String(row[9] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                const qSisa = parseFloat(String(row[11] || '0').replace(/[^0-9.-]/g, '')) || 0;
+
+                grandTotalQtySisa += qSisa;
+
+                // Tracking dokumen No OM Unik
+                if (noOm) {
+                    if (!omDocMap.has(noOm)) {
+                        omDocMap.set(noOm, { totalPesanan: 0, totalRealisasi: 0, totalSisa: 0, supplier: supplier });
+                    }
+                    const omInfo = omDocMap.get(noOm);
+                    omInfo.totalPesanan += qPesanan;
+                    omInfo.totalRealisasi += qRealisasi;
+                    omInfo.totalSisa += qSisa;
+                }
+
+                // Inisialisasi Pivot per Supplier (Group C)
+                if (!supplierPivot[supplier]) {
+                    supplierPivot[supplier] = {
+                        omSet: new Set(),
+                        selesaiOmCount: 0,
+                        sisaOmCount: 0,
+                        totQty: 0,
+                        realisasiQty: 0,
+                        sisaQty: 0
+                    };
+                }
+                const sp = supplierPivot[supplier];
+                if (noOm) sp.omSet.add(noOm);
+                sp.totQty += qPesanan;
+                sp.realisasiQty += qRealisasi;
+                sp.sisaQty += qSisa;
+            });
+
+            // Evaluasi Status Selesai per Dokumen OM secara Presisi:
+            // Selesai jika total sisa <= 0 ATAU realisasi >= pesanan
+            let totalUnikOm = omDocMap.size;
+            let totalOmSelesai = 0;
+            let totalOmSisa = 0;
+
+            omDocMap.forEach((info, omKey) => {
+                const isFinished = (info.totalSisa <= 0 && info.totalPesanan > 0) || (info.totalRealisasi >= info.totalPesanan && info.totalPesanan > 0);
+                
+                if (isFinished) {
+                    totalOmSelesai++;
+                } else {
+                    totalOmSisa++;
+                }
+
+                // Masukkan ke pivot supplier yang bersangkutan
+                const supData = supplierPivot[info.supplier];
+                if (supData) {
+                    if (isFinished) supData.selesaiOmCount++;
+                    else supData.sisaOmCount++;
+                }
+            });
+
+            // 1. UPDATE GROUP A (4 KARTU STATISTIK UTAMA)
+            const pctSelesai = totalUnikOm > 0 ? Math.min(100, Math.round((totalOmSelesai / totalUnikOm) * 100)) : 0;
+
+            document.getElementById('stat-om-total').textContent = Number(totalUnikOm).toLocaleString('id-ID');
+            document.getElementById('stat-om-selesai').textContent = Number(totalOmSelesai).toLocaleString('id-ID');
+            document.getElementById('stat-om-selesai-pct').textContent = `${pctSelesai}% Selesai`;
+            document.getElementById('stat-om-sisa').textContent = Number(totalOmSisa).toLocaleString('id-ID');
+            document.getElementById('stat-om-sisa-pcs').textContent = Number(grandTotalQtySisa).toLocaleString('id-ID') + ' Pcs';
+
+            // 2. UPDATE GROUP C (BOX PIVOT PER SUPPLIER DENGAN UKURAN FONT LEBIH BESAR & JELAS)
+            const pivotContainer = document.getElementById('supplier-pivot-cards');
+            if (pivotContainer) {
+                pivotContainer.innerHTML = '';
+                const supKeys = Object.keys(supplierPivot).sort();
+
+                if (supKeys.length === 0) {
+                    pivotContainer.innerHTML = '<p style="color:#8f9bba; font-size:13px;">Tidak ada data supplier pada filter terpilih.</p>';
+                    return;
+                }
+
+                supKeys.forEach(supName => {
+                    const data = supplierPivot[supName];
+                    const totOmSup = data.omSet.size;
+                    const selesaiOmSup = data.selesaiOmCount;
+                    const sisaOmSup = data.sisaOmCount;
+
+                    const cardHtml = `
+                        <div class="card" style="padding: 16px; border: 1px solid #e0e5f2; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); background: #ffffff;">
+                            <div style="border-bottom: 1px dashed #cbd5e1; padding-bottom: 8px; margin-bottom: 10px;">
+                                <b style="font-size: 14.5px; color: #1e1b4b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;" title="${supName}">
+                                    ${supName}
+                                </b>
+                            </div>
+                            <!-- Baris 1: Rincian Dokumen OM -->
+                            <div style="display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 8px; background: #f8fafc; padding: 6px 10px; border-radius: 4px; border: 1px solid #f1f5f9;">
+                                <span>Total OM: <b style="color: #2b3674; font-size: 13.5px;">${totOmSup}</b></span>
+                                <span style="color: #05cd99;">Selesai: <b style="font-size: 13.5px;">${selesaiOmSup}</b></span>
+                                <span style="color: #ee5d50;">Sisa OM: <b style="font-size: 13.5px;">${sisaOmSup}</b></span>
+                            </div>
+                            <!-- Baris 2: Rincian Kuantitas Fisik Pcs -->
+                            <div style="display: flex; justify-content: space-between; font-size: 12.5px; padding: 4px 10px;">
+                                <span>Pesanan: <b style="color: #2b3674;">${Number(data.totQty).toLocaleString('id-ID')}</b></span>
+                                <span style="color: #05cd99;">Realisasi: <b>${Number(data.realisasiQty).toLocaleString('id-ID')}</b></span>
+                                <span style="color: #ee5d50;">Sisa Qty: <b>${Number(data.sisaQty).toLocaleString('id-ID')}</b></span>
+                            </div>
+                        </div>
+                    `;
+                    pivotContainer.insertAdjacentHTML('beforeend', cardHtml);
+                });
+            }
+        }
+
+        // FUNGSI CAPTURE FOTO (MENGAMBIL 4 BOX HEADER + BOX PIVOT SUPPLIER UTUH)
         function downloadSisaOmAsImage(event) {
-            const cardElement = document.querySelector('#view-sisa-om .card');
-            if (!cardElement) {
+            const captureArea = document.getElementById('capture-area-sisa-om') || document.getElementById('view-sisa-om');
+            if (!captureArea) {
                 alert("Area laporan tidak ditemukan!");
                 return;
             }
@@ -7968,19 +8441,26 @@
             btn.innerHTML = 'Memproses Foto...';
             btn.disabled = true;
 
-            html2canvas(cardElement, { 
+            // Sembunyikan tombol aksi sementara saat dicapture agar hasil foto bersih
+            const actionButtons = document.querySelectorAll('#view-sisa-om .btn-modern');
+            actionButtons.forEach(b => b.style.visibility = 'hidden');
+
+            html2canvas(captureArea, { 
                 scale: 2, 
-                useCORS: true 
+                useCORS: true,
+                backgroundColor: '#f4f7fe'
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'Laporan-Sisa-OM-' + new Date().toISOString().slice(0, 10) + '.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
 
+                actionButtons.forEach(b => b.style.visibility = 'visible');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }).catch(err => {
                 console.error("Gagal membuat gambar:", err);
+                actionButtons.forEach(b => b.style.visibility = 'visible');
                 alert("Terjadi kesalahan saat memproses foto laporan.");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
@@ -8604,7 +9084,7 @@
 
                   // NILAI PCS (Label Biru Lembut namun Jelas)
                   if (showValue) {
-                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 4}" font-size="10" font-weight="800" font-family="'Asta Sans', sans-serif" fill="#4d5fa8" text-anchor="middle">${Math.round(item.qty)}</text>`;
+                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 4}" font-size="10" font-weight="800" font-family="'Gothic A1', sans-serif" fill="#4d5fa8" text-anchor="middle">${Math.round(item.qty)}</text>`;
                   }
               }
 
@@ -8623,7 +9103,7 @@
                           ? 'Rp ' + (item.rp / 1000).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + 'k' 
                           : 'Rp ' + Math.round(item.rp);
 
-                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 4}" font-size="9.5" font-weight="800" font-family="'Asta Sans', sans-serif" fill="#238270" text-anchor="middle">${rpShort}</text>`;
+                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 4}" font-size="9.5" font-weight="800" font-family="'Gothic A1', sans-serif" fill="#238270" text-anchor="middle">${rpShort}</text>`;
                   }
               }
           });
@@ -8712,7 +9192,7 @@
 
               if (val > 0) {
                   svgHtml += `<rect x="${x - (barW / 2)}" y="${y}" width="${barW}" height="${h}" fill="url(#gradYearBar)" rx="1.5" />`;
-                  svgHtml += `<text x="${x}" y="${y - 1.5}" font-size="2.6" font-weight="500" font-family="'Asta Sans', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
+                  svgHtml += `<text x="${x}" y="${y - 1.5}" font-size="2.6" font-weight="500" font-family="'Gothic A1', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
               }
 
               if (idx === 0) lineD += `M${x},${y} `;
@@ -8822,7 +9302,7 @@
                   svgHtml += `<polygon points="${xQty + barWidth},${yQty} ${xQty + barWidth + depth},${yQty - depth} ${xQty + barWidth + depth},${100 - depth} ${xQty + barWidth},100" fill="#2d0db3" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Asta Sans', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
+                      svgHtml += `<text x="${xQty + (barWidth / 2)}" y="${yQty - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Gothic A1', sans-serif" fill="#4318ff" text-anchor="middle">${Math.round(item.qty)}</text>`;
                   }
               }
 
@@ -8833,7 +9313,7 @@
                   svgHtml += `<polygon points="${xRp + barWidth},${yRp} ${xRp + barWidth + depth},${yRp - depth} ${xRp + barWidth + depth},${100 - depth} ${xRp + barWidth},100" fill="#038c67" />`;
 
                   if (showValue) {
-                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Asta Sans', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
+                      svgHtml += `<text x="${xRp + (barWidth / 2)}" y="${yRp - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Gothic A1', sans-serif" fill="#05cd99" text-anchor="middle">${Math.round(realPct)}%</text>`;
                   }
               }
           });
@@ -8915,7 +9395,7 @@
                   // Side Face
                   svgHtml += `<polygon points="${x + barW},${y} ${x + barW + depth},${y - depth} ${x + barW + depth},${100 - depth} ${x + barW},100" fill="#04a37a" />`;
 
-                  svgHtml += `<text x="${x + (barW / 2)}" y="${y - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Asta Sans', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
+                  svgHtml += `<text x="${x + (barW / 2)}" y="${y - depth - 1.2}" font-size="2.4" font-weight="500" font-family="'Gothic A1', sans-serif" fill="#05cd99" text-anchor="middle">${(val/1000).toFixed(0)}k</text>`;
               }
           });
 
@@ -9177,6 +9657,19 @@
               if (res && res.success) {
                   window.allMutasiData = res.data || [];
                   _stokLookupCache.source = null; // Reset cache lookup form
+                  
+                  // PENGISIAN OTOMATIS DROPDOWN SUPPLIER DARI DATA MUTASI
+                  const supSelect = document.getElementById('filter-posisi-supplier');
+                  if (supSelect) {
+                      const curVal = supSelect.value;
+                      const suppliers = [...new Set(window.allMutasiData.map(r => String(r[5] || '').trim()).filter(Boolean))].sort();
+                      supSelect.innerHTML = `<option value="">Semua Supplier</option>`;
+                      suppliers.forEach(s => {
+                          supSelect.innerHTML += `<option value="${s}">${s}</option>`;
+                      });
+                      supSelect.value = curVal;
+                  }
+
                   filterPosisiBarang();
               } else {
                   if (tbody) tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:#ee5d50; padding:25px;">Gagal memuat data mutasi: ${res ? res.message : 'Error'}</td></tr>`;
@@ -9189,24 +9682,36 @@
       function filterPosisiBarang() {
           if (!window.allMutasiData) return;
           const unit = (document.getElementById('filter-posisi-unit')?.value || '').toLowerCase().trim();
+          const supplier = (document.getElementById('filter-posisi-supplier')?.value || '').toLowerCase().trim();
+          const onlyWithStock = document.getElementById('chk-posisi-ada-saldo')?.checked || false;
           const keyword = (document.getElementById('filter-posisi-search')?.value || '').toLowerCase().trim();
           const keywords = keyword.split(/\s+/).filter(Boolean);
 
           const filtered = window.allMutasiData.filter(row => {
               if (!Array.isArray(row) || !row[1]) return false; // Abaikan jika baris kosong
               
-              // row[0] adalah Unit
+              // 1. Filter Unit
               const rowUnit = String(row[0] || '').toLowerCase();
               const matchUnit = unit === '' || rowUnit.includes(unit.replace(/^cv\s*/i, ''));
 
-              // Pencarian pada Kolom B-F (Kode, Nama, Kategori, Motif, Supplier)
+              // 2. Filter Supplier (Kolom F / Index 5)
+              const rowSupplier = String(row[5] || '').toLowerCase().trim();
+              const matchSupplier = supplier === '' || rowSupplier === supplier;
+
+              // 3. Filter Checkbox: Hanya Tampilkan yang Ada Saldonya (> 0 di kolom proses H-M / Index 7-12)
+              let matchStock = true;
+              if (onlyWithStock) {
+                  matchStock = [7, 8, 9, 10, 11, 12].some(colIdx => (parseFloat(row[colIdx]) || 0) > 0);
+              }
+
+              // 4. Pencarian Teks pada Kolom B-F (Kode, Nama, Kategori, Motif, Supplier)
               const matchSearch = keywords.length === 0 || keywords.every(kw => {
                   return [row[1], row[2], row[3], row[4], row[5]].some(cell => 
                       String(cell || '').toLowerCase().includes(kw)
                   );
               });
 
-              return matchUnit && matchSearch;
+              return matchUnit && matchSupplier && matchStock && matchSearch;
           });
 
           renderPosisiBarangTable(filtered, 1);
