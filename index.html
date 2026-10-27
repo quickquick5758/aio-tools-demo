@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AiO Demo - All in One Production</title>
+    <title>AiO Tools - All in One Production</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -171,6 +171,19 @@
             position: sticky;
             top: 0;
             z-index: 20;
+        }
+        /* Sticky Pinned Total Row di Bagian Bawah */
+        .table-thin tfoot {
+            position: sticky;
+            bottom: 0;
+            z-index: 25;
+            background-color: #f8fafc;
+            box-shadow: 0 -3px 8px rgba(0,0,0,0.08);
+        }
+        .table-thin tfoot td {
+            background-color: #f8fafc !important;
+            border-top: 2px solid #cbd5e1 !important;
+            border-bottom: none !important;
         }
         .table-thin th, .table-thin td { 
             padding: 8px 10px; /* Padding di perkecil agar tinggi baris menyusut */
@@ -1838,7 +1851,7 @@
                         </label>
                     </div>
 
-                    <!-- TABEL DETAIL GROUP D (13 KOLOM) -->
+                    <!-- TABEL DETAIL GROUP D (13 KOLOM DENGAN TFOOT STICKY) -->
                     <div class="table-container">
                         <table class="table-thin" id="table-rincian-om">
                             <thead>
@@ -1861,6 +1874,7 @@
                             <tbody id="tbody-rincian-om">
                                 <tr><td colspan="13" style="text-align:center; padding:25px; color:#8f9bba;">Memuat data Rincian OM...</td></tr>
                             </tbody>
+                            <tfoot id="tfoot-rincian-om"></tfoot>
                         </table>
                     </div>
 
@@ -1944,6 +1958,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tbody-view-data"></tbody>
+                            <tfoot id="tfoot-view-data"></tfoot>
                         </table>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 15px;">
@@ -7244,64 +7259,36 @@
                 tbody.appendChild(tr);
             });
 
-            // ADD TOTAL ROW LOGIC HERE FOR VIEW DATA (BERHITUNG OTOMATIS)
-            if (tableStates.view.data.length > 0) {
-                let totalDataQty = 0;
-                let totalDataInsentif = 0;
+            // ADD TOTAL ROW LOGIC HERE FOR VIEW DATA (PINNED DI TFOOT STICKY)
+            const tfootView = document.getElementById('tfoot-view-data');
+            if (tfootView) {
+                tfootView.innerHTML = '';
+                if (tableStates.view.data.length > 0) {
+                    let totalDataQty = 0;
+                    let totalDataInsentif = 0;
 
-                tableStates.view.data.forEach(r => {
-                    totalDataQty += parseFloat(r[13]) || 0;
-                    if(canViewPrice) {
-                        totalDataInsentif += parseNominalFrontend(r[16]);
-                    }
-                });
+                    tableStates.view.data.forEach(r => {
+                        totalDataQty += parseFloat(r[13]) || 0;
+                        if(canViewPrice) {
+                            totalDataInsentif += parseNominalFrontend(r[16]);
+                        }
+                    });
 
-                const trTot = document.createElement('tr');
-                trTot.style.backgroundColor = '#f8fafc';
-                
-                const tdTotText = document.createElement('td');
-                tdTotText.colSpan = 13; // Tarik Panjang Kosongkan dari awal hingga sebelum QTY (13 index)
-                tdTotText.style.textAlign = 'right';
-                tdTotText.style.fontWeight = '600';
-                tdTotText.style.color = '#2b3674';
-                tdTotText.style.borderTop = '2px solid #e0e5f2';
-                tdTotText.textContent = 'TOTAL :';
-                trTot.appendChild(tdTotText);
+                    let priceCells = canViewPrice ? `
+                        <td></td>
+                        <td style="padding:10px 12px; text-align:right; font-weight:800; color:#05cd99; font-size:13.5px;">Rp ${Number(Math.round(totalDataInsentif)).toLocaleString('id-ID')}</td>
+                    ` : '';
 
-                const tdTotQty = document.createElement('td'); // Isi Ke Kolom QTY (Index 14)
-                tdTotQty.style.textAlign = 'right';
-                tdTotQty.style.fontWeight = '600';
-                tdTotQty.style.color = '#4318ff';
-                tdTotQty.style.fontSize = '14px';
-                tdTotQty.style.borderTop = '2px solid #e0e5f2';
-                tdTotQty.textContent = Number(totalDataQty).toLocaleString('id-ID');
-                trTot.appendChild(tdTotQty);
-
-                const tdTotBlank = document.createElement('td'); // Kolom Keterangan Dikosongi
-                tdTotBlank.style.borderTop = '2px solid #e0e5f2';
-                trTot.appendChild(tdTotBlank);
-
-                if (canViewPrice) { // Kalau Mempunyai Akses Cek Harga
-                    const tdTotHarga = document.createElement('td'); // Kolom Harga Jatuh Kosongi
-                    tdTotHarga.style.borderTop = '2px solid #e0e5f2';
-                    trTot.appendChild(tdTotHarga);
-
-                    const tdTotInsentif = document.createElement('td');
-                    tdTotInsentif.style.textAlign = 'right';
-                    tdTotInsentif.style.fontWeight = '700';
-                    tdTotInsentif.style.color = '#05cd99';
-                    tdTotInsentif.style.fontSize = '14px';
-                    tdTotInsentif.style.borderTop = '2px solid #e0e5f2';
-                    // PERBAIKAN: Gunakan Math.round agar pecahan desimal seperti ,296 dibulatkan murni ke rupiah utuh
-                    tdTotInsentif.textContent = 'Rp ' + Number(Math.round(totalDataInsentif)).toLocaleString('id-ID');
-                    trTot.appendChild(tdTotInsentif);
+                    tfootView.innerHTML = `
+                        <tr>
+                            <td colspan="13" style="padding:10px 12px; text-align:right; font-weight:800; color:#2b3674; font-size:12.5px;">TOTAL :</td>
+                            <td style="padding:10px 12px; text-align:right; font-weight:800; color:#4318ff; font-size:13.5px;">${Number(totalDataQty).toLocaleString('id-ID')}</td>
+                            <td></td>
+                            ${priceCells}
+                            <td></td>
+                        </tr>
+                    `;
                 }
-
-                const tdTotStatus = document.createElement('td'); // Kolom Status ujung kosongi
-                tdTotStatus.style.borderTop = '2px solid #e0e5f2';
-                trTot.appendChild(tdTotStatus);
-
-                tbody.appendChild(trTot);
             }
 
             renderPaginationButtons('view', 'pagination-view', renderDataView);
@@ -8203,9 +8190,12 @@
             }
 
             const tbody = document.getElementById('tbody-rincian-om');
+            const tfoot = document.getElementById('tfoot-rincian-om');
             if (!tbody) return;
 
             tbody.innerHTML = '';
+            if (tfoot) tfoot.innerHTML = '';
+
             if (tableStates.rincianOm.data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; padding:25px; color:#8f9bba;">Tidak ada data rincian Order Makloon yang cocok.</td></tr>';
                 renderPaginationButtons('rincianOm', 'pagination-rincianom', renderRincianOmTable);
@@ -8223,8 +8213,8 @@
                 const qRealisasi = parseFloat(String(row[9] || '0').replace(/[^0-9.-]/g, '')) || 0;
                 const qSisa = parseFloat(String(row[11] || '0').replace(/[^0-9.-]/g, '')) || 0;
 
-                // Status Pintar: Jika Realisasi >= Pesanan atau Sisa <= 0, otomatis Selesai
-                let isRowSelesai = (qSisa <= 0 && qPesanan > 0) || (qRealisasi >= qPesanan && qPesanan > 0);
+                // Status Baris Pintar: Selesai jika sisa <= 0 ATAU realisasi >= pesanan
+                let isRowSelesai = (qSisa <= 0 && (qPesanan > 0 || qRealisasi > 0)) || (qPesanan > 0 && qRealisasi >= qPesanan);
 
                 for (let idx = 0; idx < 13; idx++) {
                     const td = document.createElement('td');
@@ -8248,7 +8238,7 @@
                     else if (idx === 12) {
                         td.style.textAlign = 'center';
                         const span = document.createElement('span');
-                        let statusDisplay = isRowSelesai ? 'Selesai' : (rawVal || 'Belum Selesai');
+                        let statusDisplay = isRowSelesai ? 'Selesai' : 'Belum Terselesaikan';
                         span.textContent = statusDisplay;
                         span.style.padding = '3px 8px';
                         span.style.borderRadius = '2px';
@@ -8281,8 +8271,8 @@
                 tbody.appendChild(tr);
             });
 
-            // BARIS TOTAL KESELURUHAN PADA TABEL RINCIAN OM
-            if (tableStates.rincianOm.data.length > 0) {
+            // BARIS TOTAL KESELURUHAN (PINNED DI TFOOT STICKY)
+            if (tfoot && tableStates.rincianOm.data.length > 0) {
                 let sumPesanan = 0, sumRealisasi = 0, sumRetur = 0, sumSisa = 0;
                 tableStates.rincianOm.data.forEach(r => {
                     sumPesanan += parseFloat(String(r[8] || '0').replace(/[^0-9.-]/g, '')) || 0;
@@ -8291,88 +8281,113 @@
                     sumSisa += parseFloat(String(r[11] || '0').replace(/[^0-9.-]/g, '')) || 0;
                 });
 
-                const trTotal = document.createElement('tr');
-                trTotal.style.background = '#f8fafc';
-                trTotal.style.borderTop = '2px solid #cbd5e1';
-
-                trTotal.innerHTML = `
-                    <td colspan="8" style="padding:10px 12px; text-align:right; font-weight:800; color:#2b3674; font-size:12.5px;">TOTAL KESELURUHAN :</td>
-                    <td style="padding:10px 12px; text-align:right; font-weight:800; color:#2b3674; font-size:13px;">${sumPesanan.toLocaleString('id-ID')}</td>
-                    <td style="padding:10px 12px; text-align:right; font-weight:800; color:#05cd99; font-size:13px;">${sumRealisasi.toLocaleString('id-ID')}</td>
-                    <td style="padding:10px 12px; text-align:right; font-weight:700; color:#8f9bba; font-size:13px;">${sumRetur.toLocaleString('id-ID')}</td>
-                    <td style="padding:10px 12px; text-align:right; font-weight:800; color:#ee5d50; font-size:13px;">${sumSisa.toLocaleString('id-ID')}</td>
-                    <td></td>
+                tfoot.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="padding:10px 12px; text-align:right; font-weight:800; color:#2b3674; font-size:12.5px;">TOTAL KESELURUHAN :</td>
+                        <td style="padding:10px 12px; text-align:right; font-weight:800; color:#2b3674; font-size:13px;">${sumPesanan.toLocaleString('id-ID')}</td>
+                        <td style="padding:10px 12px; text-align:right; font-weight:800; color:#05cd99; font-size:13px;">${sumRealisasi.toLocaleString('id-ID')}</td>
+                        <td style="padding:10px 12px; text-align:right; font-weight:700; color:#8f9bba; font-size:13px;">${sumRetur.toLocaleString('id-ID')}</td>
+                        <td style="padding:10px 12px; text-align:right; font-weight:800; color:#ee5d50; font-size:13px;">${sumSisa.toLocaleString('id-ID')}</td>
+                        <td></td>
+                    </tr>
                 `;
-                tbody.appendChild(trTotal);
             }
 
             renderPaginationButtons('rincianOm', 'pagination-rincianom', renderRincianOmTable);
         }
 
-        // Kalkulasi Group A (4 Box Atas) & Group C (Pivot Kartu Per Supplier) dengan Logika Cerdas
+        // Kalkulasi Group A (4 Box Atas) & Group C (Pivot Kartu Per Supplier)
+        // ATURAN MUTLAK: 1 OM hanya dianggap Selesai jika SEMUA kode barang di dalamnya tuntas (0 sisa).
+        // Jika dari 10 kode ada 1 saja yang belum selesai (sisa > 0), maka status OM tersebut: Belum Selesai (Sisa OM).
         function calculateDynamicOmStatsAndPivot(filteredRows) {
-            const omDocMap = new Map(); // Untuk hitung unik per No OM
+            const globalOmMap = new Map(); // Kunci Unik Global: Supplier + '___' + No OM
             const supplierPivot = {};
             let grandTotalQtySisa = 0;
 
             filteredRows.forEach(row => {
                 const noOm = String(row[1] || '').trim();
                 const supplier = String(row[7] || 'Lain-Lain').trim();
+                if (!noOm) return;
+
                 const qPesanan = parseFloat(String(row[8] || '0').replace(/[^0-9.-]/g, '')) || 0;
                 const qRealisasi = parseFloat(String(row[9] || '0').replace(/[^0-9.-]/g, '')) || 0;
                 const qSisa = parseFloat(String(row[11] || '0').replace(/[^0-9.-]/g, '')) || 0;
 
                 grandTotalQtySisa += qSisa;
 
-                // Tracking dokumen No OM Unik
-                if (noOm) {
-                    if (!omDocMap.has(noOm)) {
-                        omDocMap.set(noOm, { totalPesanan: 0, totalRealisasi: 0, totalSisa: 0, supplier: supplier });
-                    }
-                    const omInfo = omDocMap.get(noOm);
-                    omInfo.totalPesanan += qPesanan;
-                    omInfo.totalRealisasi += qRealisasi;
-                    omInfo.totalSisa += qSisa;
+                // Cek ketuntasan rincian baris/kode ini secara individual:
+                // Sebuah kode barang selesai jika sisa <= 0 ATAU realisasi >= pesanan (asalkan ada pesanan/realisasi)
+                const isItemComplete = (qSisa <= 0 && (qPesanan > 0 || qRealisasi > 0)) ||
+                                       (qPesanan > 0 && qRealisasi >= qPesanan);
+
+                // 1. Akumulasi Global OM Map
+                const globalKey = supplier + '___' + noOm;
+                if (!globalOmMap.has(globalKey)) {
+                    globalOmMap.set(globalKey, {
+                        totalPesanan: 0,
+                        totalRealisasi: 0,
+                        totalSisa: 0,
+                        supplier: supplier,
+                        hasIncompleteItem: false, // Flag penanda jika ada kode yang belum selesai
+                        totalItems: 0
+                    });
+                }
+                const gOm = globalOmMap.get(globalKey);
+                gOm.totalPesanan += qPesanan;
+                gOm.totalRealisasi += qRealisasi;
+                gOm.totalSisa += qSisa;
+                gOm.totalItems++;
+                if (!isItemComplete) {
+                    gOm.hasIncompleteItem = true; // Tandai bahwa OM ini memiliki item tertunggak
                 }
 
-                // Inisialisasi Pivot per Supplier (Group C)
+                // 2. Akumulasi Pivot Per Supplier
                 if (!supplierPivot[supplier]) {
                     supplierPivot[supplier] = {
-                        omSet: new Set(),
-                        selesaiOmCount: 0,
-                        sisaOmCount: 0,
+                        omMap: new Map(), // No OM -> Akumulasi
                         totQty: 0,
                         realisasiQty: 0,
                         sisaQty: 0
                     };
                 }
                 const sp = supplierPivot[supplier];
-                if (noOm) sp.omSet.add(noOm);
                 sp.totQty += qPesanan;
                 sp.realisasiQty += qRealisasi;
                 sp.sisaQty += qSisa;
+
+                if (!sp.omMap.has(noOm)) {
+                    sp.omMap.set(noOm, {
+                        totalPesanan: 0,
+                        totalRealisasi: 0,
+                        totalSisa: 0,
+                        hasIncompleteItem: false,
+                        totalItems: 0
+                    });
+                }
+                const spOm = sp.omMap.get(noOm);
+                spOm.totalPesanan += qPesanan;
+                spOm.totalRealisasi += qRealisasi;
+                spOm.totalSisa += qSisa;
+                spOm.totalItems++;
+                if (!isItemComplete) {
+                    spOm.hasIncompleteItem = true; // Tandai bahwa OM ini memiliki item tertunggak
+                }
             });
 
-            // Evaluasi Status Selesai per Dokumen OM secara Presisi:
-            // Selesai jika total sisa <= 0 ATAU realisasi >= pesanan
-            let totalUnikOm = omDocMap.size;
+            // Hitung Status Selesai Global Box Utama
+            let totalUnikOm = globalOmMap.size;
             let totalOmSelesai = 0;
             let totalOmSisa = 0;
 
-            omDocMap.forEach((info, omKey) => {
-                const isFinished = (info.totalSisa <= 0 && info.totalPesanan > 0) || (info.totalRealisasi >= info.totalPesanan && info.totalPesanan > 0);
-                
+            globalOmMap.forEach(om => {
+                // Dokumen OM dinyatakan SELESAI jika dan hanya jika:
+                // 1. Tidak ada satupun item/kode yang belum tuntas (!om.hasIncompleteItem)
+                // 2. Dan total sisa keseluruhan <= 0
+                const isFinished = !om.hasIncompleteItem && om.totalSisa <= 0 && (om.totalPesanan > 0 || om.totalRealisasi > 0);
                 if (isFinished) {
                     totalOmSelesai++;
                 } else {
                     totalOmSisa++;
-                }
-
-                // Masukkan ke pivot supplier yang bersangkutan
-                const supData = supplierPivot[info.supplier];
-                if (supData) {
-                    if (isFinished) supData.selesaiOmCount++;
-                    else supData.sisaOmCount++;
                 }
             });
 
@@ -8385,7 +8400,7 @@
             document.getElementById('stat-om-sisa').textContent = Number(totalOmSisa).toLocaleString('id-ID');
             document.getElementById('stat-om-sisa-pcs').textContent = Number(grandTotalQtySisa).toLocaleString('id-ID') + ' Pcs';
 
-            // 2. UPDATE GROUP C (BOX PIVOT PER SUPPLIER DENGAN UKURAN FONT LEBIH BESAR & JELAS)
+            // 2. UPDATE GROUP C (BOX PIVOT PER SUPPLIER)
             const pivotContainer = document.getElementById('supplier-pivot-cards');
             if (pivotContainer) {
                 pivotContainer.innerHTML = '';
@@ -8398,9 +8413,19 @@
 
                 supKeys.forEach(supName => {
                     const data = supplierPivot[supName];
-                    const totOmSup = data.omSet.size;
-                    const selesaiOmSup = data.selesaiOmCount;
-                    const sisaOmSup = data.sisaOmCount;
+                    const totOmSup = data.omMap.size;
+                    let selesaiOmSup = 0;
+                    let sisaOmSup = 0;
+
+                    // Evaluasi Selesai / Sisa OM per Supplier berdasarkan ketuntasan seluruh rincian kode
+                    data.omMap.forEach(om => {
+                        const isFinished = !om.hasIncompleteItem && om.totalSisa <= 0 && (om.totalPesanan > 0 || om.totalRealisasi > 0);
+                        if (isFinished) {
+                            selesaiOmSup++;
+                        } else {
+                            sisaOmSup++;
+                        }
+                    });
 
                     const cardHtml = `
                         <div class="card" style="padding: 16px; border: 1px solid #e0e5f2; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); background: #ffffff;">
