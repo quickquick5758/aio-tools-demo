@@ -157,16 +157,24 @@
         .operator-unit { font-size: 12px; color: #8f9bba; }
         .operator-score { font-size: 14px; font-weight: 700; color: #05cd99; }
 
-        /* --- TABLE STYLES --- */
+        /* --- CRISP & STYLISH SHARP TABLE STYLES --- */
         .table-container { 
-            background: #fff; 
+            background: #ffffff; 
             border-radius: 2px; 
-            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05); 
+            border: 1px solid #cbd5e1; /* Frame luar tajam dan presisi */
+            box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05); 
             overflow-x: auto; 
             overflow-y: auto; 
-            max-height: 65vh; /* Membatasi tinggi tabel agar bisa di-scroll vertikal */
+            max-height: 65vh;
         }
-        .table-thin { width: 100%; border-collapse: collapse; font-size: 14px; position: relative; }
+        .table-thin { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0; 
+            font-size: 13px; 
+            position: relative; 
+            color: #1e293b;
+        }
         .table-thin thead {
             position: sticky;
             top: 0;
@@ -177,29 +185,34 @@
             position: sticky;
             bottom: 0;
             z-index: 25;
-            background-color: #f8fafc;
-            box-shadow: 0 -3px 8px rgba(0,0,0,0.08);
+            background-color: #f1f5f9;
+            box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.06);
         }
         .table-thin tfoot td {
-            background-color: #f8fafc !important;
-            border-top: 2px solid #cbd5e1 !important;
+            background-color: #f1f5f9 !important;
+            border-top: 2px solid #0f172a !important; /* Garis tajam penegas total */
             border-bottom: none !important;
+            color: #0f172a !important;
+            font-weight: 800 !important;
         }
         .table-thin th, .table-thin td { 
-            padding: 8px 10px; /* Padding di perkecil agar tinggi baris menyusut */
+            padding: 9px 12px; 
             text-align: left; 
-            border-bottom: 1px solid #f0f0f0; 
-            font-weight: 350; 
+            border-bottom: 1px solid #e2e8f0; /* Garis antar baris lebih bersih & tegas */
+            border-right: 1px solid #f1f5f9; /* Garis vertikal halus */
             white-space: nowrap;
         }
+        .table-thin th:last-child, .table-thin td:last-child {
+            border-right: none;
+        }
         .table-thin th { 
-            font-weight: 600; 
-            color: #2b3674; 
+            font-weight: 700; 
+            color: #0f172a; 
             text-transform: uppercase; 
             font-size: 11px; 
+            letter-spacing: 0.5px;
             background-color: #f8fafc; 
-            /* Fix kebocoran scroll: shadow ganda & background-clip */
-            box-shadow: inset 0 -1px 0 #e0e5f2, 0 1px 0 #e0e5f2; 
+            box-shadow: inset 0 -2px 0 #94a3b8; /* Garis bawah header lebih tajam */
             border-bottom: none; 
             position: sticky;
             top: 0;
@@ -209,23 +222,37 @@
         /* Kunci tinggi baris pertama pada tabel double header */
         .table-thin thead tr.header-group th {
             text-align: center;
-            border-bottom: none;
-            border-right: 1px solid #e0e5f2;
-            color: #8f9bba;
-            padding: 10px 16px;
-            height: 36px;
+            border-bottom: 1px solid #cbd5e1;
+            border-right: 1px solid #cbd5e1;
+            color: #475569;
+            font-weight: 800;
+            background: #f1f5f9;
+            box-shadow: none;
+            padding: 8px 14px;
+            height: 34px;
         }
         /* Penanganan khusus baris kedua pada tabel double header (Seperti di Master Barang) */
         .table-thin thead tr:nth-child(2) th {
-            top: 36px; /* Harus sama persis dengan height baris pertama */
+            top: 34px;
             z-index: 19;
-            box-shadow: inset 0 -1px 0 #e0e5f2, 0 1px 0 #e0e5f2;
+            box-shadow: inset 0 -2px 0 #94a3b8;
         }
         .table-thin thead tr.header-group th:last-child { border-right: none; }
-        .table-thin tbody tr:hover { background-color: #f4f7fe; }
+        
+        /* Zebra-striping & Sharp Hover Highlight */
+        .table-thin tbody tr:nth-child(even) { 
+            background-color: #fafbfc; 
+        }
+        .table-thin tbody tr {
+            transition: all 0.15s ease-in-out;
+        }
+        .table-thin tbody tr:hover { 
+            background-color: #eff6ff !important; /* Biru tajam modern */
+            outline: 1px solid #bfdbfe;
+        }
         #table-laporan-elem th, 
         #table-laporan-elem td {
-        padding: 8px 10px !important; /* Ubah 10px jika ingin lebih tinggi/rendah */
+            padding: 8px 11px !important;
         }
         .btn-modern { background: #4318ff; color: #fff; border: none; border-radius: 2px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.3s; }
         .btn-modern:hover { background: #3311db; }
@@ -243,30 +270,189 @@
         .barang-row-item:focus-within, .bs-row-item:focus-within, .bbk-row-item:focus-within { z-index: 50; }
         .barang-suggestions, .bs-barang-suggestions, .bbk-barang-suggestions { z-index: 9999 !important; }
 
-        /* Login & Footer */
-        .login-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #2b3674 0%, #4318ff 100%); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(8px); }
+        /* --- DYNAMIC & LIVING ANIMATED LOGIN OVERLAY --- */
+        .login-overlay { 
+            position: fixed; 
+            inset: 0;
+            background: linear-gradient(-45deg, #101828, #1e1b4b, #2b3674, #4318ff, #312e81);
+            background-size: 350% 350%;
+            animation: livingMeshGradient 14s ease infinite;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1000; 
+            overflow: hidden;
+        }
         .login-overlay.hidden { display: none !important; }
-        .login-wrapper-split { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1000px; padding: 40px; gap: 60px; }
-        .login-left-illustration { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #ffffff; position: relative; min-height: 400px; }
-        .staircase-container { position: relative; width: 260px; height: 260px; display: flex; align-items: flex-end; justify-content: center; }
-        .stair-step { position: absolute; background: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 2px; backdrop-filter: blur(4px); transition: all 0.3s ease; }
-        .stair-1 { width: 60px; height: 60px; bottom: 0px; left: 0px; }
-        .stair-2 { width: 60px; height: 110px; bottom: 0px; left: 65px; }
-        .stair-3 { width: 60px; height: 160px; bottom: 0px; left: 130px; }
-        .stair-4 { width: 60px; height: 210px; bottom: 0px; left: 195px; background: rgba(255, 255, 255, 0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .illustration-caption { margin-top: 24px; text-align: center; color: #e0e5ff; font-size: 15px; font-weight: 600; letter-spacing: 0.5px; }
+
+        @keyframes livingMeshGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Ambient Living Glowing Blobs */
+        .login-glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.45;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatGlow 10s ease-in-out infinite alternate;
+        }
+        .orb-1 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, #05cd99 0%, #4318ff 70%);
+            top: -60px;
+            left: -80px;
+            animation-duration: 12s;
+        }
+        .orb-2 {
+            width: 440px;
+            height: 440px;
+            background: radial-gradient(circle, #818cf8 0%, #ec4899 80%);
+            bottom: -100px;
+            right: -60px;
+            animation-duration: 15s;
+        }
+        @keyframes floatGlow {
+            0% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(40px, 35px) scale(1.12); }
+            100% { transform: translate(-30px, -20px) scale(0.95); }
+        }
+
+        .login-wrapper-split { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            width: 100%; 
+            max-width: 1020px; 
+            padding: 40px; 
+            gap: 60px; 
+            position: relative;
+            z-index: 5;
+        }
+        .login-left-illustration { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            color: #ffffff; 
+            position: relative; 
+            min-height: 400px; 
+        }
+        .staircase-container { 
+            position: relative; 
+            width: 270px; 
+            height: 270px; 
+            display: flex; 
+            align-items: flex-end; 
+            justify-content: center; 
+        }
+        .stair-step { 
+            position: absolute; 
+            background: rgba(255, 255, 255, 0.16); 
+            border: 2px solid rgba(255, 255, 255, 0.45); 
+            border-radius: 2px; 
+            backdrop-filter: blur(8px); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+            transform-origin: bottom center;
+        }
+        .stair-1 { 
+            width: 60px; height: 60px; bottom: 0px; left: 0px; 
+            animation: pulseStair 3.2s ease-in-out infinite 0.1s;
+        }
+        .stair-2 { 
+            width: 60px; height: 110px; bottom: 0px; left: 68px; 
+            animation: pulseStair 3.2s ease-in-out infinite 0.4s;
+        }
+        .stair-3 { 
+            width: 60px; height: 160px; bottom: 0px; left: 136px; 
+            animation: pulseStair 3.2s ease-in-out infinite 0.7s;
+        }
+        .stair-4 { 
+            width: 60px; height: 210px; bottom: 0px; left: 204px; 
+            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.18) 100%); 
+            border-color: #ffffff;
+            box-shadow: 0 15px 35px rgba(67, 24, 255, 0.35);
+            animation: pulseStair 3.2s ease-in-out infinite 1.0s;
+        }
+
+        @keyframes pulseStair {
+            0%, 100% { transform: translateY(0px) scale(1); filter: brightness(1); }
+            50% { transform: translateY(-8px) scale(1.02); filter: brightness(1.22); border-color: rgba(255, 255, 255, 0.85); }
+        }
+
+        .illustration-caption { 
+            margin-top: 26px; 
+            text-align: center; 
+            color: #e0e5ff; 
+            font-size: 15px; 
+            font-weight: 600; 
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+        }
         
-        .login-box { background-color: #ffffff; padding: 44px; border-radius: 2px; box-shadow: 0 25px 60px rgba(0,0,0,0.25); width: 100%; max-width: 420px; text-align: center; position: relative; z-index: 10; border: 1px solid rgba(255,255,255,0.2); }
-        .login-box { background-color: #ffffff; padding: 40px; border-radius: 2px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
-        .login-logo { font-size: 28px; margin-bottom: 24px; }
-        .login-title { font-size: 20px; color: #2b3674; font-weight: 700; margin-bottom: 8px; }
-        .login-subtitle { font-size: 14px; color: #8f9bba; margin-bottom: 32px; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        .form-group label { display: block; font-size: 12px; font-weight: 700; color: #2b3674; margin-bottom: 8px; }
-        .form-group input { width: 100%; padding: 12px 16px; border: 1px solid #e0e5f2; border-radius: 2px; font-size: 14px; outline: none; transition: border-color 0.3s; }
-        .form-group input:focus { border-color: #4318ff; }
-        .login-btn { width: 100%; padding: 14px; background-color: #4318ff; color: #ffffff; border: none; border-radius: 2px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background-color 0.3s; margin-top: 10px; }
-        .login-btn:hover { background-color: #3311db; }
+        .login-box { 
+            background: #ffffff; 
+            padding: 42px 38px; 
+            border-radius: 2px; 
+            box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2); 
+            width: 100%; 
+            max-width: 410px; 
+            text-align: center; 
+            position: relative; 
+            z-index: 10; 
+            border-top: 4px solid #4318ff; /* Aksen sharp header card */
+            animation: loginEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes loginEntrance {
+            0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+            100% { opacity: 1; transform: translateY(0px) scale(1); }
+        }
+
+        .login-logo { font-size: 28px; margin-bottom: 18px; }
+        .login-title { font-size: 21px; color: #1e1b4b; font-weight: 800; margin-bottom: 6px; }
+        .login-subtitle { font-size: 13.5px; color: #64748b; margin-bottom: 28px; }
+        .form-group { margin-bottom: 18px; text-align: left; }
+        .form-group label { display: block; font-size: 12px; font-weight: 800; color: #1e293b; margin-bottom: 6px; letter-spacing: 0.2px; }
+        .form-group input { 
+            width: 100%; 
+            padding: 12px 14px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 2px; 
+            font-size: 14px; 
+            outline: none; 
+            transition: all 0.2s ease; 
+            background: #f8fafc;
+        }
+        .form-group input:focus { 
+            border-color: #4318ff; 
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.12);
+        }
+        .login-btn { 
+            width: 100%; 
+            padding: 13px; 
+            background-color: #4318ff; 
+            color: #ffffff; 
+            border: none; 
+            border-radius: 2px; 
+            font-size: 14.5px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: all 0.25s ease; 
+            margin-top: 8px; 
+            box-shadow: 0 4px 15px rgba(67, 24, 255, 0.35);
+        }
+        .login-btn:hover { 
+            background-color: #3311db; 
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(67, 24, 255, 0.45);
+        }
 
         .footer-ticker { 
         position: fixed; bottom: 0; left: 260px; right: 0; height: 30px; background-color: #ffffff; 
@@ -718,6 +904,10 @@
 
     <!-- LOGIN OVERLAY -->
     <div class="login-overlay" id="loginOverlay">
+        <!-- Floating Ambient Glow Orbs -->
+        <div class="login-glow-orb orb-1"></div>
+        <div class="login-glow-orb orb-2"></div>
+
         <div class="login-wrapper-split">
             <!-- Ilustrasi Anak Tangga di Sebelah Kiri Sejajar Box Login -->
             <div class="login-left-illustration">
@@ -995,6 +1185,22 @@
                             <!-- Diisi Otomatis Oleh Sistem (Berdasarkan Laporan Produksi) -->
                         </div>
                         <div class="circle-decor"></div>
+                    </div>
+                </div>
+
+                <!-- WIDGET SISA OM BULAN BERJALAN DI DASHBOARD UTAMA -->
+                <div class="card" style="margin-bottom: 24px; padding: 20px; border: 1px solid #cbd5e1;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+                        <div>
+                            <h3 class="text-secondary font-bold" style="font-size: 16px; margin: 0;">Sisa OM Bulan Berjalan (Per Supplier)</h3>
+                            <p style="font-size: 11.5px; color: #8f9bba; margin: 2px 0 0 0;" id="dash-om-period-label">Memuat periode...</p>
+                        </div>
+                        <button class="btn-modern" style="padding: 6px 14px; font-size: 12px; background: #f4f7fe; color: #4318ff; border: 1px solid #4318ff;" onclick="switchView('sisa-om')">
+                            Buka Detail Sisa OM &rarr;
+                        </button>
+                    </div>
+                    <div id="dash-supplier-pivot-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px;">
+                        <p style="color:#8f9bba; font-size:12px; padding:10px;">Mengambil data Sisa OM...</p>
                     </div>
                 </div>
 
@@ -1629,7 +1835,7 @@
                           <thead>
                               <tr class="header-group">
                                   <th colspan="6">Identitas Barang</th>
-                                  <th colspan="6">Posisi Saldo Proses (Pcs)</th>
+                                  <th colspan="8">Posisi Sisa Saldo Proses (Pcs)</th>
                               </tr>
                               <tr>
                                   <th>Unit</th>
@@ -1638,17 +1844,18 @@
                                   <th>Kategori</th>
                                   <th>Motif</th>
                                   <th>Supplier</th>
-                                  <!-- Kolom G (Saldo Awal) DILOMPATI -->
-                                  <th style="text-align:right;">Masuk</th>
-                                  <th style="text-align:right;">PE (Pengisian)</th>
-                                  <th style="text-align:right;">JT (Jahit Tutup)</th>
-                                  <th style="text-align:right;">PY (Penyarungan)</th>
-                                  <th style="text-align:right;">PP (Packing)</th>
-                                  <th style="text-align:right;">Ikat / Ball</th>
+                                  <th style="text-align:right;">Saldo BB</th>
+                                  <th style="text-align:right;">Saldo PE</th>
+                                  <th style="text-align:right;">Saldo JT</th>
+                                  <th style="text-align:right;">Saldo PY</th>
+                                  <th style="text-align:right;">Saldo PP</th>
+                                  <th style="text-align:right;">Saldo Ikat</th>
+                                  <th style="text-align:right;">Keluar</th>
+                                  <th style="text-align:right;">Saldo Akhir</th>
                               </tr>
                           </thead>
                           <tbody id="tbody-posisi-barang">
-                              <tr><td colspan="12" style="text-align:center; padding:25px; color:#8f9bba;">Memuat data mutasi...</td></tr>
+                              <tr><td colspan="14" style="text-align:center; padding:25px; color:#8f9bba;">Memuat data mutasi...</td></tr>
                           </tbody>
                       </table>
                   </div>
@@ -1851,7 +2058,7 @@
                         </label>
                     </div>
 
-                    <!-- TABEL DETAIL GROUP D (13 KOLOM DENGAN TFOOT STICKY) -->
+                    <!-- TABEL DETAIL GROUP D (15 KOLOM TERMASUK TGL REALISASI & UMUR STOK) -->
                     <div class="table-container">
                         <table class="table-thin" id="table-rincian-om">
                             <thead>
@@ -1869,10 +2076,12 @@
                                     <th style="text-align: right;">QTY Retur</th>
                                     <th style="text-align: right;">QTY Sisa</th>
                                     <th style="text-align: center;">Status</th>
+                                    <th>Tgl Realisasi</th>
+                                    <th style="text-align: center;">Umur Stok</th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-rincian-om">
-                                <tr><td colspan="13" style="text-align:center; padding:25px; color:#8f9bba;">Memuat data Rincian OM...</td></tr>
+                                <tr><td colspan="15" style="text-align:center; padding:25px; color:#8f9bba;">Memuat data Rincian OM...</td></tr>
                             </tbody>
                             <tfoot id="tfoot-rincian-om"></tfoot>
                         </table>
@@ -2482,7 +2691,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwpRvp3FpCuPiIOzOxMOb_gIre126tP6UwEUNc5D1VcGHYiG8LQJSY3V3jlerhn2aMeDg/exec";         
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzDVfH00Lp-dq5PdOPeBLFBwNy8BiAtJdS3e2gZHPYP8R3eShxRqi5dmOQ4H2wLDGH0/exec";         
 
         // 2. HELPER: Parser Nominal Desimal Aman (Presisi Angka Murni)
         function parseNominalFrontend(val) {
@@ -2903,6 +3112,9 @@
                     // Render Data Grafik Terkini
                     window.dashboardChartData = res.chartData || {};
                     if (typeof updateDashboardChart === 'function') updateDashboardChart();
+
+                    // Render Widget Box Sisa OM Bulan Berjalan di Dashboard Utama
+                    if (typeof renderDashboardSisaOm === 'function') renderDashboardSisaOm();
                     
                     // --- MENGISI DATA TABEL ANTREAN APPROVE SAAT DASHBOARD DIMUAT ---
                     // Mengambil 20 data kilat terbaru agar tabel dashboard seketika muncul
@@ -4335,6 +4547,9 @@
             // Trigger juga Tabel Sinkronisasi di Dashboard ketika ini diproses (Backgroud/Tiba tiba input file dsb)
             if (typeof updateDashboardPendingTable === 'function') {
                 updateDashboardPendingTable();
+            }
+            if (typeof renderDashboardSisaOm === 'function') {
+                renderDashboardSisaOm();
             }
         }
 
@@ -7664,12 +7879,18 @@
                 return;
             }
 
+            // Mapping sisa saldo yang dikonsumsi oleh pekerjaan:
+            // Pengisian mengonsumsi Saldo BB (Indeks 8)
+            // Jahit Tutup mengonsumsi Saldo Pengisian (Indeks 10)
+            // Penyarungan mengonsumsi Saldo Jahit Tutup (Indeks 12)
+            // Packing mengonsumsi Saldo Penyarungan (Indeks 14) / Saldo JT (Indeks 12 jika bypass sarung)
+            // Ikat mengonsumsi Saldo Packing (Indeks 16)
             const mapKolomPek = {
                 "pengisian": 8, "pe": 8,
-                "jahit tutup": 9, "jt": 9,
-                "penyarungan": 10, "py": 10,
-                "packing": 11, "packing/press": 11, "pp": 11, "press": 11,
-                "ikat/ball": 12, "ikat": 12, "ball": 12
+                "jahit tutup": 10, "jt": 10,
+                "penyarungan": 12, "py": 12,
+                "packing": 14, "packing/press": 14, "pp": 14, "press": 14,
+                "ikat/ball": 16, "ikat": 16, "ball": 16
             };
 
             const targetColIdx = mapKolomPek[selectedPek];
@@ -7749,13 +7970,12 @@
             const isBypassJob = ["tutup besi", "pasang besi", "jahit bulatan", "pasang hipseat"].includes(selectedPek);
             if (isBypassJob) return 99999;
 
-            // PERBAIKAN: Alias lengkap pekerjaan untuk pengecekan saldo badge
             const mapKolomPek = {
                 "pengisian": 8, "pe": 8,
-                "jahit tutup": 9, "jt": 9,
-                "penyarungan": 10, "py": 10,
-                "packing": 11, "packing/press": 11, "pp": 11, "press": 11,
-                "ikat/ball": 12, "ikat": 12, "ball": 12
+                "jahit tutup": 10, "jt": 10,
+                "penyarungan": 12, "py": 12,
+                "packing": 14, "packing/press": 14, "pp": 14, "press": 14,
+                "ikat/ball": 16, "ikat": 16, "ball": 16
             };
             const targetColIdx = mapKolomPek[selectedPek];
             if (targetColIdx === undefined || !window.allMutasiData || window.allMutasiData.length === 0) return 0;
@@ -8197,7 +8417,7 @@
             if (tfoot) tfoot.innerHTML = '';
 
             if (tableStates.rincianOm.data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; padding:25px; color:#8f9bba;">Tidak ada data rincian Order Makloon yang cocok.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding:25px; color:#8f9bba;">Tidak ada data rincian Order Makloon yang cocok.</td></tr>';
                 renderPaginationButtons('rincianOm', 'pagination-rincianom', renderRincianOmTable);
                 return;
             }
@@ -8216,7 +8436,8 @@
                 // Status Baris Pintar: Selesai jika sisa <= 0 ATAU realisasi >= pesanan
                 let isRowSelesai = (qSisa <= 0 && (qPesanan > 0 || qRealisasi > 0)) || (qPesanan > 0 && qRealisasi >= qPesanan);
 
-                for (let idx = 0; idx < 13; idx++) {
+                // 15 Kolom: 0 s/d 14 (Kolom 13: Tgl Realisasi, Kolom 14: Umur Stok)
+                for (let idx = 0; idx < 15; idx++) {
                     const td = document.createElement('td');
                     let rawVal = row[idx] !== undefined && row[idx] !== null ? String(row[idx]).trim() : '-';
 
@@ -8254,7 +8475,18 @@
                         }
                         td.appendChild(span);
                     }
-                    // Kolom Teks
+                    // Kolom Umur Stok (Index 14) -> Rata Tengah & Berbobot
+                    else if (idx === 14) {
+                        td.style.textAlign = 'center';
+                        let umurNum = parseInt(rawVal.replace(/[^\d]/g, ''), 10);
+                        if (!isNaN(umurNum) && umurNum > 30) {
+                            td.innerHTML = `<span style="color:#ee5d50; font-weight:800;">${rawVal} ⚠️</span>`;
+                        } else {
+                            td.textContent = rawVal;
+                            td.style.fontWeight = '600';
+                        }
+                    }
+                    // Kolom Teks lainnya
                     else {
                         td.style.textAlign = 'left';
                         td.textContent = rawVal;
@@ -8288,7 +8520,7 @@
                         <td style="padding:10px 12px; text-align:right; font-weight:800; color:#05cd99; font-size:13px;">${sumRealisasi.toLocaleString('id-ID')}</td>
                         <td style="padding:10px 12px; text-align:right; font-weight:700; color:#8f9bba; font-size:13px;">${sumRetur.toLocaleString('id-ID')}</td>
                         <td style="padding:10px 12px; text-align:right; font-weight:800; color:#ee5d50; font-size:13px;">${sumSisa.toLocaleString('id-ID')}</td>
-                        <td></td>
+                        <td colspan="3"></td>
                     </tr>
                 `;
             }
@@ -9712,21 +9944,24 @@
           const keyword = (document.getElementById('filter-posisi-search')?.value || '').toLowerCase().trim();
           const keywords = keyword.split(/\s+/).filter(Boolean);
 
+          // Kolom Sisa Saldo: Saldo BB (8), Saldo PE (10), Saldo JT (12), Saldo PY (14), Saldo PP (16), Saldo Ikat (18), Keluar (19), Saldo Akhir (20)
+          const saldoColIndices = [8, 10, 12, 14, 16, 18, 19, 20];
+
           const filtered = window.allMutasiData.filter(row => {
-              if (!Array.isArray(row) || !row[1]) return false; // Abaikan jika baris kosong
+              if (!Array.isArray(row) || !row[1]) return false;
               
               // 1. Filter Unit
               const rowUnit = String(row[0] || '').toLowerCase();
               const matchUnit = unit === '' || rowUnit.includes(unit.replace(/^cv\s*/i, ''));
 
-              // 2. Filter Supplier (Kolom F / Index 5)
+              // 2. Filter Supplier (Index 5)
               const rowSupplier = String(row[5] || '').toLowerCase().trim();
               const matchSupplier = supplier === '' || rowSupplier === supplier;
 
-              // 3. Filter Checkbox: Hanya Tampilkan yang Ada Saldonya (> 0 di kolom proses H-M / Index 7-12)
+              // 3. Filter Checkbox: Hanya Tampilkan yang Ada Saldonya (!= 0)
               let matchStock = true;
               if (onlyWithStock) {
-                  matchStock = [7, 8, 9, 10, 11, 12].some(colIdx => (parseFloat(row[colIdx]) || 0) > 0);
+                  matchStock = saldoColIndices.some(colIdx => (parseFloat(row[colIdx]) || 0) !== 0);
               }
 
               // 4. Pencarian Teks pada Kolom B-F (Kode, Nama, Kategori, Motif, Supplier)
@@ -9754,7 +9989,7 @@
           tbody.innerHTML = '';
 
           if (tableStates.posisiBarang.data.length === 0) {
-              tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; padding:25px; color:#8f9bba;">Tidak ada data barang yang sesuai kriteria pencarian.</td></tr>';
+              tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding:25px; color:#8f9bba;">Tidak ada data barang yang sesuai kriteria pencarian.</td></tr>';
               renderPaginationButtons('posisiBarang', 'pagination-posisi', renderPosisiBarangTable);
               return;
           }
@@ -9763,24 +9998,27 @@
           let end = start + tableStates.posisiBarang.limit;
           let paginatedData = tableStates.posisiBarang.data.slice(start, end);
 
+          // Kolom sisa saldo yang akan dirender (8 kolom proses)
+          const targetSaldoCols = [8, 10, 12, 14, 16, 18, 19, 20];
+
           paginatedData.forEach(row => {
               const tr = document.createElement('tr');
               
-              // 1. Identitas Barang: Kolom A, B, C, D, E, F (Index 0 s/d 5)
+              // 1. Identitas Barang: Kolom Index 0 s/d 5 (Unit, Kode, Nama, Kategori, Motif, Supplier)
               for (let i = 0; i <= 5; i++) {
                   const td = document.createElement('td');
                   let cellVal = row[i] !== undefined && row[i] !== null && row[i] !== '' ? row[i] : '-';
-                  if (i === 1) td.style.fontWeight = '700'; // Kode bold
+                  if (i === 1) td.style.fontWeight = '700';
                   td.textContent = cellVal;
                   tr.appendChild(td);
               }
 
-              // 2. Saldo Posisi Proses: Kolom H s/d M (Index 7 s/d 12) -> Kolom G (Index 6) DILOMPATI
-              for (let j = 7; j <= 12; j++) {
+              // 2. 8 Kolom Saldo Proses: Saldo BB (8), Saldo PE (10), Saldo JT (12), Saldo PY (14), Saldo PP (16), Saldo Ikat (18), Keluar (19), Saldo Akhir (20)
+              targetSaldoCols.forEach(colIdx => {
                   const td = document.createElement('td');
                   td.style.textAlign = 'right';
                   
-                  let valNum = parseFloat(row[j]) || 0;
+                  let valNum = parseFloat(row[colIdx]) || 0;
                   td.textContent = Number(valNum).toLocaleString('id-ID');
 
                   if (valNum > 0) {
@@ -9790,15 +10028,150 @@
                       td.style.fontWeight = '700';
                       td.style.color = '#ee5d50'; // Merah jika minus
                   } else {
-                      td.style.color = '#a3aed1'; // Abu-abu jika nol
+                      td.style.color = '#94a3b8'; // Abu-abu jika nol
                   }
+
+                  // Beri highlight khusus untuk Saldo Akhir (Kolom U / 20)
+                  if (colIdx === 20) {
+                      td.style.borderLeft = '1px solid #cbd5e1';
+                      if (valNum !== 0) td.style.fontSize = '13.5px';
+                  }
+
                   tr.appendChild(td);
-              }
+              });
 
               tbody.appendChild(tr);
           });
 
           renderPaginationButtons('posisiBarang', 'pagination-posisi', renderPosisiBarangTable);
+      }
+
+      // --- LOGIKA WIDGET SISA OM BULAN BERJALAN DI DASHBOARD UTAMA ---
+      function renderDashboardSisaOm() {
+          const container = document.getElementById('dash-supplier-pivot-cards');
+          const labelPeriod = document.getElementById('dash-om-period-label');
+          if (!container) return;
+
+          const now = new Date();
+          const currentMonthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+          
+          if (labelPeriod) {
+              const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+              labelPeriod.textContent = `Periode: ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+          }
+
+          const executeRender = (rows) => {
+              if (!rows || rows.length <= 1) {
+                  container.innerHTML = '<p style="color:#8f9bba; font-size:12px;">Tidak ada data Sisa OM bulan berjalan.</p>';
+                  return;
+              }
+
+              const headerUnitVal = (document.getElementById('headerUnitSelect')?.value || 'Semua Unit').toLowerCase().replace(/^cv\s*/i, '');
+              const actualRows = rows.slice(1);
+
+              // Filter hanya data OM pada bulan berjalan
+              const monthRows = actualRows.filter(row => {
+                  if (!Array.isArray(row) || !row[1]) return false;
+
+                  const rowUnit = String(row[0] || '').toLowerCase();
+                  const matchUnit = (headerUnitVal === 'semua unit' || headerUnitVal === '') || rowUnit.includes(headerUnitVal);
+
+                  const rowDate = normalizeDateYMD(row[2]);
+                  const matchMonth = rowDate && rowDate.startsWith(currentMonthPrefix);
+
+                  return matchUnit && matchMonth;
+              });
+
+              if (monthRows.length === 0) {
+                  container.innerHTML = '<p style="color:#8f9bba; font-size:12px; padding:10px;">Tidak ada Order Makloon pada bulan berjalan ini.</p>';
+                  return;
+              }
+
+              // Kalkulasi pivot supplier khusus dashboard
+              const supplierPivot = {};
+              monthRows.forEach(row => {
+                  const noOm = String(row[1] || '').trim();
+                  const supplier = String(row[7] || 'Lain-Lain').trim();
+                  if (!noOm) return;
+
+                  const qPesanan = parseFloat(String(row[8] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                  const qRealisasi = parseFloat(String(row[9] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                  const qSisa = parseFloat(String(row[11] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                  const isItemComplete = (qSisa <= 0 && (qPesanan > 0 || qRealisasi > 0)) || (qPesanan > 0 && qRealisasi >= qPesanan);
+
+                  if (!supplierPivot[supplier]) {
+                      supplierPivot[supplier] = {
+                          omMap: new Map(),
+                          totQty: 0,
+                          realisasiQty: 0,
+                          sisaQty: 0
+                      };
+                  }
+                  const sp = supplierPivot[supplier];
+                  sp.totQty += qPesanan;
+                  sp.realisasiQty += qRealisasi;
+                  sp.sisaQty += qSisa;
+
+                  if (!sp.omMap.has(noOm)) {
+                      sp.omMap.set(noOm, { hasIncompleteItem: false, totalSisa: 0, totalPesanan: 0, totalRealisasi: 0 });
+                  }
+                  const spOm = sp.omMap.get(noOm);
+                  spOm.totalPesanan += qPesanan;
+                  spOm.totalRealisasi += qRealisasi;
+                  spOm.totalSisa += qSisa;
+                  if (!isItemComplete) spOm.hasIncompleteItem = true;
+              });
+
+              container.innerHTML = '';
+              const supKeys = Object.keys(supplierPivot).sort();
+
+              supKeys.forEach(supName => {
+                  const data = supplierPivot[supName];
+                  const totOmSup = data.omMap.size;
+                  let selesaiOmSup = 0;
+                  let sisaOmSup = 0;
+
+                  data.omMap.forEach(om => {
+                      const isFinished = !om.hasIncompleteItem && om.totalSisa <= 0 && (om.totalPesanan > 0 || om.totalRealisasi > 0);
+                      if (isFinished) selesaiOmSup++;
+                      else sisaOmSup++;
+                  });
+
+                  const cardHtml = `
+                      <div class="card" style="padding: 14px; border: 1px solid #cbd5e1; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); background: #ffffff;">
+                          <div style="border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 8px;">
+                              <b style="font-size: 13.5px; color: #1e1b4b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;" title="${supName}">
+                                  ${supName}
+                              </b>
+                          </div>
+                          <div style="display: flex; justify-content: space-between; font-size: 11.5px; margin-bottom: 6px; background: #f8fafc; padding: 5px 8px; border-radius: 3px; border: 1px solid #f1f5f9;">
+                              <span>Total: <b>${totOmSup}</b></span>
+                              <span style="color: #05cd99;">Selesai: <b>${selesaiOmSup}</b></span>
+                              <span style="color: #ee5d50;">Sisa: <b>${sisaOmSup}</b></span>
+                          </div>
+                          <div style="display: flex; justify-content: space-between; font-size: 11.5px; padding: 2px 6px;">
+                              <span>Pesan: <b>${Number(data.totQty).toLocaleString('id-ID')}</b></span>
+                              <span style="color: #05cd99;">Real: <b>${Number(data.realisasiQty).toLocaleString('id-ID')}</b></span>
+                              <span style="color: #ee5d50;">Sisa: <b>${Number(data.sisaQty).toLocaleString('id-ID')}</b></span>
+                          </div>
+                      </div>
+                  `;
+                  container.insertAdjacentHTML('beforeend', cardHtml);
+              });
+          };
+
+          if (window.rawSisaOmData && window.rawSisaOmData.length > 0) {
+              executeRender(window.rawSisaOmData);
+          } else {
+              panggilBackend('getSisaOmData', {})
+                  .then(data => {
+                      window.rawSisaOmData = data || [];
+                      executeRender(window.rawSisaOmData);
+                  })
+                  .catch(err => {
+                      container.innerHTML = `<p style="color:#ee5d50; font-size:12px;">Gagal memuat widget Sisa OM: ${err.message}</p>`;
+                  });
+          }
       }
 
       function quickNavigateToLaporan(idDoc) {
