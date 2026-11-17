@@ -109,7 +109,7 @@
 
         /* --- DASHBOARD STYLES --- */
         .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 24px; }
-        .card { background: rgba(255, 255, 255, 0.95); border-radius: 2px; padding: 20px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05); }
+        .card { background: #ffffff; border-radius: 2px; padding: 20px; border: 1px solid #cbd5e1; box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04); }
         .stat-card { display: flex; align-items: center; justify-content: space-between; }
         .stat-info p { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
         .stat-info h3 { font-size: 24px; }
@@ -120,7 +120,7 @@
         .icon-green { background: #ebfcf6; color: #05cd99; }
         .icon-red { background: #fce8e8; color: #ee5d50; }
 
-        .input-wrapper { background: #fff; padding: 24px; border-radius: 2px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .input-wrapper { background: #fff; padding: 24px; border-radius: 2px; border: 1px solid #cbd5e1; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         .form-control { width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 2px; margin-top: 5px; outline: none; }
         .form-control:focus { border-color: #4318ff; }
         .form-control:disabled { background-color: #f8fafc; color: #a3aed1; cursor: not-allowed; }
@@ -1195,9 +1195,14 @@
                             <h3 class="text-secondary font-bold" style="font-size: 16px; margin: 0;">Sisa OM Bulan Berjalan (Per Supplier)</h3>
                             <p style="font-size: 11.5px; color: #8f9bba; margin: 2px 0 0 0;" id="dash-om-period-label">Memuat periode...</p>
                         </div>
-                        <button class="btn-modern" style="padding: 6px 14px; font-size: 12px; background: #f4f7fe; color: #4318ff; border: 1px solid #4318ff;" onclick="switchView('sisa-om')">
-                            Buka Detail Sisa OM &rarr;
-                        </button>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-modern" style="padding: 6px 12px; font-size: 12px; background: #f8fafc; color: #4318ff; border: 1px solid #cbd5e1; display:flex; align-items:center; gap:4px;" onclick="renderDashboardSisaOm(true)" title="Muat Ulang Sisa OM">
+                                <svg style="width:13px; height:13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Refresh
+                            </button>
+                            <button class="btn-modern" style="padding: 6px 14px; font-size: 12px; background: #f4f7fe; color: #4318ff; border: 1px solid #4318ff;" onclick="switchView('sisa-om')">
+                                Buka Detail Sisa OM &rarr;
+                            </button>
+                        </div>
                     </div>
                     <div id="dash-supplier-pivot-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px;">
                         <p style="color:#8f9bba; font-size:12px; padding:10px;">Mengambil data Sisa OM...</p>
@@ -1945,27 +1950,54 @@
             <!-- 7. VIEW SISA OM (HALAMAN DASHBOARD STATISTIK OM: GROUP A, B, C) -->
             <div id="view-sisa-om" class="view-section" style="padding-bottom: 100px;">
                 <div id="capture-area-sisa-om">
-                <!-- GROUP A: 4 BOX STATISTIK UTAMA -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px;">
-                    <div class="card" style="padding: 16px; border-left: 4px solid #4318ff;">
-                        <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Total Dokumen OM</span>
-                        <h3 id="stat-om-total" style="font-size: 24px; color: #2b3674; font-weight: 800; margin-top: 4px;">0</h3>
-                        <span style="font-size: 11px; color: #8f9bba;">Jumlah No. OM Terdaftar</span>
+                <!-- GROUP A: 4 BOX STATISTIK UTAMA (MODERN STYLISH SHARP) -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                    <!-- 1. Total Dokumen OM -->
+                    <div class="card" style="padding: 16px 18px; border: 1px solid #cbd5e1; border-top: 3.5px solid #4318ff; background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%); position: relative; overflow: hidden;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <span style="font-size: 11px; color: #64748b; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Total Dokumen OM</span>
+                            <span style="width: 28px; height: 28px; border-radius: 2px; background: #e0e5ff; color: #4318ff; display: flex; align-items: center; justify-content: center; font-size: 14px;">📋</span>
+                        </div>
+                        <h3 id="stat-om-total" style="font-size: 28px; color: #1e1b4b; font-weight: 800; margin: 2px 0 6px 0; letter-spacing: -0.5px;">0</h3>
+                        <div style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #8f9bba; background: #fff; padding: 2px 8px; border-radius: 2px; border: 1px solid #e2e8f0;">
+                            Jumlah No. OM Terdaftar
+                        </div>
                     </div>
-                    <div class="card" style="padding: 16px; border-left: 4px solid #05cd99;">
-                        <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">OM Terselesaikan</span>
-                        <h3 id="stat-om-selesai" style="font-size: 24px; color: #05cd99; font-weight: 800; margin-top: 4px;">0</h3>
-                        <span id="stat-om-selesai-pct" style="font-size: 11px; color: #05cd99; font-weight: 700;">0% Selesai</span>
+
+                    <!-- 2. OM Terselesaikan -->
+                    <div class="card" style="padding: 16px 18px; border: 1px solid #cbd5e1; border-top: 3.5px solid #05cd99; background: linear-gradient(180deg, #ffffff 0%, #f0fdf9 100%); position: relative; overflow: hidden;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <span style="font-size: 11px; color: #047857; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">OM Terselesaikan</span>
+                            <span style="width: 28px; height: 28px; border-radius: 2px; background: #ebfcf6; color: #05cd99; display: flex; align-items: center; justify-content: center; font-size: 14px;">✅</span>
+                        </div>
+                        <h3 id="stat-om-selesai" style="font-size: 28px; color: #05cd99; font-weight: 800; margin: 2px 0 6px 0; letter-spacing: -0.5px;">0</h3>
+                        <div style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 800; color: #047857; background: #d1fae5; padding: 2px 8px; border-radius: 2px;">
+                            <span id="stat-om-selesai-pct">0% Selesai</span>
+                        </div>
                     </div>
-                    <div class="card" style="padding: 16px; border-left: 4px solid #ee5d50;">
-                        <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Sisa OM (Belum Selesai)</span>
-                        <h3 id="stat-om-sisa" style="font-size: 22px; color: #ee5d50; font-weight: 800; margin-top: 4px;">0</h3>
-                        <span style="font-size: 11px; color: #ee5d50; font-weight: 700;">Outstanding Order</span>
+
+                    <!-- 3. Sisa OM (Belum Selesai) -->
+                    <div class="card" style="padding: 16px 18px; border: 1px solid #cbd5e1; border-top: 3.5px solid #ee5d50; background: linear-gradient(180deg, #ffffff 0%, #fff5f5 100%); position: relative; overflow: hidden;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <span style="font-size: 11px; color: #b91c1c; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Sisa OM (Belum Selesai)</span>
+                            <span style="width: 28px; height: 28px; border-radius: 2px; background: #fce8e8; color: #ee5d50; display: flex; align-items: center; justify-content: center; font-size: 14px;">⏳</span>
+                        </div>
+                        <h3 id="stat-om-sisa" style="font-size: 28px; color: #ee5d50; font-weight: 800; margin: 2px 0 6px 0; letter-spacing: -0.5px;">0</h3>
+                        <div style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 800; color: #b91c1c; background: #fee2e2; padding: 2px 8px; border-radius: 2px;">
+                            Outstanding Order
+                        </div>
                     </div>
-                    <div class="card" style="padding: 16px; border-left: 4px solid #f59e0b;">
-                        <span style="font-size: 11px; color: #8f9bba; font-weight: 700; text-transform: uppercase;">Total Qty Sisa (Pcs)</span>
-                        <h3 id="stat-om-sisa-pcs" style="font-size: 22px; color: #f59e0b; font-weight: 800; margin-top: 4px;">0</h3>
-                        <span style="font-size: 11px; color: #8f9bba;">Fisik Barang Tertunggak</span>
+
+                    <!-- 4. Total Qty Sisa (Pcs) -->
+                    <div class="card" style="padding: 16px 18px; border: 1px solid #cbd5e1; border-top: 3.5px solid #f59e0b; background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%); position: relative; overflow: hidden;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <span style="font-size: 11px; color: #b45309; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Total Qty Sisa (Pcs)</span>
+                            <span style="width: 28px; height: 28px; border-radius: 2px; background: #fef3c7; color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 14px;">📦</span>
+                        </div>
+                        <h3 id="stat-om-sisa-pcs" style="font-size: 28px; color: #d97706; font-weight: 800; margin: 2px 0 6px 0; letter-spacing: -0.5px;">0</h3>
+                        <div style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #92400e; background: #fff; padding: 2px 8px; border-radius: 2px; border: 1px solid #fef3c7;">
+                            Fisik Barang Tertunggak
+                        </div>
                     </div>
                 </div>
 
@@ -2033,7 +2065,7 @@
                             <button class="btn-modern" style="background:#0284c7; color:#fff; padding: 8px 16px; display:flex; align-items:center; gap:6px;" onclick="printSisaOmReport()" title="Cetak Sisa OM">
                                 <svg style="width:14px; height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg> Cetak Sisa OM
                             </button>
-                            <button class="btn-modern" style="background:#fff; color:#10b981; border: 1px solid #10b981; padding: 8px 16px; display:flex; align-items:center; gap:6px;" onclick="exportSisaOmReport()" title="Export Excel Sisa OM">
+                            <button class="btn-modern" style="background:#fff; color:#10b981; border: 1px solid #10b981; padding: 8px 16px; display:flex; align-items:center; gap:6px;" onclick="exportRincianOmReport()" title="Export Excel Rincian OM">
                                 <svg style="width:14px; height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Export Excel
                             </button>
                             <button class="btn-modern" style="background:#f4f7fe; color:#4318ff; border: 1px solid #4318ff; padding: 8px 18px;" onclick="switchView('sisa-om')">
@@ -2704,7 +2736,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxq5wSgKKXy-zJonQVkgPirSkpxoCBwXIbuazl7eK6A6nvjSWTFTFxRA9gCg-EzagZ1TA/exec";         
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyINCeR6Lot8NpE1cWkEn5hBvRHZGo2OrpNcqQUJJfyDlxBHgu0DgGe_1Iqc5L1HgZ4uQ/exec";         
 
         // 2. HELPER: Parser Nominal Desimal Aman (Presisi Angka Murni)
         function parseNominalFrontend(val) {
@@ -8804,7 +8836,7 @@
             });
         }
 
-        // --- FITUR EXPORT SISA OM FORMAT 9 KOLOM: No | Tgl Terima OM | No OM | Kode | Nama Barang | Motif | Supplier | Qty | Keterangan ---
+        // --- FITUR EXPORT SISA OM (INCLUDE UMUR STOK) ---
         function exportSisaOmReport() {
             const rows = getFilteredSisaOmRows();
             if (rows.length === 0) {
@@ -8816,31 +8848,46 @@
             const endDate = (isRincianView ? document.getElementById('filter-rincianom-end')?.value : document.getElementById('filter-sisaom-end')?.value) || '-';
             const unit = (isRincianView ? document.getElementById('filter-rincianom-unit')?.value : document.getElementById('filter-sisaom-unit')?.value) || 'Semua Unit';
 
-            // Format 9 Kolom Sesuai Permintaan
-            const headers = ["No.", "Tgl Terima OM", "No OM", "Kode", "Nama Barang", "Motif", "Supplier", "Qty", "Keterangan"];
+            const headers = ["No.", "Tgl Terima OM", "No OM", "Kode", "Nama Barang", "Motif", "Supplier", "Qty Sisa", "Umur Stok", "Keterangan"];
             
             let totalQty = 0;
+            const today = new Date();
+
             const dataRows = rows.map((r, idx) => {
                 const qtySisa = parseFloat(String(r[12] || '0').replace(/[^0-9.-]/g, '')) || 0;
                 totalQty += qtySisa;
+
+                // Hitung Umur Stok
+                let tglTerimaStr = normalizeDateYMD(r[3]);
+                let umurStokText = '-';
+                if (tglTerimaStr) {
+                    let dTerima = new Date(tglTerimaStr);
+                    if (!isNaN(dTerima.getTime())) {
+                        let diffDays = Math.max(0, Math.floor((today - dTerima) / (1000 * 60 * 60 * 24)));
+                        umurStokText = diffDays + ' Hari';
+                    }
+                } else if (r[15]) {
+                    umurStokText = String(r[15]);
+                }
+
                 return [
                     idx + 1,
-                    r[3] || '-', // Tgl Terima OM (Kolom AC / Index 3)
-                    r[1] || '-', // No OM (Kolom AA / Index 1)
-                    r[4] || '-', // Kode (Kolom AD / Index 4)
-                    r[5] || '-', // Nama Barang (Kolom AE / Index 5)
-                    r[7] || '-', // Motif (Kolom AG / Index 7)
-                    r[8] || '-', // Supplier (Kolom AH / Index 8)
-                    qtySisa,     // Qty Sisa (Kolom AL / Index 12)
-                    ""           // Keterangan kosong
+                    r[3] || '-', 
+                    r[1] || '-', 
+                    r[4] || '-', 
+                    r[5] || '-', 
+                    r[7] || '-', 
+                    r[8] || '-', 
+                    qtySisa,     
+                    umurStokText,
+                    ""           
                 ];
             });
 
-            // Baris Total
-            dataRows.push(["TOTAL", "", "", "", "", "", "", totalQty, ""]);
+            dataRows.push(["TOTAL", "", "", "", "", "", "", totalQty, "", ""]);
 
             const wsData = [
-                ["Sisa OM"],
+                ["Laporan Sisa OM"],
                 [`Periode : ${startDate} s/d ${endDate}`],
                 [`Unit    : ${unit}`],
                 [],
@@ -8858,6 +8905,7 @@
                 { wch: 18 }, // Motif
                 { wch: 26 }, // Supplier
                 { wch: 12 }, // Qty
+                { wch: 14 }, // Umur Stok
                 { wch: 20 }  // Keterangan
             ];
 
@@ -8866,7 +8914,119 @@
             XLSX.writeFile(wb, `Sisa_OM_${startDate}_sd_${endDate}.xlsx`);
         }
 
-        // --- FITUR CETAK PRINT SISA OM (FORMAT 9 KOLOM, FLEKSIBEL PORTRAIT/LANDSCAPE, BORDER TEGAS, TANPA TTD) ---
+        // --- FITUR EXPORT EXCEL HALAMAN RINCIAN OM LENGKAP (TERMASUK UMUR STOK) ---
+        function exportRincianOmReport() {
+            const data = (tableStates.rincianOm && tableStates.rincianOm.data) ? tableStates.rincianOm.data : [];
+            if (!data || data.length === 0) {
+                return showDialog("Tidak ada data Rincian OM yang cocok untuk diekspor!", "warning");
+            }
+
+            const startDate = document.getElementById('filter-rincianom-start')?.value || '-';
+            const endDate = document.getElementById('filter-rincianom-end')?.value || '-';
+            const unit = document.getElementById('filter-rincianom-unit')?.value || 'Semua Unit';
+            const supplier = document.getElementById('filter-rincianom-supplier')?.value || 'Semua Supplier';
+
+            const headers = [
+                "No.", "Unit", "No OM", "Tgl OM", "Tgl Terima OM", "Kode", 
+                "Nama Barang", "Kategori", "Motif", "Supplier", 
+                "QTY Pesanan", "QTY Realisasi", "QTY Retur", "QTY Sisa", 
+                "Status", "Tgl Realisasi", "Umur Stok"
+            ];
+
+            let sumPesanan = 0, sumRealisasi = 0, sumRetur = 0, sumSisa = 0;
+            const today = new Date();
+
+            const dataRows = data.map((row, idx) => {
+                const qPesanan = parseFloat(String(row[9] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                const qRealisasi = parseFloat(String(row[10] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                const qRetur = parseFloat(String(row[11] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                const qSisa = parseFloat(String(row[12] || '0').replace(/[^0-9.-]/g, '')) || 0;
+
+                sumPesanan += qPesanan;
+                sumRealisasi += qRealisasi;
+                sumRetur += qRetur;
+                sumSisa += qSisa;
+
+                const isRowSelesai = (qSisa <= 0 && (qPesanan > 0 || qRealisasi > 0)) || (qPesanan > 0 && qRealisasi >= qPesanan);
+
+                // Hitung Umur Stok
+                let tglTerimaStr = normalizeDateYMD(row[3]);
+                let umurStokText = '-';
+                if (tglTerimaStr) {
+                    let dTerima = new Date(tglTerimaStr);
+                    let dTarget = isRowSelesai && row[14] ? new Date(normalizeDateYMD(row[14])) : today;
+                    if (!isNaN(dTerima.getTime())) {
+                        let diffDays = Math.max(0, Math.floor((dTarget - dTerima) / (1000 * 60 * 60 * 24)));
+                        umurStokText = diffDays + ' Hari';
+                    }
+                } else if (row[15]) {
+                    umurStokText = String(row[15]);
+                }
+
+                return [
+                    idx + 1,
+                    row[0] || '-', // Unit
+                    row[1] || '-', // No OM
+                    row[2] || '-', // Tgl OM
+                    row[3] || '-', // Tgl Terima OM
+                    row[4] || '-', // Kode
+                    row[5] || '-', // Nama Barang
+                    row[6] || '-', // Kategori
+                    row[7] || '-', // Motif
+                    row[8] || '-', // Supplier
+                    qPesanan,
+                    qRealisasi,
+                    qRetur,
+                    qSisa,
+                    isRowSelesai ? "Selesai" : "Belum Terselesaikan",
+                    row[14] || '-', // Tgl Realisasi
+                    umurStokText    // Umur Stok
+                ];
+            });
+
+            // Baris Total Akumulatif
+            dataRows.push([
+                "TOTAL KESELURUHAN", "", "", "", "", "", "", "", "", "",
+                sumPesanan, sumRealisasi, sumRetur, sumSisa, "", "", ""
+            ]);
+
+            const wsData = [
+                ["Laporan Rincian Order Makloon (OM)"],
+                [`Periode Tgl OM : ${startDate} s/d ${endDate}`],
+                [`Unit           : ${unit}`],
+                [`Supplier       : ${supplier}`],
+                [],
+                headers,
+                ...dataRows
+            ];
+
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            ws['!cols'] = [
+                { wch: 6 },  // No.
+                { wch: 14 }, // Unit
+                { wch: 22 }, // No OM
+                { wch: 14 }, // Tgl OM
+                { wch: 15 }, // Tgl Terima OM
+                { wch: 15 }, // Kode
+                { wch: 38 }, // Nama Barang
+                { wch: 18 }, // Kategori
+                { wch: 16 }, // Motif
+                { wch: 28 }, // Supplier
+                { wch: 13 }, // QTY Pesanan
+                { wch: 14 }, // QTY Realisasi
+                { wch: 12 }, // QTY Retur
+                { wch: 13 }, // QTY Sisa
+                { wch: 20 }, // Status
+                { wch: 15 }, // Tgl Realisasi
+                { wch: 14 }  // Umur Stok
+            ];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Rincian_OM");
+            XLSX.writeFile(wb, `Rincian_OM_${startDate}_sd_${endDate}.xlsx`);
+        }
+
+        // --- FITUR CETAK PRINT SISA OM (WRAP NO OM, KODE CENTER, GABUNG NAMA BARANG - MOTIF MIN-WIDTH BESAR) ---
         function printSisaOmReport() {
             const rows = getFilteredSisaOmRows();
             if (rows.length === 0) {
@@ -8884,17 +9044,22 @@
             rows.forEach((r, idx) => {
                 const qtySisa = parseFloat(String(r[12] || '0').replace(/[^0-9.-]/g, '')) || 0;
                 totalQty += qtySisa;
+
+                // Gabungkan Nama Barang dan Motif
+                const namaBarang = String(r[5] || '-').trim();
+                const motif = String(r[7] || '').trim();
+                const namaDanMotif = (motif && motif !== '-') ? `${namaBarang} - ${motif}` : namaBarang;
+
                 rowsHtml += `
                     <tr>
                         <td style="text-align:center; padding:5px 4px; border:1px solid #000;">${idx + 1}</td>
                         <td style="text-align:center; padding:5px 4px; border:1px solid #000; white-space:nowrap;">${r[3] || '-'}</td>
-                        <td style="padding:5px 6px; font-weight:700; border:1px solid #000; white-space:nowrap;">${r[1] || '-'}</td>
-                        <td style="padding:5px 6px; font-weight:700; border:1px solid #000; white-space:nowrap;">${r[4] || '-'}</td>
-                        <td style="padding:5px 6px; border:1px solid #000;">${r[5] || '-'}</td>
-                        <td style="padding:5px 6px; border:1px solid #000;">${r[7] || '-'}</td>
-                        <td style="padding:5px 6px; border:1px solid #000;">${r[8] || '-'}</td>
+                        <td style="text-align:center; padding:5px 4px; font-weight:700; border:1px solid #000; word-break:break-all; white-space:normal; line-height:1.2;">${r[1] || '-'}</td>
+                        <td style="text-align:center; padding:5px 4px; font-weight:700; border:1px solid #000; word-break:break-word;">${r[4] || '-'}</td>
+                        <td style="padding:5px 6px; border:1px solid #000; word-break:break-word; min-width:210px; line-height:1.3; font-weight:600;">${namaDanMotif}</td>
+                        <td style="padding:5px 6px; border:1px solid #000; word-break:break-word;">${r[8] || '-'}</td>
                         <td style="text-align:right; padding:5px 6px; font-weight:800; border:1px solid #000;">${qtySisa.toLocaleString('id-ID')}</td>
-                        <td style="border:1px solid #000; background:#fff; min-width:80px;"></td>
+                        <td style="border:1px solid #000; background:#fff; min-width:70px;"></td>
                     </tr>
                 `;
             });
@@ -8906,7 +9071,6 @@
                 <head>
                     <title>Sisa OM - ${startDate} s/d ${endDate}</title>
                     <style>
-                        /* Hapus penguncian landscape agar pengguna bebas memilih Portrait atau Landscape di dialog print */
                         @page { 
                             margin: 8mm 10mm; 
                         }
@@ -8945,7 +9109,7 @@
                         th { 
                             background: #e2e8f0 !important; 
                             text-transform: uppercase; 
-                            font-size: 9.5px; 
+                            font-size: 9px; 
                             font-weight: bold;
                             text-align: center;
                             -webkit-print-color-adjust: exact;
@@ -8968,19 +9132,18 @@
                             <tr>
                                 <th style="width:25px;">No.</th>
                                 <th style="width:75px;">Tgl Terima OM</th>
-                                <th style="width:115px;">No OM</th>
+                                <th style="width:105px;">No OM</th>
                                 <th style="width:80px;">Kode</th>
-                                <th>Nama Barang</th>
-                                <th style="width:85px;">Motif</th>
-                                <th style="width:130px;">Supplier</th>
+                                <th style="min-width:210px; text-align:left;">Nama Barang - Motif</th>
+                                <th style="width:125px; text-align:left;">Supplier</th>
                                 <th style="width:55px; text-align:right;">Qty</th>
-                                <th style="width:90px;">Keterangan</th>
+                                <th style="width:75px;">Keterangan</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${rowsHtml}
                             <tr class="total-row">
-                                <td colspan="7" style="text-align:right; padding:6px 8px; border:1px solid #000;">TOTAL KESELURUHAN :</td>
+                                <td colspan="6" style="text-align:right; padding:6px 8px; border:1px solid #000;">TOTAL KESELURUHAN :</td>
                                 <td style="text-align:right; padding:6px 8px; border:1px solid #000; font-weight:800;">${totalQty.toLocaleString('id-ID')}</td>
                                 <td style="border:1px solid #000;"></td>
                             </tr>
