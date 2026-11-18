@@ -2737,7 +2737,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbx2gsAT8HiJ0FKV8GJDDwnTV2opbYh0piR_AvS7SuZzDeI7IT78DefjT4poMTiAHuqwIA/exec";         
+        const GAS_URL = "https://script.google.com/macros/s/AKfycby4rzSj18q_8t6Q52WGaa8_-ohREe9Iq30pdILAbfh9HeimJKHHgvB6jIo-GBtAX-4b/exec";         
 
         // 2. HELPER: Parser Nominal Desimal Aman (Presisi Angka Murni)
         function parseNominalFrontend(val) {
@@ -4624,7 +4624,11 @@
 
                 if (response && response.success) {
                     // Sembunyikan Overlay Login
-                    document.getElementById('loginOverlay').style.display = 'none'; 
+                    const loginOverlay = document.getElementById('loginOverlay');
+                    if (loginOverlay) {
+                        loginOverlay.classList.add('hidden');
+                        loginOverlay.style.display = 'none';
+                    } 
 
                     // Simpan Data User ke Global Variable (Dibersihkan dari spasi tak terlihat)
                     window.currentUserRole = String(response.role || "Operator").trim();
@@ -8559,7 +8563,7 @@
                         }
                         td.appendChild(span);
                     }
-                    / Kolom Umur Stok (Index 15)
+                    // Kolom Umur Stok (Index 15)
                     else if (idx === 15) {
                         td.style.textAlign = 'center';
                         if (diffDays > 30) {
