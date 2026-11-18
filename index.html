@@ -993,7 +993,7 @@
                       </div>
                       <div class="submenu">
                           <a href="#" class="submenu-item" onclick="switchView('sisa-om', this)">Sisa OM</a>
-                          <a href="#" class="submenu-item">Schedule Hari Ini</a>
+                          <a href="#" class="submenu-item" id="menu-schedule-today" onclick="switchView('schedule-hari-ini', this)">Schedule Hari Ini</a>
                       </div>
                   </div>
               </div>
@@ -1368,6 +1368,246 @@
                         <h3 class="text-secondary font-bold" style="font-size: 16px; margin-bottom: 12px;">Absensi Bulan Ini</h3>
                         <div id="op-calendar-container" style="flex: 1;"></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- VIEW SCHEDULE PRODUKSI HARI INI (OPSI A: STAFF CONTROLLED & HANDOVER) -->
+            <div id="view-schedule-hari-ini" class="view-section" style="padding-bottom: 100px;">
+                <!-- 4 BOX STATISTIK SCHEDULE (DILENGKAPI INDIKATOR HUTANG TARGET KEMARIN) -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                    <div class="card" style="padding: 16px; border: 1px solid #cbd5e1; border-top: 3.5px solid #4318ff; background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%);">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size: 11px; color: #4318ff; font-weight: 800; text-transform: uppercase;">Target Baru Hari Ini</span>
+                            <span style="font-size:12px;">✨</span>
+                        </div>
+                        <h3 id="stat-sch-target-baru" style="font-size: 26px; color: #1e1b4b; font-weight: 800; margin: 4px 0;">0 <span style="font-size:13px; color:#8f9bba; font-weight:500;">Pcs</span></h3>
+                        <span style="font-size: 11px; color: #8f9bba;">Komitmen Baru</span>
+                    </div>
+
+                    <div class="card" style="padding: 16px; border: 1px solid #cbd5e1; border-top: 3.5px solid #ee5d50; background: linear-gradient(180deg, #ffffff 0%, #fff5f5 100%);">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size: 11px; color: #b91c1c; font-weight: 800; text-transform: uppercase;">Hutang Target Kemarin</span>
+                            <span style="font-size:12px;">⏳</span>
+                        </div>
+                        <h3 id="stat-sch-hutang" style="font-size: 26px; color: #ee5d50; font-weight: 800; margin: 4px 0;">0 <span style="font-size:13px; color:#8f9bba; font-weight:500;">Pcs</span></h3>
+                        <span style="font-size: 11px; color: #ee5d50; font-weight: 700;">Wajib Dituntaskan</span>
+                    </div>
+
+                    <div class="card" style="padding: 16px; border: 1px solid #cbd5e1; border-top: 3.5px solid #05cd99; background: linear-gradient(180deg, #ffffff 0%, #f0fdf9 100%);">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size: 11px; color: #047857; font-weight: 800; text-transform: uppercase;">Realisasi Selesai</span>
+                            <span style="font-size:12px;">✅</span>
+                        </div>
+                        <h3 id="stat-sch-realisasi" style="font-size: 26px; color: #05cd99; font-weight: 800; margin: 4px 0;">0 <span style="font-size:13px; color:#8f9bba; font-weight:500;">Pcs</span></h3>
+                        <span id="stat-sch-pct" style="font-size: 11px; color: #05cd99; font-weight: 700;">0% Tercapai</span>
+                    </div>
+
+                    <div class="card" style="padding: 16px; border: 1px solid #cbd5e1; border-top: 3.5px solid #f59e0b; background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size: 11px; color: #b45309; font-weight: 800; text-transform: uppercase;">Total Sisa Beban</span>
+                            <span style="font-size:12px;">📦</span>
+                        </div>
+                        <h3 id="stat-sch-sisa" style="font-size: 26px; color: #d97706; font-weight: 800; margin: 4px 0;">0 <span style="font-size:13px; color:#8f9bba; font-weight:500;">Pcs</span></h3>
+                        <span id="stat-sch-operan-info" style="font-size: 11px; color: #8f9bba;">Termasuk 0 pcs operan</span>
+                    </div>
+                </div>
+
+                <!-- CONTROLS & FILTER BAR -->
+                <div class="card" style="padding: 16px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; flex: 1;">
+                            <select id="filter-sch-unit" class="search-input" style="width: 140px;" onchange="filterScheduleTable()">
+                                <option value="">Semua Unit</option>
+                                <option value="CV JHB 1">CV JHB 1</option>
+                                <option value="CV JHB 2">CV JHB 2</option>
+                                <option value="CV JHB 5">CV JHB 5</option>
+                            </select>
+                            <input type="date" id="filter-sch-date" class="search-input" style="width: 135px;" onchange="filterScheduleTable()">
+                            <select id="filter-sch-shift" class="search-input" style="width: 130px;" onchange="filterScheduleTable()">
+                                <option value="">Semua Shift</option>
+                                <option value="Shift 1">Shift 1</option>
+                                <option value="Shift 2">Shift 2</option>
+                                <option value="Shift 3">Shift 3</option>
+                                <option value="Non-Shift">Non-Shift</option>
+                            </select>
+                            <select id="filter-sch-karu" class="search-input" style="width: 150px;" onchange="filterScheduleTable()">
+                                <option value="">Semua Karu</option>
+                            </select>
+                            <input type="text" id="filter-sch-search" class="search-input" placeholder="Cari No OM / Kode / Karu..." style="flex: 1; min-width: 180px;" oninput="filterScheduleTable()">
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="btn-create-schedule" class="btn-modern" style="background: #10b981; color: #fff; display: flex; align-items: center; gap: 6px;" onclick="openCreateScheduleModal()">
+                                <svg style="width:14px; height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> + Buat Schedule (Dari Sisa OM)
+                            </button>
+                            <button class="btn-modern" style="background: #f4f7fe; color: #4318ff; border: 1px solid #4318ff;" onclick="loadScheduleProduksiData()">
+                                <svg style="width:14px; height:14px; margin-right:4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Refresh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABEL SCHEDULE PRODUKSI HARI INI -->
+                <div class="table-container">
+                    <table class="table-thin" id="table-schedule-today">
+                        <thead>
+                            <tr class="header-group">
+                                <th colspan="6">Identitas Order & Barang</th>
+                                <th colspan="6">Alokasi & Handover Schedule Karu (Pcs)</th>
+                                <th colspan="2">Status & Kontrol</th>
+                            </tr>
+                            <tr>
+                                <th>Unit</th>
+                                <th>Shift</th>
+                                <th style="text-align: center;">Tipe Target</th>
+                                <th>No OM</th>
+                                <th>Kode</th>
+                                <th>Nama Barang</th>
+                                <th>Motif</th>
+                                <th style="background:#f1f5f9; color:#4318ff;">Penanggung Jawab</th>
+                                <th style="text-align: right;">Target Awal</th>
+                                <th style="text-align: right; color:#d97706;">Operan</th>
+                                <th style="text-align: right; font-weight:800; background:#f8fafc;">Target Akhir</th>
+                                <th style="text-align: right; color:#05cd99;">Realisasi</th>
+                                <th style="text-align: right; color:#ee5d50;">Sisa</th>
+                                <th style="text-align: center;">Status</th>
+                                <th style="text-align: center;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-schedule-today">
+                            <tr><td colspan="14" style="text-align:center; padding:25px; color:#8f9bba;">Memuat data schedule produksi...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MODAL: BUAT SCHEDULE BARU DARI SISA OM -->
+            <div id="modal-create-schedule" class="custom-dialog-overlay">
+                <div class="custom-dialog-box" style="max-width: 650px; text-align: left; padding: 25px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #f0f0f0; padding-bottom:10px;">
+                        <h3 class="text-secondary font-bold" style="font-size:18px; margin:0;">Buat Schedule Produksi Baru</h3>
+                        <button onclick="document.getElementById('modal-create-schedule').style.display='none'" style="background:none; border:none; font-size:22px; cursor:pointer; color:#8f9bba;">&times;</button>
+                    </div>
+                    <form onsubmit="submitNewSchedule(event); return false;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+                            <div class="form-group" style="margin:0;">
+                                <label>Pilih Unit <span class="text-danger">*</span></label>
+                                <select id="sch-input-unit" class="form-control" required onchange="populateOmOptionsForSchedule()">
+                                    <option value="CV JHB 1">CV JHB 1</option>
+                                    <option value="CV JHB 2">CV JHB 2</option>
+                                    <option value="CV JHB 5">CV JHB 5</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Tanggal Schedule <span class="text-danger">*</span></label>
+                                <input type="date" id="sch-input-date" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pilih Order Makloon (Dari Sisa OM Aktif) <span class="text-danger">*</span></label>
+                            <select id="sch-select-om" class="form-control" required onchange="onSelectOmItemForSchedule()">
+                                <option value="">-- Pilih Sisa OM --</option>
+                            </select>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; margin-bottom:12px; background:#f8fafc; padding:10px; border:1px solid #e2e8f0; border-radius:2px;">
+                            <div><span style="font-size:11px; color:#8f9bba;">Nama Barang</span><div id="sch-preview-barang" style="font-weight:700; font-size:12px; color:#2b3674;">-</div></div>
+                            <div><span style="font-size:11px; color:#8f9bba;">Motif</span><div id="sch-preview-motif" style="font-weight:700; font-size:12px; color:#2b3674;">-</div></div>
+                            <div><span style="font-size:11px; color:#8f9bba;">Sisa OM Tersedia</span><div id="sch-preview-sisa-om" style="font-weight:800; font-size:13px; color:#ee5d50;">0 pcs</div></div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 1.2fr 1fr; gap:10px; margin-bottom:16px;">
+                            <div class="form-group" style="margin:0;">
+                                <label>Shift <span class="text-danger">*</span></label>
+                                <select id="sch-input-shift" class="form-control" required>
+                                    <option value="Shift 1">Shift 1</option>
+                                    <option value="Shift 2">Shift 2</option>
+                                    <option value="Shift 3">Shift 3</option>
+                                    <option value="Non-Shift">Non-Shift</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Tipe Target <span class="text-danger">*</span></label>
+                                <select id="sch-input-tipe-target" class="form-control" required>
+                                    <option value="Target Baru">✨ Target Baru</option>
+                                    <option value="Hutang Target">⏳ Hutang Kemarin</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Karu <span class="text-danger">*</span></label>
+                                <select id="sch-input-karu" class="form-control" required></select>
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Target Qty <span class="text-danger">*</span></label>
+                                <input type="number" id="sch-input-qty" class="form-control" placeholder="0" min="1" required>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; justify-content:flex-end; gap:10px;">
+                            <button type="button" class="btn-modern" style="background:#f1f5f9; color:#64748b;" onclick="document.getElementById('modal-create-schedule').style.display='none'">Batal</button>
+                            <button type="submit" id="btn-submit-sch" class="btn-modern" style="background:#10b981;">Simpan Schedule</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- MODAL: OPER BEBAN / HANDOVER (KONTROL STAFF) -->
+            <div id="modal-handover-schedule" class="custom-dialog-overlay">
+                <div class="custom-dialog-box" style="max-width: 480px; text-align: left; padding: 25px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #f0f0f0; padding-bottom:8px;">
+                        <h3 class="text-secondary font-bold" style="font-size:18px; margin:0; color:#d97706;">Oper Beban Produksi (Handover)</h3>
+                        <button onclick="document.getElementById('modal-handover-schedule').style.display='none'" style="background:none; border:none; font-size:22px; cursor:pointer; color:#8f9bba;">&times;</button>
+                    </div>
+                    <p style="font-size:12px; color:#64748b; margin-bottom:14px; line-height:1.4;">
+                        Alihkan sisa kuota yang belum tuntas dari Karu awal ke Karu lain agar alur produksi tidak berhenti.
+                    </p>
+
+                    <form onsubmit="submitHandoverSchedule(event); return false;">
+                        <input type="hidden" id="ho-id-schedule">
+                        
+                        <div style="background:#fffbeb; border:1px solid #fef3c7; border-radius:2px; padding:10px; margin-bottom:14px; font-size:12px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                <span style="color:#92400e;">Karu Asal:</span> <b id="ho-karu-asal" style="color:#b45309;">-</b>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                <span style="color:#92400e;">Barang:</span> <b id="ho-barang-info" style="color:#1e1b4b;">-</b>
+                            </div>
+                            <div style="display:flex; justify-content:space-between;">
+                                <span style="color:#92400e;">Sisa Belum Selesai:</span> <b id="ho-sisa-tersedia" style="color:#ee5d50; font-size:13px;">0 pcs</b>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1.3fr 1fr; gap:10px;">
+                            <div class="form-group">
+                                <label>Karu Penerima Operan <span class="text-danger">*</span></label>
+                                <select id="ho-select-karu-tujuan" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Shift Tujuan <span class="text-danger">*</span></label>
+                                <select id="ho-select-shift-tujuan" class="form-control" required>
+                                    <option value="Shift 1">Shift 1</option>
+                                    <option value="Shift 2">Shift 2</option>
+                                    <option value="Shift 3">Shift 3</option>
+                                    <option value="Non-Shift">Non-Shift</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Qty yang Dioper (Pcs) <span class="text-danger">*</span></label>
+                            <input type="number" id="ho-input-qty" class="form-control" placeholder="0" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Alasan Handover / Keterangan <span class="text-danger">*</span></label>
+                            <input type="text" id="ho-input-alasan" class="form-control" placeholder="Contoh: Operan 50 pcs WIP, shift Karu A berakhir" required>
+                        </div>
+
+                        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                            <button type="button" class="btn-modern" style="background:#f1f5f9; color:#64748b;" onclick="document.getElementById('modal-handover-schedule').style.display='none'">Batal</button>
+                            <button type="submit" id="btn-submit-ho" class="btn-modern" style="background:#d97706;">Konfirmasi Oper Beban</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -2023,11 +2263,12 @@
                             </div>
                         </div>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <!-- TOMBOL IMPORT OM (KHUSUS ADMIN KE ATAS) -->
                             <button id="btn-import-om" class="btn-modern" style="background:#10b981; color:#fff; display:none;" onclick="triggerImportLaporanOM()">
                                 <svg style="width:14px; height:14px; margin-right:4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> Import OM
                             </button>
-                            <!-- TOMBOL RINCIAN OM -->
+                            <button id="btn-import-pengiriman" class="btn-modern" style="background:#0284c7; color:#fff; display:none;" onclick="triggerImportBukuPengiriman()">
+                                <svg style="width:14px; height:14px; margin-right:4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> Import Pengiriman
+                            </button>
                             <button class="btn-modern" style="background:#4318ff; color:#fff;" onclick="switchView('rincian-om')">
                                 <svg style="width:14px; height:14px; margin-right:4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg> Rincian OM
                             </button>
@@ -2092,7 +2333,7 @@
                             <input type="date" id="filter-rincianom-end" class="search-input" style="width: 115px; border: none; padding: 4px;" onchange="filterRincianOmData()">
                         </div>
                         <div style="position: relative; flex: 1; min-width: 180px;">
-                            <input type="text" id="filter-rincianom-search" class="search-input" placeholder="Ketik No OM / Kode / Nama Barang..." style="width: 100%; padding-left: 36px;" oninput="filterRincianOmData()">
+                            <input type="text" id="filter-rincianom-search" class="search-input" placeholder="Ketik No OM / Kode / Nama Barang..." style="width: 100%; padding-left: 36px;" oninput="debouncedFilterRincianOm()">
                             <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #8f9bba;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </div>
                         <!-- CHECKBOX BELUM TERSELESAIKAN -->
@@ -2737,7 +2978,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycby4rzSj18q_8t6Q52WGaa8_-ohREe9Iq30pdILAbfh9HeimJKHHgvB6jIo-GBtAX-4b/exec";         
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxK4csrsCS43alTVf8GT8YR_J8IVUd-TojefcNCJC7N6LGyhe84C4ymbDWl6-5ACFUnOA/exec";         
 
         // 2. HELPER: Parser Nominal Desimal Aman (Presisi Angka Murni)
         function parseNominalFrontend(val) {
@@ -3575,6 +3816,12 @@
                 }
                 if(viewName === 'rincian-om') {
                     openRincianOmPage();
+                }
+                if(viewName === 'schedule-hari-ini') {
+                    loadScheduleProduksiData();
+                    if (!window.rawSisaOmData || window.rawSisaOmData.length === 0) {
+                        loadSisaOmData();
+                    }
                 }
                 if(viewName === 'tracking-sj') {
                     if(document.getElementById('filter-trackingsj-search')) document.getElementById('filter-trackingsj-search').value = '';
@@ -4921,6 +5168,9 @@
 
             const btnImportOm = document.getElementById('btn-import-om');
             if (btnImportOm) btnImportOm.style.display = isAdminLevel ? 'inline-block' : 'none';
+
+            const btnImportPengiriman = document.getElementById('btn-import-pengiriman');
+            if (btnImportPengiriman) btnImportPengiriman.style.display = isAdminLevel ? 'inline-block' : 'none';
             
             // Tampilkan Statistik Rupiah hanya untuk Role Tertentu (Staff ke atas)
             const allowedRupiahRoles = ['author', 'supervisor', 'staff finance', 'admin finance', 'staff produksi', 'admin produksi'];
@@ -5798,7 +6048,333 @@
             }
         }
 
-        function filterMasterTable() {
+        // --- LOGIKA JS MODUL SCHEDULE PRODUKSI & HANDOVER KARU ---
+        window.rawScheduleData = [];
+
+        async function loadScheduleProduksiData() {
+            const tbody = document.getElementById('tbody-schedule-today');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding:25px; color:#8f9bba;">Mengambil data schedule produksi...</td></tr>';
+
+            const dateInp = document.getElementById('filter-sch-date');
+            if (dateInp && !dateInp.value) {
+                dateInp.value = new Date().toISOString().slice(0, 10);
+            }
+
+            try {
+                const data = await panggilBackend('getScheduleProduksiData', {});
+                window.rawScheduleData = data || [];
+                populateScheduleKaruFilter();
+                filterScheduleTable();
+            } catch (err) {
+                if (tbody) tbody.innerHTML = `<tr><td colspan="14" style="text-align:center; color:#ee5d50; padding:25px;">Gagal memuat: ${err.message}</td></tr>`;
+            }
+        }
+
+        function populateScheduleKaruFilter() {
+            const selFilter = document.getElementById('filter-sch-karu');
+            const selInput = document.getElementById('sch-input-karu');
+            const selHo = document.getElementById('ho-select-karu-tujuan');
+
+            const karus = [...new Set(allOperators.map(o => o.karu))].filter(Boolean).sort();
+
+            if (selFilter) {
+                const cur = selFilter.value;
+                selFilter.innerHTML = '<option value="">Semua Karu</option>';
+                karus.forEach(k => { selFilter.innerHTML += `<option value="${k}">${k}</option>`; });
+                selFilter.value = cur;
+            }
+            if (selInput) {
+                selInput.innerHTML = '<option value="">-- Pilih Karu --</option>';
+                karus.forEach(k => { selInput.innerHTML += `<option value="${k}">${k}</option>`; });
+            }
+            if (selHo) {
+                selHo.innerHTML = '<option value="">-- Pilih Karu Penerima --</option>';
+                karus.forEach(k => { selHo.innerHTML += `<option value="${k}">${k}</option>`; });
+            }
+        }
+
+        function filterScheduleTable() {
+            if (!window.rawScheduleData) return;
+            const unit = (document.getElementById('filter-sch-unit')?.value || '').toLowerCase();
+            const dateStr = document.getElementById('filter-sch-date')?.value || '';
+            const shift = (document.getElementById('filter-sch-shift')?.value || '').toLowerCase();
+            const karu = (document.getElementById('filter-sch-karu')?.value || '').toLowerCase();
+            const keyword = (document.getElementById('filter-sch-search')?.value || '').toLowerCase().trim();
+
+            const roleLower = (window.currentUserRole || "").toLowerCase();
+            const isKaru = roleLower === 'karu';
+            const currentKaruName = (window.currentUserName || "").toLowerCase();
+
+            let targetBaruPcs = 0, hutangPcs = 0, realPcs = 0, sisaPcs = 0, operanPcs = 0;
+
+            const filtered = window.rawScheduleData.filter(item => {
+                if (isKaru && item.karu.toLowerCase() !== currentKaruName) return false;
+
+                const matchUnit = unit === '' || item.unit.toLowerCase().includes(unit.replace(/^cv\s*/i, ''));
+                
+                // TAMPILKAN JADWAL TANGGAL TERPILIH + JADWAL TERTUNGGAK KEMARIN (HUTANG TARGET)
+                const isItemDate = item.tanggal === dateStr;
+                const isPastDebt = (dateStr !== '' && item.tanggal < dateStr && item.sisa > 0);
+                const matchDate = (dateStr === '') || isItemDate || isPastDebt;
+
+                const matchShift = shift === '' || item.shift.toLowerCase() === shift;
+                const matchKaru = karu === '' || item.karu.toLowerCase() === karu;
+                const matchKw = keyword === '' || 
+                    item.noOm.toLowerCase().includes(keyword) || 
+                    item.kode.toLowerCase().includes(keyword) || 
+                    item.namaBarang.toLowerCase().includes(keyword) || 
+                    item.karu.toLowerCase().includes(keyword);
+
+                return matchUnit && matchDate && matchShift && matchKaru && matchKw;
+            });
+
+            filtered.forEach(it => {
+                const isDebt = it.tipeTarget.toLowerCase().includes('hutang') || (dateStr !== '' && it.tanggal < dateStr && it.sisa > 0);
+                if (isDebt) {
+                    hutangPcs += it.sisa;
+                } else {
+                    targetBaruPcs += it.targetAkhir;
+                }
+                realPcs += it.realisasiPrd;
+                sisaPcs += it.sisa;
+                operanPcs += it.operanKeluar;
+            });
+
+            document.getElementById('stat-sch-target-baru').innerHTML = `${Number(targetBaruPcs).toLocaleString('id-ID')} <span style="font-size:13px; color:#8f9bba;">Pcs</span>`;
+            document.getElementById('stat-sch-hutang').innerHTML = `${Number(hutangPcs).toLocaleString('id-ID')} <span style="font-size:13px; color:#8f9bba;">Pcs</span>`;
+            document.getElementById('stat-sch-realisasi').innerHTML = `${Number(realPcs).toLocaleString('id-ID')} <span style="font-size:13px; color:#8f9bba;">Pcs</span>`;
+            document.getElementById('stat-sch-sisa').innerHTML = `${Number(sisaPcs).toLocaleString('id-ID')} <span style="font-size:13px; color:#8f9bba;">Pcs</span>`;
+            
+            const totalTargetGabungan = targetBaruPcs + hutangPcs;
+            const pct = totalTargetGabungan > 0 ? Math.min(100, Math.round((realPcs / totalTargetGabungan) * 100)) : 0;
+            document.getElementById('stat-sch-pct').textContent = `${pct}% Tercapai`;
+            document.getElementById('stat-sch-operan-info').textContent = `Termasuk ${operanPcs.toLocaleString('id-ID')} pcs operan`;
+
+            renderScheduleTodayTable(filtered);
+        }
+
+        function renderScheduleTodayTable(data) {
+            const tbody = document.getElementById('tbody-schedule-today');
+            const dateStr = document.getElementById('filter-sch-date')?.value || '';
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const roleLower = (window.currentUserRole || "").toLowerCase();
+            const isStaffOrHigher = ['author', 'supervisor', 'staff produksi', 'admin produksi'].includes(roleLower);
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding:25px; color:#8f9bba;">Tidak ada data schedule yang cocok.</td></tr>';
+                return;
+            }
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                const isDebt = row.tipeTarget.toLowerCase().includes('hutang') || (dateStr !== '' && row.tanggal < dateStr && row.sisa > 0);
+
+                // Highlight khusus untuk baris Hutang Target (Aksen merah di sisi kiri)
+                if (isDebt) {
+                    tr.style.backgroundColor = '#fffbfb';
+                    tr.style.borderLeft = '3.5px solid #ee5d50';
+                }
+
+                let badgeOperan = '-';
+                if (row.operanKeluar > 0) {
+                    badgeOperan = `<span style="color:#ee5d50; font-weight:700;">-${row.operanKeluar}</span>`;
+                } else if (row.operanMasuk > 0) {
+                    badgeOperan = `<span style="color:#05cd99; font-weight:700;">+${row.operanMasuk}</span>`;
+                }
+
+                // Badge Tipe Target
+                let badgeTipeTarget = `<span style="font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:2px; background:#e0e5ff; color:#4318ff; border:1px solid #c7d2fe;">✨ New Target</span>`;
+                if (isDebt) {
+                    badgeTipeTarget = `<span style="font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:2px; background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5;" title="Schedule tgl ${row.tanggal}">⏳ Hutang (${row.tanggal.slice(5)})</span>`;
+                } else if (row.tipeTarget.toLowerCase().includes('operan')) {
+                    badgeTipeTarget = `<span style="font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:2px; background:#fef3c7; color:#b45309; border:1px solid #fde68a;">⇄ Limpahan</span>`;
+                }
+
+                let statusBadgeBg = '#f1f5f9', statusColor = '#64748b';
+                if (row.status.includes('Selesai')) { statusBadgeBg = '#ebfcf6'; statusColor = '#05cd99'; }
+                else if (row.status.includes('Dioper') || row.status.includes('Operan')) { statusBadgeBg = '#fef3c7'; statusColor = '#b45309'; }
+                else if (row.status === 'Open') { statusBadgeBg = '#e0e5ff'; statusColor = '#4318ff'; }
+
+                let btnActionHtml = '<span style="color:#cbd5e1;">-</span>';
+                if (isStaffOrHigher && row.sisa > 0) {
+                    btnActionHtml = `
+                        <button class="btn-modern" style="padding: 4px 8px; font-size: 11px; background: #fff; color: #d97706; border: 1px solid #fde68a;" onclick="openHandoverModal(${row.rowIdx}, '${row.karu}', '${row.shift}', '${row.kode} - ${row.namaBarang}', ${row.sisa})">
+                            ⇄ Oper Beban
+                        </button>
+                    `;
+                }
+
+                tr.innerHTML = `
+                    <td>${row.unit}</td>
+                    <td><span style="font-size:11px; font-weight:700; padding:2px 6px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:2px; color:#2b3674;">${row.shift}</span></td>
+                    <td style="text-align:center;">${badgeTipeTarget}</td>
+                    <td style="font-weight:700; color:#4318ff;">${row.noOm}</td>
+                    <td style="font-weight:700;">${row.kode}</td>
+                    <td>${row.namaBarang}</td>
+                    <td>${row.motif || '-'}</td>
+                    <td style="font-weight:800; color:#1e1b4b; background:#fafbfc;">${row.karu}</td>
+                    <td style="text-align:right;">${row.targetAwal.toLocaleString('id-ID')}</td>
+                    <td style="text-align:right;">${badgeOperan}</td>
+                    <td style="text-align:right; font-weight:800; background:#f8fafc; color:#2b3674;">${row.targetAkhir.toLocaleString('id-ID')}</td>
+                    <td style="text-align:right; font-weight:700; color:#05cd99;">${row.realisasiPrd.toLocaleString('id-ID')}</td>
+                    <td style="text-align:right; font-weight:800; color:${row.sisa > 0 ? '#ee5d50' : '#05cd99'};">${row.sisa.toLocaleString('id-ID')}</td>
+                    <td style="text-align:center;">
+                        <span style="padding:3px 8px; border-radius:2px; font-size:11px; font-weight:700; background:${statusBadgeBg}; color:${statusColor};" title="${row.catatan}">${row.status}</span>
+                    </td>
+                    <td style="text-align:center;">${btnActionHtml}</td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // POPULATE & MODAL BUAT SCHEDULE
+        function openCreateScheduleModal() {
+            const modal = document.getElementById('modal-create-schedule');
+            const today = new Date().toISOString().slice(0, 10);
+            document.getElementById('sch-input-date').value = today;
+            populateScheduleKaruFilter();
+            populateOmOptionsForSchedule();
+            modal.style.display = 'flex';
+        }
+
+        function populateOmOptionsForSchedule() {
+            const selectEl = document.getElementById('sch-select-om');
+            if (!selectEl || !window.rawSisaOmData) return;
+
+            const unit = (document.getElementById('sch-input-unit')?.value || '').toLowerCase().replace(/^cv\s*/i, '');
+            const rows = window.rawSisaOmData.slice(1);
+
+            selectEl.innerHTML = '<option value="">-- Pilih Sisa OM --</option>';
+
+            rows.forEach((r, idx) => {
+                const rUnit = String(r[0] || '').toLowerCase();
+                const qSisa = parseFloat(String(r[12] || '0').replace(/[^0-9.-]/g, '')) || 0;
+                if (qSisa <= 0) return; // Hanya ambil yang masih punya sisa
+                if (unit && !rUnit.includes(unit)) return;
+
+                const label = `${r[1]} | ${r[4]} - ${r[5]} (Sisa: ${qSisa} pcs)`;
+                selectEl.innerHTML += `<option value="${idx}">${label}</option>`;
+            });
+        }
+
+        function onSelectOmItemForSchedule() {
+            const idx = document.getElementById('sch-select-om').value;
+            if (idx === '' || !window.rawSisaOmData) {
+                document.getElementById('sch-preview-barang').textContent = '-';
+                document.getElementById('sch-preview-motif').textContent = '-';
+                document.getElementById('sch-preview-sisa-om').textContent = '0 pcs';
+                return;
+            }
+
+            const row = window.rawSisaOmData.slice(1)[parseInt(idx)];
+            const qSisa = parseFloat(String(row[12] || '0').replace(/[^0-9.-]/g, '')) || 0;
+
+            document.getElementById('sch-preview-barang').textContent = `${row[4]} - ${row[5]}`;
+            document.getElementById('sch-preview-motif').textContent = row[7] || '-';
+            document.getElementById('sch-preview-sisa-om').textContent = `${qSisa.toLocaleString('id-ID')} pcs`;
+            document.getElementById('sch-input-qty').value = qSisa;
+            document.getElementById('sch-input-qty').max = qSisa;
+        }
+
+        async function submitNewSchedule(e) {
+            e.preventDefault();
+            const idx = document.getElementById('sch-select-om').value;
+            if (idx === '') return showDialog("Pilih Sisa OM terlebih dahulu!", "warning");
+
+            const row = window.rawSisaOmData.slice(1)[parseInt(idx)];
+            const btn = document.getElementById('btn-submit-sch');
+            btn.disabled = true; btn.textContent = "Menyimpan...";
+
+            const payload = {
+                unit: document.getElementById('sch-input-unit').value,
+                tanggal: document.getElementById('sch-input-date').value,
+                userId: window.currentUserId || "",
+                userName: window.currentUserName || "Staff",
+                items: [{
+                    noOm: row[1],
+                    kode: row[4],
+                    namaBarang: row[5],
+                    motif: row[7],
+                    shift: document.getElementById('sch-input-shift').value,
+                    tipeTarget: document.getElementById('sch-input-tipe-target').value,
+                    karu: document.getElementById('sch-input-karu').value,
+                    qtyTarget: parseFloat(document.getElementById('sch-input-qty').value) || 0
+                }]
+            };
+
+            try {
+                const res = await panggilBackend('saveNewSchedule', payload);
+                if (res && res.success) {
+                    document.getElementById('modal-create-schedule').style.display = 'none';
+                    showQuickSuccess("Schedule Berhasil Dibuat!", () => {
+                        loadScheduleProduksiData();
+                    });
+                } else {
+                    showDialog("Gagal membuat schedule: " + (res ? res.message : "Error"), "warning");
+                }
+            } catch (err) {
+                showDialog("Koneksi gagal: " + err.message, "warning");
+            } finally {
+                btn.disabled = false; btn.textContent = "Simpan Schedule";
+            }
+        }
+
+        // MODAL & SUBMIT HANDOVER (OPER BEBAN KARU BERDASARKAN SHIFT & ROW SHEET)
+        function openHandoverModal(rowIdx, karuAsal, shiftAsal, barangInfo, sisaTersedia) {
+            document.getElementById('ho-id-schedule').value = rowIdx;
+            document.getElementById('ho-karu-asal').textContent = `${karuAsal} (${shiftAsal})`;
+            document.getElementById('ho-barang-info').textContent = barangInfo;
+            document.getElementById('ho-sisa-tersedia').textContent = `${sisaTersedia} pcs`;
+            document.getElementById('ho-input-qty').value = sisaTersedia;
+            document.getElementById('ho-input-qty').max = sisaTersedia;
+            document.getElementById('ho-select-shift-tujuan').value = shiftAsal; // default ke shift yang sama
+            document.getElementById('ho-input-alasan').value = "";
+
+            populateScheduleKaruFilter();
+            document.getElementById('modal-handover-schedule').style.display = 'flex';
+        }
+
+        async function submitHandoverSchedule(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-ho');
+            const rowIdx = document.getElementById('ho-id-schedule').value;
+            const karuTujuan = document.getElementById('ho-select-karu-tujuan').value;
+            const shiftTujuan = document.getElementById('ho-select-shift-tujuan').value;
+            const qtyOper = parseFloat(document.getElementById('ho-input-qty').value) || 0;
+            const alasan = document.getElementById('ho-input-alasan').value;
+
+            if (!karuTujuan) return showDialog("Pilih Karu Penerima!", "warning");
+
+            btn.disabled = true; btn.textContent = "Memproses...";
+
+            try {
+                const res = await panggilBackend('handoverScheduleKaru', {
+                    rowIdx: rowIdx,
+                    karuTujuan: karuTujuan,
+                    shiftTujuan: shiftTujuan,
+                    qtyOper: qtyOper,
+                    alasan: alasan,
+                    userId: window.currentUserId || "",
+                    userName: window.currentUserName || "Staff"
+                });
+
+                if (res && res.success) {
+                    document.getElementById('modal-handover-schedule').style.display = 'none';
+                    showQuickSuccess(`Beban ${qtyOper} pcs dialihkan ke ${karuTujuan}!`, () => {
+                        loadScheduleProduksiData();
+                    });
+                } else {
+                    showDialog("Gagal handover: " + (res ? res.message : "Error"), "warning");
+                }
+            } catch (err) {
+                showDialog("Koneksi gagal: " + err.message, "warning");
+            } finally {
+                btn.disabled = false; btn.textContent = "Konfirmasi Oper Beban";
+            }
+        }
             const searchInput = document.getElementById("masterSearch");
             if (!searchInput || !window.allMasterBarang) return;
             let input = searchInput.value.toLowerCase().trim();
@@ -8355,12 +8931,51 @@
         }
 
         // --- MESIN KHUSUS HALAMAN RINCIAN OM ---
-        // Helper pemanggil data Buku Pengiriman
+        // Kamus Memori Indeks Cepat (Hash Map) untuk Pengiriman
+        window.bukuPengirimanMap = new Map();
+        let debounceRincianOmTimer = null;
+
+        function debouncedFilterRincianOm() {
+            clearTimeout(debounceRincianOmTimer);
+            debounceRincianOmTimer = setTimeout(() => {
+                filterRincianOmData();
+            }, 250); // Menunda 0.25 detik saat user mengetik agar tidak lag
+        }
+
+        function buildBukuPengirimanIndex(dataList) {
+            const map = new Map();
+            if (!dataList || !Array.isArray(dataList)) return map;
+
+            dataList.forEach(item => {
+                const noOm = String(item.noOm || '').trim().toUpperCase();
+                const kode = String(item.kode || '').trim().toUpperCase();
+                let motif = String(item.motif || '').trim().toUpperCase();
+                if (motif === '-' || motif === '') motif = '';
+
+                // Kunci 1: No OM + Kode + Motif (Paling Spesifik)
+                const fullKey = `${noOm}__${kode}__${motif}`;
+                if (!map.has(fullKey)) map.set(fullKey, []);
+                map.get(fullKey).push(item);
+
+                // Kunci 2: No OM + Kode (Sebagai Fallback jika motif kosong/tidak cocok)
+                if (motif !== '') {
+                    const fallbackKey = `${noOm}__${kode}`;
+                    if (!map.has(fallbackKey)) map.set(fallbackKey, []);
+                    map.get(fallbackKey).push(item);
+                }
+            });
+            return map;
+        }
+
         async function loadBukuPengirimanData() {
-            if (window.rawBukuPengirimanData && window.rawBukuPengirimanData.length > 0) return window.rawBukuPengirimanData;
+            if (window.rawBukuPengirimanData && window.rawBukuPengirimanData.length > 0) {
+                return window.rawBukuPengirimanData;
+            }
             try {
                 const data = await panggilBackend('getBukuPengirimanData', {});
                 window.rawBukuPengirimanData = data || [];
+                // Buat indeks instan sekali saja
+                window.bukuPengirimanMap = buildBukuPengirimanIndex(window.rawBukuPengirimanData);
                 return window.rawBukuPengirimanData;
             } catch(e) {
                 console.warn("Gagal load Buku Pengiriman:", e);
@@ -8591,40 +9206,41 @@
                     tr.appendChild(td);
                 }
 
-                // --- KOLOM KE-17 (BARU): RINCIAN DO / SJ PENGIRIMAN ---
+                // --- KOLOM DETAIL: AMBIL DARI HASH MAP (INSTAN 0 DETIK) ---
                 const tdDo = document.createElement('td');
                 tdDo.style.verticalAlign = 'top';
 
-                const curNoOm = String(row[1] || '').trim().toUpperCase();
-                const curKode = String(row[4] || '').trim().toUpperCase();
-                const curMotif = String(row[7] || '').trim().toUpperCase();
-
-                // Cari pengiriman yang cocok berdasarkan No OM + Kode Barang (+ Motif jika ada)
-                const matchingDeliveries = (window.rawBukuPengirimanData || []).filter(item => {
-                    const matchOm = String(item.noOm || '').trim().toUpperCase() === curNoOm;
-                    const matchKode = String(item.kode || '').trim().toUpperCase() === curKode;
-                    if (!matchOm || !matchKode) return false;
-
-                    if (curMotif && curMotif !== '-' && item.motif && item.motif !== '-') {
-                        return String(item.motif || '').trim().toUpperCase() === curMotif;
-                    }
-                    return true;
-                });
-
-                if (matchingDeliveries.length === 0) {
-                    tdDo.innerHTML = `<span style="color:#cbd5e1; font-size:11px;">Belum ada SJ</span>`;
+                // Jika data pengiriman masih proses ditarik di latar belakang
+                if (!window.rawBukuPengirimanData || window.rawBukuPengirimanData.length === 0) {
+                    tdDo.innerHTML = `<span style="color:#8f9bba; font-size:10.5px; display:inline-flex; align-items:center; gap:4px;"><span class="badge" style="background:#f1f5f9; color:#64748b; font-size:9.5px; padding:2px 5px;">Memuat DO...</span></span>`;
                 } else {
-                    let doHtml = `<div style="display:flex; flex-direction:column; gap:4px;">`;
-                    matchingDeliveries.forEach(d => {
-                        doHtml += `
-                            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:2px; padding:3px 6px; font-size:11px; display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                                <span><b style="color:#4318ff;">${d.noSj}</b> <span style="color:#64748b; font-size:10px;">(${d.tglKirim})</span></span>
-                                <span style="font-weight:800; color:#05cd99; white-space:nowrap;">${Number(d.qtyKirim).toLocaleString('id-ID')} Pcs</span>
-                            </div>
-                        `;
-                    });
-                    doHtml += `</div>`;
-                    tdDo.innerHTML = doHtml;
+                    const curNoOm = String(row[1] || '').trim().toUpperCase();
+                    const curKode = String(row[4] || '').trim().toUpperCase();
+                    let curMotif = String(row[7] || '').trim().toUpperCase();
+                    if (curMotif === '-' || curMotif === '') curMotif = '';
+
+                    const fullKey = `${curNoOm}__${curKode}__${curMotif}`;
+                    const fallbackKey = `${curNoOm}__${curKode}`;
+
+                    // Ambil instan dari Kamus (Map) tanpa looping ribuan data
+                    const matchingDeliveries = window.bukuPengirimanMap?.get(fullKey) || 
+                                              (curMotif === '' ? window.bukuPengirimanMap?.get(fallbackKey) : null) || [];
+
+                    if (matchingDeliveries.length === 0) {
+                        tdDo.innerHTML = `<span style="color:#cbd5e1; font-size:11px;">-</span>`;
+                    } else {
+                        let doHtml = `<div style="display:flex; flex-direction:column; gap:4px;">`;
+                        matchingDeliveries.forEach(d => {
+                            doHtml += `
+                                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:2px; padding:2px 6px; font-size:11px; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                                    <span><b style="color:#4318ff;">${d.noSj}</b> <span style="color:#64748b; font-size:10px;">(${d.tglKirim})</span></span>
+                                    <span style="font-weight:800; color:#05cd99; white-space:nowrap;">${Number(d.qtyKirim).toLocaleString('id-ID')} Pcs</span>
+                                </div>
+                            `;
+                        });
+                        doHtml += `</div>`;
+                        tdDo.innerHTML = doHtml;
+                    }
                 }
                 tr.appendChild(tdDo);
 
@@ -9029,17 +9645,14 @@
                 // Format teks rincian DO untuk file Excel
                 const curNoOm = String(row[1] || '').trim().toUpperCase();
                 const curKode = String(row[4] || '').trim().toUpperCase();
-                const curMotif = String(row[7] || '').trim().toUpperCase();
+                let curMotif = String(row[7] || '').trim().toUpperCase();
+                if (curMotif === '-' || curMotif === '') curMotif = '';
 
-                const matchingDeliveries = (window.rawBukuPengirimanData || []).filter(item => {
-                    const matchOm = String(item.noOm || '').trim().toUpperCase() === curNoOm;
-                    const matchKode = String(item.kode || '').trim().toUpperCase() === curKode;
-                    if (!matchOm || !matchKode) return false;
-                    if (curMotif && curMotif !== '-' && item.motif && item.motif !== '-') {
-                        return String(item.motif || '').trim().toUpperCase() === curMotif;
-                    }
-                    return true;
-                });
+                const fullKey = `${curNoOm}__${curKode}__${curMotif}`;
+                const fallbackKey = `${curNoOm}__${curKode}`;
+
+                const matchingDeliveries = window.bukuPengirimanMap?.get(fullKey) || 
+                                          (curMotif === '' ? window.bukuPengirimanMap?.get(fallbackKey) : null) || [];
 
                 const rincianDoText = matchingDeliveries.length > 0 
                     ? matchingDeliveries.map(d => `${d.noSj} (${d.tglKirim}: ${d.qtyKirim} Pcs)`).join(' | ') 
@@ -9241,6 +9854,163 @@
             setTimeout(() => {
                 printWindow.print();
             }, 400);
+        }
+
+        // --- FITUR IMPORT DATA BUKU PENGIRIMAN (KOLOM U s/d AD) ---
+        function triggerImportBukuPengiriman() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xlsx, .xls, .csv';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const data = new Uint8Array(evt.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+                        if (json.length < 2) {
+                            return showDialog('File Excel kosong atau tidak memiliki data pengiriman!', 'warning');
+                        }
+
+                        // Cari baris header yang memuat kolom pengiriman
+                        let headerIdx = -1;
+                        for (let i = 0; i < Math.min(json.length, 10); i++) {
+                            if (json[i] && json[i].some(cell => {
+                                const s = String(cell || '').toLowerCase();
+                                return s.includes('no sj') || s.includes('sj') || s.includes('surat jalan') || s.includes('no om');
+                            })) {
+                                headerIdx = i;
+                                break;
+                            }
+                        }
+
+                        const startRow = headerIdx >= 0 ? headerIdx + 1 : 1;
+                        const validRows = [];
+
+                        for (let i = startRow; i < json.length; i++) {
+                            const r = json[i];
+                            if (!r || r.length === 0) continue;
+
+                            // Siapkan persis 18 Kolom (Kolom A s/d R) sesuai struktur mentah pabrikan
+                            const row18 = [];
+                            let hasContent = false;
+
+                            for (let c = 0; c < 18; c++) {
+                                let val = r[c] !== undefined && r[c] !== null ? r[c] : '';
+                                
+                                // Format tanggal jika merupakan serial number tanggal Excel
+                                if (typeof val === 'number' && val > 30000 && val < 60000) {
+                                    // Cek apakah tanggal berada pada kolom-kolom awal (biasanya tanggal SJ di kolom A-E)
+                                    if (c <= 4) {
+                                        let d = new Date((val - 25569) * 86400 * 1000);
+                                        if (!isNaN(d.getTime())) val = d.toISOString().slice(0, 10);
+                                    }
+                                }
+
+                                if (String(val).trim() !== '') hasContent = true;
+                                row18.push(val);
+                            }
+
+                            if (hasContent) {
+                                validRows.push(row18);
+                            }
+                        }
+
+                        if (validRows.length === 0) {
+                            return showDialog('Tidak ada baris data Surat Jalan/Pengiriman yang valid untuk di-import!', 'warning');
+                        }
+
+                        // Dialog Pilihan: Tambahkan ke data ada ATAU Timpa data lama
+                        const dialog = document.getElementById('custom-dialog');
+                        const title = document.getElementById('dialog-title');
+                        const msg = document.getElementById('dialog-message');
+                        const actions = document.getElementById('dialog-actions');
+                        const icon = document.getElementById('dialog-icon');
+
+                        title.textContent = 'Import Buku Pengiriman';
+                        title.style.color = '#0284c7';
+                        icon.innerHTML = `<svg style="width:48px;height:48px;color:#0284c7;margin:0 auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path></svg>`;
+
+                        msg.innerHTML = `
+                            Ditemukan <b>${validRows.length} baris data pengiriman (SJ)</b>.<br><br>
+                            Silakan pilih metode penyimpanan ke sheet <b>Buku Pengiriman</b>:
+                        `;
+
+                        actions.innerHTML = '';
+
+                        const btnBatal = document.createElement('button');
+                        btnBatal.className = 'btn-modern';
+                        btnBatal.style.background = '#f1f5f9';
+                        btnBatal.style.color = '#64748b';
+                        btnBatal.textContent = 'Batal';
+                        btnBatal.onclick = () => { dialog.style.display = 'none'; };
+
+                        const btnAppend = document.createElement('button');
+                        btnAppend.className = 'btn-modern';
+                        btnAppend.style.background = '#0284c7';
+                        btnAppend.textContent = 'Tambah ke Data Ada';
+                        btnAppend.onclick = () => {
+                            dialog.style.display = 'none';
+                            executeImportPengiriman(validRows, false);
+                        };
+
+                        const btnOverwrite = document.createElement('button');
+                        btnOverwrite.className = 'btn-modern';
+                        btnOverwrite.style.background = '#ee5d50';
+                        btnOverwrite.textContent = 'Timpa Semua';
+                        btnOverwrite.onclick = () => {
+                            dialog.style.display = 'none';
+                            executeImportPengiriman(validRows, true);
+                        };
+
+                        actions.appendChild(btnBatal);
+                        actions.appendChild(btnOverwrite);
+                        actions.appendChild(btnAppend);
+
+                        dialog.style.display = 'flex';
+
+                    } catch (err) {
+                        showDialog('Gagal membaca file Excel pengiriman: ' + err.message, 'warning');
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            };
+            input.click();
+        }
+
+        function executeImportPengiriman(validRows, isOverwrite) {
+            showQuickSuccess("Mengunggah Data Pengiriman...");
+
+            panggilBackend('saveImportBukuPengiriman', {
+                rows: validRows,
+                isOverwrite: isOverwrite,
+                userId: window.currentUserId || "",
+                userName: window.currentUserName || ""
+            })
+            .then(res => {
+                if (res && res.success) {
+                    showDialog(`Berhasil menyimpan <b>${res.count} baris data</b> ke Buku Pengiriman!`, 'warning', () => {
+                        // Reset cache dan susun ulang kamus hash map pengiriman secara realtime
+                        window.rawBukuPengirimanData = [];
+                        window.bukuPengirimanMap = new Map();
+                        loadBukuPengirimanData().then(() => {
+                            if (tableStates.rincianOm.data && tableStates.rincianOm.data.length > 0) {
+                                renderRincianOmTable(tableStates.rincianOm.data, tableStates.rincianOm.currentPage);
+                            }
+                        });
+                    });
+                } else {
+                    showDialog('Gagal Import Pengiriman: ' + (res ? res.message : 'Error server'), 'warning');
+                }
+            })
+            .catch(err => {
+                showDialog('Koneksi gagal saat import pengiriman: ' + err.message, 'warning');
+            });
         }
 
         // --- FITUR IMPORT DATA UPDATE BUKU LAPORAN OM (KOLOM A-U TIMPA) ---
