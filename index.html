@@ -2123,6 +2123,7 @@
                                     <th style="text-align: center;">Status</th>
                                     <th>Tgl Realisasi</th>
                                     <th style="text-align: center;">Umur Stok</th>
+                                    <th style="text-align: left; min-width: 190px;">Detail</th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-rincian-om">
@@ -2736,7 +2737,7 @@
 
     <script>
         // 1. MASUKKAN URL TERBARU HASIL DEPLOY LANGKAH 1 KE DALAM TANDA KUTIP DI BAWAH INI:
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyINCeR6Lot8NpE1cWkEn5hBvRHZGo2OrpNcqQUJJfyDlxBHgu0DgGe_1Iqc5L1HgZ4uQ/exec";         
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbx2gsAT8HiJ0FKV8GJDDwnTV2opbYh0piR_AvS7SuZzDeI7IT78DefjT4poMTiAHuqwIA/exec";         
 
         // 2. HELPER: Parser Nominal Desimal Aman (Presisi Angka Murni)
         function parseNominalFrontend(val) {
@@ -8350,6 +8351,19 @@
         }
 
         // --- MESIN KHUSUS HALAMAN RINCIAN OM ---
+        // Helper pemanggil data Buku Pengiriman
+        async function loadBukuPengirimanData() {
+            if (window.rawBukuPengirimanData && window.rawBukuPengirimanData.length > 0) return window.rawBukuPengirimanData;
+            try {
+                const data = await panggilBackend('getBukuPengirimanData', {});
+                window.rawBukuPengirimanData = data || [];
+                return window.rawBukuPengirimanData;
+            } catch(e) {
+                console.warn("Gagal load Buku Pengiriman:", e);
+                return [];
+            }
+        }
+
         function openRincianOmPage() {
             // SINKRONISASI: Salin filter Unit & Tanggal dari halaman Sisa OM ke Rincian OM
             const sisaStart = document.getElementById('filter-sisaom-start')?.value;
@@ -8365,6 +8379,13 @@
             if (sisaUnit !== undefined && document.getElementById('filter-rincianom-unit')) {
                 document.getElementById('filter-rincianom-unit').value = sisaUnit;
             }
+
+            // Muat Buku Pengiriman di background
+            loadBukuPengirimanData().then(() => {
+                if (tableStates.rincianOm.data && tableStates.rincianOm.data.length > 0) {
+                    renderRincianOmTable(tableStates.rincianOm.data, tableStates.rincianOm.currentPage);
+                }
+            });
 
             if (!window.rawSisaOmData || window.rawSisaOmData.length === 0) {
                 loadSisaOmData();
@@ -8538,7 +8559,7 @@
                         }
                         td.appendChild(span);
                     }
-                    // Kolom Umur Stok (Index 15)
+                    / Kolom Umur Stok (Index 15)
                     else if (idx === 15) {
                         td.style.textAlign = 'center';
                         if (diffDays > 30) {
@@ -8565,6 +8586,44 @@
                     }
                     tr.appendChild(td);
                 }
+
+                // --- KOLOM KE-17 (BARU): RINCIAN DO / SJ PENGIRIMAN ---
+                const tdDo = document.createElement('td');
+                tdDo.style.verticalAlign = 'top';
+
+                const curNoOm = String(row[1] || '').trim().toUpperCase();
+                const curKode = String(row[4] || '').trim().toUpperCase();
+                const curMotif = String(row[7] || '').trim().toUpperCase();
+
+                // Cari pengiriman yang cocok berdasarkan No OM + Kode Barang (+ Motif jika ada)
+                const matchingDeliveries = (window.rawBukuPengirimanData || []).filter(item => {
+                    const matchOm = String(item.noOm || '').trim().toUpperCase() === curNoOm;
+                    const matchKode = String(item.kode || '').trim().toUpperCase() === curKode;
+                    if (!matchOm || !matchKode) return false;
+
+                    if (curMotif && curMotif !== '-' && item.motif && item.motif !== '-') {
+                        return String(item.motif || '').trim().toUpperCase() === curMotif;
+                    }
+                    return true;
+                });
+
+                if (matchingDeliveries.length === 0) {
+                    tdDo.innerHTML = `<span style="color:#cbd5e1; font-size:11px;">Belum ada SJ</span>`;
+                } else {
+                    let doHtml = `<div style="display:flex; flex-direction:column; gap:4px;">`;
+                    matchingDeliveries.forEach(d => {
+                        doHtml += `
+                            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:2px; padding:3px 6px; font-size:11px; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                                <span><b style="color:#4318ff;">${d.noSj}</b> <span style="color:#64748b; font-size:10px;">(${d.tglKirim})</span></span>
+                                <span style="font-weight:800; color:#05cd99; white-space:nowrap;">${Number(d.qtyKirim).toLocaleString('id-ID')} Pcs</span>
+                            </div>
+                        `;
+                    });
+                    doHtml += `</div>`;
+                    tdDo.innerHTML = doHtml;
+                }
+                tr.appendChild(tdDo);
+
                 tbody.appendChild(tr);
             });
 
@@ -8585,7 +8644,7 @@
                         <td style="padding:10px 12px; text-align:right; font-weight:800; color:#05cd99; font-size:13px;">${sumRealisasi.toLocaleString('id-ID')}</td>
                         <td style="padding:10px 12px; text-align:right; font-weight:700; color:#8f9bba; font-size:13px;">${sumRetur.toLocaleString('id-ID')}</td>
                         <td style="padding:10px 12px; text-align:right; font-weight:800; color:#ee5d50; font-size:13px;">${sumSisa.toLocaleString('id-ID')}</td>
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                     </tr>
                 `;
             }
@@ -8930,7 +8989,7 @@
                 "No.", "Unit", "No OM", "Tgl OM", "Tgl Terima OM", "Kode", 
                 "Nama Barang", "Kategori", "Motif", "Supplier", 
                 "QTY Pesanan", "QTY Realisasi", "QTY Retur", "QTY Sisa", 
-                "Status", "Tgl Realisasi", "Umur Stok"
+                "Status", "Tgl Realisasi", "Umur Stok", "Detail"
             ];
 
             let sumPesanan = 0, sumRealisasi = 0, sumRetur = 0, sumSisa = 0;
@@ -8963,6 +9022,25 @@
                     umurStokText = String(row[15]);
                 }
 
+                // Format teks rincian DO untuk file Excel
+                const curNoOm = String(row[1] || '').trim().toUpperCase();
+                const curKode = String(row[4] || '').trim().toUpperCase();
+                const curMotif = String(row[7] || '').trim().toUpperCase();
+
+                const matchingDeliveries = (window.rawBukuPengirimanData || []).filter(item => {
+                    const matchOm = String(item.noOm || '').trim().toUpperCase() === curNoOm;
+                    const matchKode = String(item.kode || '').trim().toUpperCase() === curKode;
+                    if (!matchOm || !matchKode) return false;
+                    if (curMotif && curMotif !== '-' && item.motif && item.motif !== '-') {
+                        return String(item.motif || '').trim().toUpperCase() === curMotif;
+                    }
+                    return true;
+                });
+
+                const rincianDoText = matchingDeliveries.length > 0 
+                    ? matchingDeliveries.map(d => `${d.noSj} (${d.tglKirim}: ${d.qtyKirim} Pcs)`).join(' | ') 
+                    : '-';
+
                 return [
                     idx + 1,
                     row[0] || '-', // Unit
@@ -8980,14 +9058,15 @@
                     qSisa,
                     isRowSelesai ? "Selesai" : "Belum Terselesaikan",
                     row[14] || '-', // Tgl Realisasi
-                    umurStokText    // Umur Stok
+                    umurStokText,   // Umur Stok
+                    rincianDoText   // Rincian DO / SJ
                 ];
             });
 
             // Baris Total Akumulatif
             dataRows.push([
                 "TOTAL KESELURUHAN", "", "", "", "", "", "", "", "", "",
-                sumPesanan, sumRealisasi, sumRetur, sumSisa, "", "", ""
+                sumPesanan, sumRealisasi, sumRetur, sumSisa, "", "", "", ""
             ]);
 
             const wsData = [
@@ -9018,7 +9097,8 @@
                 { wch: 13 }, // QTY Sisa
                 { wch: 20 }, // Status
                 { wch: 15 }, // Tgl Realisasi
-                { wch: 14 }  // Umur Stok
+                { wch: 14 }, // Umur Stok
+                { wch: 35 }  // Rincian DO / SJ
             ];
 
             const wb = XLSX.utils.book_new();
