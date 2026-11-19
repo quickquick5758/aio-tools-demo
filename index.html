@@ -6375,6 +6375,8 @@
                 btn.disabled = false; btn.textContent = "Konfirmasi Oper Beban";
             }
         }
+
+        function filterMasterTable() {
             const searchInput = document.getElementById("masterSearch");
             if (!searchInput || !window.allMasterBarang) return;
             let input = searchInput.value.toLowerCase().trim();
